@@ -1,4 +1,178 @@
-<div>
-  <h1 class="font-bold text-4xl">Pages#home</h1>
-  <p>Find me in app/views/pages/home.html.erb</p>
+<!-- Header avec la courbe -->
+<div class="relative bg-black">
+  <div id="map" class="w-full h-64"></div>
+  <div class="absolute top-52 left-1/2 transform -translate-x-1/2">
+    <img class="w-24 h-24 border-2 rounded-full shadow-lg" src="https://avatars.githubusercontent.com/u/232731?v=4" alt="">
+  </div>
 </div>
+
+<!-- Profil utilisateur -->
+<div class="text-center mt-16 bg-black">
+  <h1 class="text-xl text-white font-bold">Firstname LASTNAME</h1>
+  <p class="text-sm text-gray-300">Traveller type</p>
+  <div class="flex justify-center items-center mt-2">
+    <svg class="w-4 h-4 text-gray-300 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 2a7 7 0 100 14 7 7 0 000-14zm0 11.5a4.5 4.5 0 110-9 4.5 4.5 0 010 9z"></path>
+      <path d="M12 8a3.5 3.5 0 100 7 3.5 3.5 0 000-7z"></path>
+    </svg>
+    <p class="text-gray-300">City, Country</p>
+  </div>
+</div>
+
+<!-- Bouton "Ajouter un voyage" -->
+<div class="text-center mt-6">
+  <button class="bg-orange-600 text-white py-2 px-6 rounded-md text-sm hover:bg-orange-700">Ajouter un voyage</button>
+</div>
+
+<div class="relative bg-black text-white flex">
+  <!-- Timeline et contenu -->
+  <div class="relative flex-1 flex flex-col gap-2 p-6">
+    <!-- Ligne verticale de la timeline -->
+    <div class="absolute top-30 bottom-0 ml-1.5 w-px bg-white"></div>
+
+    <!-- Voyage 1 -->
+    <div class="flex items-center space-x-2">
+      <!-- Point de la timeline -->
+      <div class="relative z-10 flex-shrink-0">
+        <div class="w-3 h-3 bg-white rounded-full"></div>
+      </div>
+
+      <!-- Contenu de la carte -->
+      <div class="relative bg-cover bg-center rounded-lg shadow-md overflow-hidden h-40 w-full" style="background-image: url('https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');">
+         <!-- Voile noir dégradé -->
+        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/5 to-transparent"></div>
+
+        <!-- Texte de l'image -->
+        <div class="absolute inset-0 bg-black bg-opacity-40 flex flex-col justify-center p-4">
+          <p class="text-white italic text-sm mb-2">Du 23/04/2024 au 01/05/2024</p>
+          <h2 class="text-white font-bold text-lg">NEW YORK 2024</h2>
+          <p class="text-white italic text-xs">Avec Jocelyne</p>
+          <!-- Lien Explorer -->
+          <div class="mt-4">
+            <a href="#" class="text-white text-sm font-semibold flex gap-1 justify-end items-center">
+              Voir le voyage
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m12.75 15 3-3m0 0-3-3m3 3h-7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+              </svg>
+
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Voyage 2 -->
+    <div class="flex items-center space-x-2">
+      <!-- Point de la timeline -->
+      <div class="relative z-10 flex-shrink-0">
+        <div class="w-3 h-3 bg-white rounded-full"></div>
+      </div>
+
+      <!-- Contenu de la carte -->
+      <div class="relative bg-cover bg-center rounded-lg shadow-md overflow-hidden h-40 w-full" style="background-image: url('https://images.unsplash.com/photo-1576375801517-45814f908aa4?q=80&w=3087&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');">
+         <!-- Voile noir dégradé -->
+        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"></div>
+
+        <!-- Texte de l'image -->
+        <div class="absolute inset-0 bg-black bg-opacity-40 flex flex-col justify-center p-4">
+          <p class="text-white italic text-sm mb-2">Du 19/12/2019 au 01/01/2020</p>
+          <h2 class="text-white font-bold text-lg">MONTREAL 2019</h2>
+          <p class="text-white italic text-xs">Avec Michel et Thierry</p>
+          <!-- Lien Explorer -->
+          <div class="mt-4">
+            <a href="#" class="text-white text-sm font-semibold flex gap-1 justify-end items-center">
+              Voir le voyage
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m12.75 15 3-3m0 0-3-3m3 3h-7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+              </svg>
+
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Récupération de la clé depuis le backend Rails
+    const mapboxToken = "<%= ENV['MAPBOX_API_KEY'] %>";
+
+    // Initialisation de Mapbox
+    mapboxgl.accessToken = mapboxToken;
+
+    const map = new mapboxgl.Map({
+      container: 'map',
+      center: [2.3522, 48.8566],
+      style: 'mapbox://styles/mapbox/satellite-v9',
+      projection: 'globe', // Display the map as a globe, since satellite-v9 defaults to Mercator
+      zoom: 1.5,
+    });
+
+    map.on('style.load', () => {
+        map.setFog({}); // Set the default atmosphere style
+    });
+
+    const secondsPerRevolution = 120;
+    // Above zoom level 5, do not rotate.
+    const maxSpinZoom = 5;
+    // Rotate at intermediate speeds between zoom levels 3 and 5.
+    const slowSpinZoom = 3;
+
+    let userInteracting = false;
+    let spinEnabled = true;
+
+    function spinGlobe() {
+        const zoom = map.getZoom();
+        if (spinEnabled && !userInteracting && zoom < maxSpinZoom) {
+            let distancePerSecond = 360 / secondsPerRevolution;
+            if (zoom > slowSpinZoom) {
+                // Slow spinning at higher zooms
+                const zoomDif =
+                    (maxSpinZoom - zoom) / (maxSpinZoom - slowSpinZoom);
+                distancePerSecond *= zoomDif;
+            }
+            const center = map.getCenter();
+            center.lng -= distancePerSecond;
+            // Smoothly animate the map over one second.
+            // When this animation is complete, it calls a 'moveend' event.
+            map.easeTo({ center, duration: 1000, easing: (n) => n });
+        }
+    }
+
+
+    // Pause spinning on interaction
+    map.on('mousedown', () => {
+        userInteracting = true;
+    });
+
+    // Restart spinning the globe when interaction is complete
+    map.on('mouseup', () => {
+        userInteracting = false;
+        spinGlobe();
+    });
+
+    map.on('dragend', () => {
+        userInteracting = false;
+        spinGlobe();
+    });
+    map.on('pitchend', () => {
+        userInteracting = false;
+        spinGlobe();
+    });
+    map.on('rotateend', () => {
+        userInteracting = false;
+        spinGlobe();
+    });
+    map.on('moveend', () => {
+        spinGlobe();
+    });
+
+    spinGlobe();
+  });
+</script>

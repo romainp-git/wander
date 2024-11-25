@@ -47,11 +47,8 @@ gem "bootsnap", require: false
 gem 'cloudinary'
 gem 'tailwindcss-rails'
 gem "autoprefixer-rails"
-gem "font-awesome-sass", "~> 6.1"
-gem 'mapbox-gl-rails'
 gem 'geocoder'
 gem "simple_form", github: "heartcombo/simple_form"
-gem "sassc-rails"
 gem "devise"
 gem 'ruby-openai'
 group :development, :test do

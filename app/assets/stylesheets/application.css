@@ -13,3 +13,5 @@
  *= require_tree .
  *= require_self
  */
+
+ @import url("https://api.mapbox.com/mapbox-gl-js/v3.8.0/mapbox-gl.css");
