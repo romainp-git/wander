@@ -1,6 +1,7 @@
 source "https://rubygems.org"
 
 ruby "3.3.5"
+gem 'faker', '~> 3.2'
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 7.1.5"
@@ -45,12 +46,15 @@ gem "bootsnap", require: false
 # gem "image_processing", "~> 1.2"
 
 gem 'cloudinary'
+gem 'activestorage-cloudinary-service'
 gem 'tailwindcss-rails'
 gem "autoprefixer-rails"
 gem 'geocoder'
 gem "simple_form", github: "heartcombo/simple_form"
 gem "devise"
 gem 'ruby-openai'
+gem 'sass-rails', '~> 6.0'
+
 group :development, :test do
   gem "dotenv-rails"
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem

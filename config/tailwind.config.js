@@ -5,7 +5,8 @@ module.exports = {
     './public/*.html',
     './app/helpers/**/*.rb',
     './app/javascript/**/*.js',
-    './app/views/**/*.{erb,haml,html,slim}'
+    './app/views/**/*.{erb,haml,html,slim}',
+    './app/assets/stylesheets/**/*.scss'
   ],
   theme: {
     extend: {
@@ -13,7 +14,7 @@ module.exports = {
         sans: ['Inter var', ...defaultTheme.fontFamily.sans],
       },
       spacing: {
-        '30': '115px',
+        '26': '98px',
       },
     },
   },

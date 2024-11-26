@@ -8,10 +8,11 @@
     <%= stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload" %>
 
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <%= javascript_importmap_tags %>
   </head>
 
-  <body class="bg-black">
+  <body class="bg-black h-full">
     <%= yield %>
   </body>
 </html>
