@@ -1,7 +1,9 @@
 class DestinationsController < ApplicationController
-  require 'net/http'
-  require 'uri'
-  require 'json'
+  geocoded_by :address
+  after_validation :geocode, if: :will_save_change_to_address?
+  # require 'net/http'
+  # require 'uri'
+  # require 'json'
 
   before_action :set_destination, only: [:show]
 
