@@ -1,0 +1,15 @@
+<h1 class="text-lime-300">All Destinations</h1>
+
+<% @destinations.each do |destination| %>
+  <div id="<%= destination.id %>" class="text-lime-300">
+    <hr>
+    <%= link_to destination.address, destination_path(destination) %>
+    <p> <%= destination.address %> </p>
+    <p> <%= destination.currency %> </p>
+    <p> <%= destination.papers %> </p>
+    <p> <%= destination.food %> </p>
+    <p> <%= destination.power %> </p>
+  </div>
+<% end %>
+
+<%= link_to "Add a destination", new_destination_path %>
