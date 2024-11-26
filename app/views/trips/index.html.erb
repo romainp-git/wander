@@ -1,4 +1,154 @@
-<div>
-  <h1 class="font-bold text-4xl">Trips#index</h1>
-  <p>Find me in app/views/trips/index.html.erb</p>
+<div class="min-h-screen p-4">
+  <!-- Navigation Header -->
+  <div class="flex pb-2 border-b">
+    <button class="text-gray-700 hover:text-gray-900">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+      </svg>
+    </button>
+    <div class="flex space-x-4 ">
+    <button class="day-tab text-gray-600 font-medium border-b-2 border-gray-800 ml-5" data-day="1">Day 1</button>
+    <button class="day-tab text-gray-400" data-day="2">Day 2</button>
+    <button class="day-tab text-gray-400" data-day="3">Day 3</button>
+  </div>
+  </div>
+
+  <!-- Tabs -->
+
+
+  <!-- Timeline -->
+  <div class="relative flex-1 flex flex-col gap-2 pt-4">
+    <!-- Day 1 Activities -->
+    <div class="day-content" data-day="1">
+      <div class="absolute top-20 bottom-0 ml-11 w-1 bg-white"></div>
+      <div class="pl-10 space-y-8">
+        <div class="flex items-center space-x-2">
+          <div class="relative z-10 flex-shrink-0">
+            <div class="w-3 h-3 bg-white rounded-full"></div>
+          </div>
+          <div>
+            <p class="text-sm text-gray-400 my-2">10:00 - 10:30 AM</p>
+            <div class="p-4 bg-white rounded-lg shadow">
+              <h3 class="font-bold text-gray-800">Chute de Montmorency</h3>
+              <p class="text-gray-600">Magnifique cascade qui est la plus haute au monde</p>
+            </div>
+          </div>
+        </div>
+      </div>
+       <div class="absolute top-20 bottom-0 ml-11 w-1 bg-white"></div>
+      <div class="pl-10 space-y-8">
+        <div class="flex items-center space-x-2">
+          <div class="relative z-10 flex-shrink-0">
+            <div class="w-3 h-3 bg-white rounded-full"></div>
+          </div>
+          <div>
+            <p class="text-sm text-gray-400 my-2">10:00 - 10:30 AM</p>
+            <div class="p-4 bg-white rounded-lg shadow">
+              <h3 class="font-bold text-gray-800">Chute de Montmorency</h3>
+              <p class="text-gray-600">Magnifique cascade qui est la plus haute au monde</p>
+            </div>
+          </div>
+        </div>
+      </div>
+       <div class="absolute top-20 bottom-0 ml-11 w-1 bg-white"></div>
+      <div class="pl-10 space-y-8">
+        <div class="flex items-center space-x-2">
+          <div class="relative z-10 flex-shrink-0">
+            <div class="w-3 h-3 bg-white rounded-full"></div>
+          </div>
+          <div>
+            <p class="text-sm text-gray-400 my-2">10:00 - 10:30 AM</p>
+            <div class="p-4 bg-white rounded-lg shadow">
+              <h3 class="font-bold text-gray-800">Chute de Montmorency</h3>
+              <p class="text-gray-600">Magnifique cascade qui est la plus haute au monde</p>
+            </div>
+          </div>
+        </div>
+      </div>
+       <div class="absolute top-20 bottom-0 ml-11 w-1 bg-white"></div>
+      <div class="pl-10 space-y-8">
+        <div class="flex items-center space-x-2">
+          <div class="relative z-10 flex-shrink-0">
+            <div class="w-3 h-3 bg-white rounded-full"></div>
+          </div>
+          <div>
+            <p class="text-sm text-gray-400 my-2">10:00 - 10:30 AM</p>
+            <div class="p-4 bg-white rounded-lg shadow">
+              <h3 class="font-bold text-gray-800">Chute de Montmorency</h3>
+              <p class="text-gray-600">Magnifique cascade qui est la plus haute au monde</p>
+            </div>
+          </div>
+        </div>
+      </div>
+       <div class="absolute top-20 bottom-0 ml-11 w-1 bg-white"></div>
+      <div class="pl-10 space-y-8">
+        <div class="flex items-center space-x-2">
+          <div class="relative z-10 flex-shrink-0">
+            <div class="w-3 h-3 bg-white rounded-full"></div>
+          </div>
+          <div>
+            <p class="text-sm text-gray-400 my-2">10:00 - 10:30 AM</p>
+            <div class="p-4 bg-white rounded-lg shadow">
+              <h3 class="font-bold text-gray-800">Chute de Montmorency</h3>
+              <p class="text-gray-600">Magnifique cascade qui est la plus haute au monde</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Day 2 Activities -->
+    <div class="day-content hidden" data-day="2">
+      <div class="absolute top-20 bottom-0 ml-11 w-1 bg-white"></div>
+      <div class="pl-10 space-y-8">
+        <div class="flex items-center space-x-2">
+          <div class="relative z-10 flex-shrink-0">
+            <div class="w-3 h-3 bg-white rounded-full"></div>
+          </div>
+          <div>
+            <p class="text-sm text-gray-400 my-2">12:00 - 1:00 PM</p>
+            <div class="p-4 bg-white rounded-lg shadow">
+              <h3 class="font-bold text-gray-800">Place Royale</h3>
+              <p class="text-gray-600">Un lieu historique incontournable à Québec</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="absolute top-20 bottom-0 ml-11 w-1 bg-white"></div>
+      <div class="pl-10 space-y-8">
+        <div class="flex items-center space-x-2">
+          <div class="relative z-10 flex-shrink-0">
+            <div class="w-3 h-3 bg-white rounded-full"></div>
+          </div>
+          <div>
+            <p class="text-sm text-gray-400 my-2">12:00 - 1:00 PM</p>
+            <div class="p-4 bg-white rounded-lg shadow">
+              <h3 class="font-bold text-gray-800">Place Royale</h3>
+              <p class="text-gray-600">Un lieu historique incontournable à Québec</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Day 3 Activities -->
+    <div class="day-content hidden" data-day="3">
+      <div class="absolute top-20 bottom-0 ml-11 w-1 bg-white"></div>
+      <div class="pl-10 space-y-8">
+        <div class="flex items-center space-x-2">
+          <div class="relative z-10 flex-shrink-0">
+            <div class="w-3 h-3 bg-white rounded-full"></div>
+          </div>
+          <div>
+            <p class="text-sm text-gray-400 my-2">2:00 - 3:00 PM</p>
+            <div class="p-4 bg-white rounded-lg shadow">
+              <h3 class="font-bold text-gray-800">Quartier Petit Champlain</h3>
+              <p class="text-gray-600">Charmant quartier avec des boutiques et cafés</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
