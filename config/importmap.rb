@@ -6,3 +6,4 @@ pin "@hotwired/stimulus", to: "stimulus.min.js"
 pin "@hotwired/stimulus-loading", to: "stimulus-loading.js"
 pin "mapbox-gl", to: "https://api.mapbox.com/mapbox-gl-js/v3.8.0/mapbox-gl.js"
 pin_all_from "app/javascript/controllers", under: "controllers"
+pin "flatpickr" # @4.6.13

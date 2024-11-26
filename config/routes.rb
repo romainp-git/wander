@@ -13,6 +13,10 @@ Rails.application.routes.draw do
   resources :destinations, only:[:index, :new, :create, :show]
 
 
+  get "form", to: "pages#form"
+
+  resource :trips
+
   # Defines the root path route ("/")
   # root "posts#index"
 end
