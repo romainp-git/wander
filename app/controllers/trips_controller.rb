@@ -11,6 +11,7 @@ class TripsController < ApplicationController
   end
 
   def new
+    @trip = Trip.new()
   end
 
   def edit
