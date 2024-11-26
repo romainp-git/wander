@@ -1,19 +1,48 @@
-<div class="relative flex items-center justify-center h-screen overflow-hidden">
-  <!-- Dégradé flou et animé en arrière-plan -->
-  <div class="absolute inset-0 animate-gradient bg-gradient-to-r from-slate-500 via-slate-600 to-slate-800 opacity-70"></div>
+<div id="screen-container" class="relative flex items-center justify-center h-screen overflow-hidden">
+  <div class="absolute inset-0 animate-gradient mesh-gradient-dark opacity-70"></div>
 
-  <!-- Bouton avec dégradé -->
-  <div class="absolute bottom-10 flex flex-col items-center">
-    <p class="text-white text-xl font-light">Can you show me vacation options for your future trip</p>
-    <div class="w-16 h-16 animate-gradient bg-gradient-to-br from-blue-500 via-blue-400 to-blue-600 rounded-full shadow-lg"></div>
+    <div id="calendar-part" class="absolute opacity-0 transition-opacity inset-0 flex flex-col p-4">
+
+      <div class="flex justify-around mt-56" id="navbar">
+        <button class="text-sm font-medium text-white bg-white bg-opacity-25 px-4 py-2">Select dates</button>
+        <button class="text-sm font-medium text-white border px-4 py-2">Who</button>
+        <button class="text-sm font-medium text-white border px-4 py-2">Where</button>
+      </div>
+      <p class="mt-8 text-lg font-medium text-white">Step 1:</p>
+      <p class="text-xl font-semibold text-white">Choose the dates of the trip:</p>
+
+    </div>
+
+
+  <div id="title-part" class="absolute flex flex-col items-center w-full transition-all duration-1000 top-80">
+    <p id="typewriter-text" class="relative w-full px-3 text-white bottom-10 text-2xl font-semibold"></p>
+    <div id="pulse-button" class="transition-opacity animate-pulse-slow">
+      <div class="w-16 h-16 halo animate-gradient mesh-gradient-orange rounded-full"></div>
+    </div>
   </div>
-
-  <!-- Barre en bas -->
-  <div class="absolute bottom-4 w-24 h-1 bg-gray-600 rounded-full"></div>
 </div>
 
 
+
 <style>
+.mesh-gradient-dark {
+  background-color: rgb(241, 245, 249);
+  background-image: radial-gradient(at 23% 87%, rgb(15, 23, 42) 0, transparent 73%),
+                    radial-gradient(at 60% 62%, rgb(30, 41, 59) 0, transparent 96%),
+                    radial-gradient(at 79% 10%, rgb(30, 41, 59) 0, transparent 78%),
+                    radial-gradient(at 24% 8%, rgb(12, 74, 110) 0, transparent 100%),
+                    radial-gradient(at 21% 23%, rgb(15, 23, 42) 0, transparent 42%),
+                    radial-gradient(at 32% 41%, rgb(15, 23, 42) 0, transparent 46%);
+}
+
+.mesh-gradient-orange {
+  background-color: rgb(244, 63, 94);
+  background-image: radial-gradient(at 33% 93%, rgb(254, 243, 199) 0, transparent 58%),
+                    radial-gradient(at 100% 87%, rgb(226, 232, 240) 0, transparent 60%),
+                    radial-gradient(at 62% 71%, rgb(154, 52, 18) 0, transparent 26%),
+                    radial-gradient(at 39% 22%, rgb(234, 88, 12) 0, transparent 100%);
+}
+
 @keyframes gradient {
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
@@ -24,4 +53,56 @@
   background-size: 200% 200%;
   animation: gradient 10s ease infinite;
 }
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+}
+
+.animate-pulse-slow {
+  animation: pulse 5s ease-in-out infinite;
+}
+
+.halo{
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.3), 0 0 40px rgba(255, 255, 255, 0.2);
+}
+
+#title-part{
+  bottom: 40px;
+}
 </style>
+
+<script>
+  // Texte et paramètres pour le typewriter
+  const textElement = document.getElementById("typewriter-text");
+  const text = "Hi, I'm Wander, your personal assistant. I need to ask you some questions for your future trip.";
+
+  const titlePart = document.getElementById("title-part");
+  const calendarPart = document.getElementById("calendar-part");
+  const pulseButton = document.getElementById("pulse-button");
+
+  let index = 0;
+
+  // Fonction pour le typewriter
+  function typeWriter() {
+    if (index < text.length) {
+      textElement.innerHTML += text.charAt(index);
+      index++;
+      setTimeout(typeWriter, 30);
+    } else {
+      // Transition vers l'écran suivant
+      setTimeout(() => {
+        calendarPart.classList.replace("opacity-0", "opacity-100");
+        titlePart.style.top = "0";
+        pulseButton.classList.add("opacity-0");
+      }, 1000);
+    }
+  }
+
+  // Démarrer le typewriter
+  setTimeout(typeWriter, 500);
+</script>
