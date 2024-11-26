@@ -11,11 +11,11 @@ require "faker"
 require "open-uri"
 
 # Clear existing data
-User.destroy_all
-Activity.destroy_all
-Destination.destroy_all
 TripActivity.destroy_all
 Trip.destroy_all
+Activity.destroy_all
+Destination.destroy_all
+User.destroy_all
 
 # Chemin de la photo par défaut
 default_photo_path = Rails.root.join('app', 'assets', 'images', 'no_picture.jpg')
@@ -96,6 +96,19 @@ users = [
   }
 ]
 
+addresses = [
+  "129 Bayswater Rd, Bayswater, London W2 4RJ",
+  "200 Westminster Bridge Rd, Bishop's, London SE1 7UT",
+  "Royal Victoria Dock, One Eastern Gateway, London E16 1FR",
+  "51 Belgrave Rd, Lillington and Longmoore Gardens, London SW1V 2BB",
+  "8-18 Inverness Terrace, Bayswater, London W2 3HU",
+  "1 Shortlands Hammersmith International Centre, Hammersmith, London W6 8DR",
+  "Aldwych, West End, London WC2B 4DD",
+  "25 Gloucester St, Pimlico, London SW1V 2DB",
+  "19-21 Penywern Rd, Earl's Court, London SW5 9TT",
+  "30 John Islip St, Westminster, London SW1P 4DD"
+]
+
 users.each_with_index do |user, index|
   begin
     current_user = User.create!(
@@ -148,7 +161,7 @@ activities = []
     name: Faker::Lorem.words(number: 3).join(" "),
     description: Faker::Lorem.paragraph(sentence_count: 3),
     reviews: rand(1.0..5.0).round(1),
-    address: Faker::Address.full_address,
+    address: addresses.sample,
     website_url: Faker::Internet.url,
     wiki: Faker::Internet.url(host: "wikipedia.org")
   )
