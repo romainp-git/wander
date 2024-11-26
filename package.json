@@ -1,0 +1,8 @@
+{
+  "devDependencies": {
+    "daisyui": "^4.12.14"
+  },
+  "dependencies": {
+    "mapbox-gl": "^3.8.0"
+  }
+}

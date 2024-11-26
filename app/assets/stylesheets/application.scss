@@ -14,9 +14,5 @@
  *= require_self
  */
 
- @import url("https://api.mapbox.com/mapbox-gl-js/v3.8.0/mapbox-gl.css");
  @import "components/index";
-
- h1{
-  margin:12px;
- }
+ @import "pages/index";
