@@ -10,7 +10,12 @@ Rails.application.routes.draw do
     resources :trip_activities, only:[:index, :show, :new, :edit]
   end
   resources :activities, only:[:show, :index, :edit, :destroy ]
+  resources :destinations, only:[:index, :new, :create, :show]
 
+
+  get "form", to: "pages#form"
+
+  resource :trips
 
   # Defines the root path route ("/")
   # root "posts#index"
