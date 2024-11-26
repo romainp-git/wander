@@ -28,13 +28,13 @@
   <!-- Timeline et contenu -->
   <div class="relative flex-1 flex flex-col gap-2 p-6">
     <!-- Ligne verticale de la timeline -->
-    <div class="absolute top-30 bottom-0 ml-1.5 w-px bg-white"></div>
+    <div class="absolute top-26 bottom-0 ml-1.5 w-px bg-white"></div>
 
     <!-- Voyage 1 -->
     <div class="flex items-center space-x-2">
       <!-- Point de la timeline -->
       <div class="relative z-10 flex-shrink-0">
-        <div class="w-3 h-3 bg-white rounded-full"></div>
+        <div class="w-3 h-3 bg-black border-white border-2 rounded-full"></div>
       </div>
 
       <!-- Contenu de la carte -->
@@ -110,12 +110,12 @@
       container: 'map',
       center: [2.3522, 48.8566],
       style: 'mapbox://styles/mapbox/satellite-v9',
-      projection: 'globe', // Display the map as a globe, since satellite-v9 defaults to Mercator
+      projection: 'globe',
       zoom: 1.5,
     });
 
     map.on('style.load', () => {
-        map.setFog({}); // Set the default atmosphere style
+        map.setFog({});
     });
 
     const secondsPerRevolution = 120;
@@ -145,13 +145,9 @@
         }
     }
 
-
-    // Pause spinning on interaction
     map.on('mousedown', () => {
         userInteracting = true;
     });
-
-    // Restart spinning the globe when interaction is complete
     map.on('mouseup', () => {
         userInteracting = false;
         spinGlobe();

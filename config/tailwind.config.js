@@ -13,7 +13,7 @@ module.exports = {
         sans: ['Inter var', ...defaultTheme.fontFamily.sans],
       },
       spacing: {
-        '30': '115px',
+        '26': '98px',
       },
     },
   },

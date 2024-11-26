@@ -1,0 +1,27 @@
+<div class="relative flex items-center justify-center h-screen overflow-hidden">
+  <!-- Dégradé flou et animé en arrière-plan -->
+  <div class="absolute inset-0 animate-gradient bg-gradient-to-r from-slate-500 via-slate-600 to-slate-800 opacity-70"></div>
+
+  <!-- Bouton avec dégradé -->
+  <div class="absolute bottom-10 flex flex-col items-center">
+    <p class="text-white text-xl font-light">Can you show me vacation options for your future trip</p>
+    <div class="w-16 h-16 animate-gradient bg-gradient-to-br from-blue-500 via-blue-400 to-blue-600 rounded-full shadow-lg"></div>
+  </div>
+
+  <!-- Barre en bas -->
+  <div class="absolute bottom-4 w-24 h-1 bg-gray-600 rounded-full"></div>
+</div>
+
+
+<style>
+@keyframes gradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient 10s ease infinite;
+}
+</style>
