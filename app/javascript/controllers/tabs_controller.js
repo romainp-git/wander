@@ -4,6 +4,8 @@ export default class extends Controller {
   static targets = ["tab", "content", "day"];
 
   connect() {
+    console.log("tabs controller connected");
+
     // Active automatiquement le premier jour au chargement
     this.activateDay(0);
   }
@@ -21,6 +23,10 @@ export default class extends Controller {
       tab.classList.toggle("text-white", i === index);
       tab.classList.toggle("border-white", i === index);
       tab.classList.toggle("text-gray-400", i !== index);
+
+      if (i === index) {
+        this.scrollIntoView(tab); // Scroller vers le tab actif
+      }
     });
 
     // Afficher uniquement le contenu de l'onglet/jour actif
@@ -36,6 +42,18 @@ export default class extends Controller {
       day.classList.toggle("px-2", i === index);
       day.classList.toggle("py-1", i === index);
       day.classList.toggle("text-gray-400", i !== index);
+
+      if (i === index) {
+        this.scrollIntoView(day); // Scroller vers le jour actif
+      }
+    });
+  }
+
+  scrollIntoView(element) {
+    element.scrollIntoView({
+      behavior: "smooth",
+      block: "nearest",
+      inline: "center", // Garantit que l'élément actif est centré horizontalement
     });
   }
 }
