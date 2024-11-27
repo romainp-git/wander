@@ -1,13 +1,38 @@
-<div id="screen-container" class="relative h-screen overflow-hidden" data-controller="add-trip-animation">
-  <div class="absolute inset-0 animate-gradient mesh-gradient-dark opacity-70"></div>
-
+<div id="screen-container" class="relative h-screen overflow-hidden pb-safe-bottom flex flex-col" data-controller="add-trip-animation">
   <div id="pulse-button" data-add-trip-animation-target="pulseButton" class="absolute transition-opacity duration-1000 animate-pulse-slow flex justify-center items-center bottom-10 w-full">
     <div class="w-16 h-16 halo animate-gradient mesh-gradient-orange rounded-full"></div>
   </div>
 
   <div id="title-part" data-add-trip-animation-target="titlePart" class="relative min-h-28 flex items-start w-full">
-    <p id="typewriter-text" data-add-trip-animation-target="text" class="px-3 text-white text-2xl font-semibold"></p>
+    <p id="typewriter-text" data-add-trip-animation-target="text" class="px-3 text-white text-lg font-semibold"></p>
   </div>
 
-  <%= render 'form_dates' %>
+  <div id="form-part" class="form relative opacity-0 transition-opacity inset-0 flex flex-col flex-grow" data-add-trip-animation-target="formPart">
+    <%= render 'tabs_form' %>
+
+    <div id="stepper-container" class="stepper" data-controller="stepper">
+      <!-- Étape 1 -->
+      <div class="step" data-step="1">
+        <%= render 'form_destination' %>
+      </div>
+
+      <!-- Étape 2 -->
+      <div class="step hidden" data-step="2">
+        <%= render 'form_dates' %>
+      </div>
+
+      <div class="step hidden" data-step="3">
+        <%= render 'form_partners' %>
+      </div>
+
+      <!-- Résumé -->
+      <div id="summary" class="hidden">
+        <h2>Summary</h2>
+        <p id="summary-destination"></p>
+        <p id="summary-dates"></p>
+        <button id="restart">Restart</button>
+      </div>
+    </div>
+  </div>
+
 </div>

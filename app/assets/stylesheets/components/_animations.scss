@@ -21,3 +21,19 @@
     transform: scale(1.2);
   }
 }
+
+
+.animate-fade-in-slow {
+  animation: fade-in 2s ease-in-out;
+}
+
+@keyframes fade-in {
+  0%, 100% {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}

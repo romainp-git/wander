@@ -1,34 +1,29 @@
-<div id="calendar-part" data-controller="datepicker" data-add-trip-animation-target="calendarPart" class="relative opacity-0 transition-opacity inset-0 flex flex-col p-4">
-    <div class="flex gap-3 mb-4">
-      <button class="text-sm font-medium text-white bg-white bg-opacity-25 px-4 py-2">Select dates</button>
-      <button class="text-sm font-medium text-white border px-4 py-2">Who</button>
-      <button class="text-sm font-medium text-white border px-4 py-2">Where</button>
-    </div>
-
-    <div class="flex items-start gap-2 mb-2">
-      <p class="text-sm font-medium text-white flex-1 mt-1">Step 1:</p>
-      <div class="flex flex-col">
-        <p class="text-xl font-extralight text-white mb-4">Choose the dates of the trip:</p>
-        <div class="flex">
-          <div class="flex flex-col flex-grow">
-            <p class="font-light text-white">Departure</p>
-            <p class="text-sm text-white" data-datepicker-target="startDate">/</p>
-          </div>
-          <div class="flex flex-col flex-grow">
-            <p class="font-light text-white">Arrival</p>
-            <p class="text-sm text-white" data-datepicker-target="endDate">/</p>
-          </div>
+<div id="calendar-part" data-controller="datepicker" class="p-4">
+  <div class="flex items-start gap-5 mb-2">
+    <p class="text-sm font-medium text-white mt-1 flex-0">Step 2 :</p>
+    <div class="flex flex-col flex-1">
+      <p class="text-xl font-extralight text-white mb-4 ">Choisissez vos dates :</p>
+      <div class="flex">
+        <div class="flex flex-col flex-1">
+          <p class="font-light text-white">Départ</p>
+          <p class="text-sm text-white" data-datepicker-target="startDate">/</p>
+        </div>
+        <div class="flex flex-col flex-1">
+          <p class="font-light text-white">Retour</p>
+          <p class="text-sm text-white" data-datepicker-target="endDate">/</p>
         </div>
       </div>
     </div>
-
-
-    <%= simple_form_for @trip, url: trips_path do |f| %>
-      <div id="calendar" data-datepicker-target="calendar" class="w-full"></div>
-      <%= f.hidden_field :start_date, id: "start-date" %>
-      <%= f.hidden_field :end_date, id: "end-date" %>
-      <div class="flex justify-center mt-6">
-        <%= f.button :submit, "Save Dates", class: "bg-opacity-50 text-sm font-medium text-white border px-4 py-2 hover:bg-white" %>
-      </div>
-    <% end %>
   </div>
+
+  <%= simple_form_for @trip do |f| %>
+    <div id="calendar" data-datepicker-target="calendar" class="w-full"></div>
+    <%= f.hidden_field :start_date, id: "start-date" %>
+    <%= f.hidden_field :end_date, id: "end-date" %>
+  <% end %>
+</div>
+
+<div class="absolute bottom-10 w-full flex justify-center mt-6 gap-5">
+  <button class="prev-step bg-opacity-50 text-sm font-medium text-white border px-4 py-2 hover:bg-white" data-prev-step="1">Retour</button>
+  <button class="next-step bg-opacity-50 text-sm font-medium text-white border px-4 py-2 hover:bg-white" data-next-step="3">Suivant</button>
+</div>
