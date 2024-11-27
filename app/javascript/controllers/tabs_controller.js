@@ -4,6 +4,8 @@ export default class extends Controller {
   static targets = ["tab", "content", "day"];
 
   connect() {
+    console.log("tabs controller connected");
+
     // Active automatiquement le premier jour au chargement
     this.activateDay(0);
   }
