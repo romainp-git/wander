@@ -32,12 +32,11 @@
           class=" bg-gray-800 rounded-lg flex items-center justify-center cursor-pointer"
           data-action="click->gallery#showImage"
         >
-          <%= cl_image_tag photo.key, class: "w-full h-full object-cover rounded-lg", data: { image_url: cl_image_path(photo.key) } %>
+          <%= cl_image_tag photo.key, class: "w-full h-full object-cover rounded-lg", id: photo.id, data: { image_url: cl_image_path(photo.key) } %>
         </div>
       <% end %>
     </div>
   </div>
-
   <!-- Section détails -->
   <div class="flex flex-col flex-1 bg-white rounded-t-2xl shadow-lg -mt-10 z-10">
     <!-- Titre et adresse -->
@@ -94,24 +93,50 @@
     </div>
 
     <!-- Navigation tabs -->
-    <div class="mt-6">
-      <div
-        class="tabs tabs-boxed flex justify-between px-6"
-      >
-        <a class="tab tab-active">Description</a>
-        <a class="tab">Horaires</a>
-        <a class="tab">Wiki</a>
-        <a class="tab">Vidéo</a>
-      </div>
-    </div>
+    <div class="mt-6" data-controller="tabs">
+  <!-- Navigation des onglets -->
+  <div role="tablist" class="tabs tabs-bordered px-6">
+    <a class="tab tab-active" data-action="click->tabs#changeTab" data-tabs-target="tab" data-tab-name="description">Description</a>
+    <a class="tab" data-action="click->tabs#changeTab" data-tabs-target="tab" data-tab-name="horaires">Horaires</a>
+    <a class="tab" data-action="click->tabs#changeTab" data-tabs-target="tab" data-tab-name="wiki">Wiki</a>
+    <a class="tab" data-action="click->tabs#changeTab" data-tabs-target="tab" data-tab-name="video">Vidéo</a>
+  </div>
 
-    <!-- Contenu -->
-    <div class="px-6 mt-6">
+  <!-- Contenu des onglets -->
+  <div class="px-6 mt-6">
+    <!-- Contenu de l'onglet Description -->
+    <div data-tabs-target="content" data-tab-name="description">
       <h3 class="text-lg font-semibold text-gray-800">Description</h3>
       <p class="text-sm text-gray-600 mt-2">
         <%= @activity.description %>
       </p>
     </div>
+
+    <!-- Contenu de l'onglet Horaires -->
+    <div data-tabs-target="content" data-tab-name="horaires" class="hidden">
+      <h3 class="text-lg font-semibold text-gray-800">Horaires</h3>
+      <p class="text-sm text-gray-600 mt-2">
+        horaire
+      </p>
+    </div>
+
+    <!-- Contenu de l'onglet Wiki -->
+    <div data-tabs-target="content" data-tab-name="wiki" class="hidden">
+      <h3 class="text-lg font-semibold text-gray-800">Wiki</h3>
+      <p class="text-sm text-gray-600 mt-2">
+        wiki
+      </p>
+    </div>
+
+    <!-- Contenu de l'onglet Vidéo -->
+    <div data-tabs-target="content" data-tab-name="video" class="hidden">
+      <h3 class="text-lg font-semibold text-gray-800">Vidéo</h3>
+        <p class="text-sm text-gray-600 mt-2">
+          <em>Aucune vidéo disponible.</em>
+        </p>
+    </div>
+  </div>
+</div>
 
     <!-- Bouton itinéraire -->
     <div class="px-6 mt-6">

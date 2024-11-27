@@ -7,7 +7,6 @@ export default class extends Controller {
     const imageUrl = event.currentTarget.querySelector("img").dataset.imageUrl;
 
     if (imageUrl) {
-      // Change l'image principale
       this.mainImageTarget.src = imageUrl;
 
       // Ouvre la modal si souhaité (facultatif)

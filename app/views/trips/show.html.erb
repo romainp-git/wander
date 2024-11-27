@@ -74,7 +74,101 @@
 </div>
 </div>
   <!-- Vue agenda -->
-  <div data-toggle-target="agendaView" class="hidden h-full flex items-center justify-center">
-    <p class="text-xl font-semibold text-gray-700">Vue Agenda à venir</p>
+  <div data-toggle-target="agendaView" class="hidden h-full flex ">
+<div class="w-full bg-black text-white" data-controller="tabs">
+  <!-- Calendrier -->
+  <div class="flex-col items-center justify-between px-4 py-3 bg-gray-900">
+    <!-- Bouton retour -->
+    <button class="btn btn-circle btn-outline border-gray-500 text-gray-400 mr-4">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+      </svg>
+    </button>
+
+    <!-- Jours dynamiques -->
+    <div class="flex items-center overflow-x-scroll no-scrollbar space-x-20 mt-4" data-tabs-target="days">
+      <% (@trip.start_date..@trip.end_date).each_with_index do |date, index| %>
+        <div class="flex flex-col items-center cursor-pointer text-gray-400 <%= 'text-black bg-white rounded-lg px-2 py-1' if index == 0 %>"
+             data-action="click->tabs#changeTab"
+             data-tabs-day="<%= index %>"
+             data-tabs-target="day">
+          <span class="text-sm"><%= date.strftime('%a')[0].upcase %></span>
+          <span class="text-xs font-bold"><%= date.strftime('%d') %></span>
+        </div>
+      <% end %>
+    </div>
   </div>
+
+  <!-- Tabs pour les jours -->
+  <div role="tablist" class="tabs tabs-bordered bg-black text-white py-4 overflow-x-scroll ">
+    <% (@trip.start_date..@trip.end_date).each_with_index do |_, index| %>
+      <a class="tab <%= index == 0 ? 'tab-active text-white border-white w-36' : 'text-gray-400 w-36' %>"
+         data-action="click->tabs#changeTab"
+         data-tabs-day="<%= index %>"
+         data-tabs-target="tab">Day <%= index + 1 %></a>
+    <% end %>
+  </div>
+
+  <!-- Timeline Section -->
+    <div class="p-4 hidden overflow-hidden" data-tabs-target="content" data-tabs-day="0">
+      <ul class="relative">
+        <li class="flex items-center space-x-4 relative mb-5" >
+          <div class="text-gray-400 text-sm w-16  text-right">
+            <div>10:00</div>
+            <div>10:30</div>
+          </div>
+          <div class="relative flex flex-col items-center">
+            <div class="w-4 h-4 bg-white rounded-full z-10"></div>
+            <div class="absolute h-24 w-1 bg-white -top-20 left-1/2 transform -translate-x-1/2"></div>
+          </div>
+          <div class="bg-gray-800 text-white rounded-lg shadow-md p-4 w-full">
+            <h3 class="font-bold">Chute de Montmorency</h3>
+            <p class="text-sm">Magnifique cascade qui est la plus haute au monde.</p>
+          </div>
+        </li>
+        <li class="flex items-center space-x-4 relative mb-5" >
+          <div class="text-gray-400 text-sm w-16 text-right">
+            <div>10:00</div>
+            <div>10:30</div>
+          </div>
+          <div class="relative flex flex-col items-center">
+            <div class="w-4 h-4 bg-white rounded-full z-10"></div>
+            <div class="absolute h-24 w-1 bg-white -top-20 left-1/2 transform -translate-x-1/2"></div>
+          </div>
+          <div class="bg-gray-800 text-white rounded-lg shadow-md p-4 w-full">
+            <h3 class="font-bold">Chute de Montmorency</h3>
+            <p class="text-sm">Magnifique cascade qui est la plus haute au monde.</p>
+          </div>
+        </li>
+        <li class="flex items-center space-x-4 relative mb-5" >
+          <div class="text-gray-400 text-sm w-16  text-right">
+            <div>10:00</div>
+            <div>10:30</div>
+          </div>
+          <div class="relative flex flex-col items-center">
+            <div class="w-4 h-4 bg-white rounded-full z-10"></div>
+            <div class="absolute h-24 w-1 bg-white -top-20 left-1/2 transform -translate-x-1/2"></div>
+          </div>
+          <div class="bg-gray-800 text-white rounded-lg shadow-md p-4 w-full">
+            <h3 class="font-bold">Chute de Montmorency</h3>
+            <p class="text-sm">Magnifique cascade qui est la plus haute au monde.</p>
+          </div>
+        </li>
+        <li class="flex items-center space-x-4 relative mb-5" >
+          <div class="text-gray-400 text-sm w-16  text-right">
+            <div>10:00</div>
+            <div>10:30</div>
+          </div>
+          <div class="relative flex flex-col items-center">
+            <div class="w-4 h-4 bg-white rounded-full z-10"></div>
+            <div class="absolute h-24 w-1 bg-white -top-20 left-1/2 transform -translate-x-1/2"></div>
+          </div>
+          <div class="bg-gray-800 text-white rounded-lg shadow-md p-4 w-full">
+            <h3 class="font-bold">Chute de Montmorency</h3>
+            <p class="text-sm">Magnifique cascade qui est la plus haute au monde.</p>
+          </div>
+        </li>
+      </ul>
+    </div>
+</div>
 </div>
