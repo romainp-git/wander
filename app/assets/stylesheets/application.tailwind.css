@@ -4,3 +4,27 @@
 
 @import url("https://api.mapbox.com/mapbox-gl-js/v3.8.0/mapbox-gl.css");
 @import url("https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css");
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+
+body {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  touch-action: manipulation;
+  overscroll-behavior: none;
+}
+
+#splash-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#main-content {
+  transition: opacity 1s ease;
+}

@@ -4,6 +4,7 @@
   border-radius: 20px !important;
   border: none !important;
   width: 100% !important;
+  max-width: 90%;
   min-width: 350px !important;
   margin: 0 auto !important;
   color: white !important;
@@ -11,10 +12,21 @@
   padding: 10px !important;
 }
 
+.numInput .cur-year {
+  pointer-events: none;
+  user-select: none;
+}
+
 .flatpickr-current-month .flatpickr-monthDropdown-months,
 .flatpickr-current-month input.cur-year{
   font-size: 1.2rem !important;
   font-weight: bold !important;
+}
+
+.flatpickr-monthDropdown-months {
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
 }
 
 .flatpickr-months .flatpickr-next-month,

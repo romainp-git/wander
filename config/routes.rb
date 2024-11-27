@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  root to: "trips#index"
+  root to: "pages#home"
   devise_for :users
   
   resources :trips, only: %i[show index new edit] do
