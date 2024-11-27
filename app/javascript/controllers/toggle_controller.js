@@ -4,7 +4,6 @@ export default class extends Controller {
   static targets = ["mapView", "agendaView", "mapToggle", "agendaToggle"];
 
   connect() {
-    // Initialisation : active la vue "map" par défaut
     this.showMap();
   }
 

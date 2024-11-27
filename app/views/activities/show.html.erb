@@ -1,4 +1,148 @@
-<div>
-  <h1 class="font-bold text-4xl">Activities#show</h1>
-  <p>Find me in app/views/activities/show.html.erb</p>
+<div class="relative h-screen flex flex-col" data-controller="gallery">
+  <!-- Section image avec retour -->
+  <div class="relative w-full h-1/2 bg-gray-200">
+    <!-- Image principale -->
+    <div class="w-full h-full">
+      <% if @activity.photos.first&.key.present? %>
+        <%= cl_image_tag @activity.photos.first.key, class: "w-full h-full object-cover", data: { gallery_target: "mainImage" } %>
+      <% else %>
+        <%= image_tag 'no_picture.jpg', class: "w-full h-full object-cover", alt: "No picture available", data: { gallery_target: "mainImage" } %>
+      <% end %>
+    </div>
+
+    <!-- Bouton de retour -->
+    <button
+      class="absolute top-4 left-4 bg-white p-2 rounded-full shadow-md"
+      onclick="history.back()"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-6 w-6 text-gray-800"
+        fill="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
+      </svg>
+    </button>
+
+    <!-- Miniatures -->
+    <div class="absolute bottom-4 left-4 right-4 flex justify-between space-x-2">
+      <% @activity.photos.first(3).each do |photo| %>
+        <div
+          class=" bg-gray-800 rounded-lg flex items-center justify-center cursor-pointer"
+          data-action="click->gallery#showImage"
+        >
+          <%= cl_image_tag photo.key, class: "w-full h-full object-cover rounded-lg", id: photo.id, data: { image_url: cl_image_path(photo.key) } %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+  <!-- Section détails -->
+  <div class="flex flex-col flex-1 bg-white rounded-t-2xl shadow-lg -mt-10 z-10">
+    <!-- Titre et adresse -->
+    <div class="px-6 pt-6">
+      <h1 class="text-2xl font-bold text-gray-800"><%= @activity.name %></h1>
+      <p class="text-sm text-gray-500 flex items-center mt-1">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-4 w-4 mr-1 text-gray-500"
+          fill="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M12 2C8.134 2 5 5.134 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.866-3.134-7-7-7zm0 9.5c-1.381 0-2.5-1.119-2.5-2.5s1.119-2.5 2.5-2.5 2.5 1.119 2.5 2.5-1.119 2.5-2.5 2.5z"
+          />
+        </svg>
+        <%= @activity.address %>
+      </p>
+    </div>
+
+    <!-- Notes -->
+    <div class="px-6 mt-4 flex items-center space-x-2">
+      <!-- Etoiles -->
+      <div class="flex text-yellow-400">
+        <% @activity.reviews.to_i.times do %>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M12 .587l3.668 7.429L24 9.753l-6 5.837 1.417 8.26L12 18.897l-7.417 4.953L6 15.59l-6-5.837 8.332-1.737z"
+            />
+          </svg>
+        <% end %>
+        <!-- Demi-étoile -->
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5"
+          fill="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M12 .587l3.668 7.429L24 9.753l-6 5.837 1.417 8.26L12 18.897l-7.417 4.953L6 15.59l-6-5.837 8.332-1.737z"
+            clip-rule="evenodd"
+            fill-rule="evenodd"
+            opacity="0.5"
+          />
+        </svg>
+      </div>
+      <!-- Note -->
+      <p class="text-sm text-gray-500">(143 avis)</p>
+    </div>
+
+    <!-- Navigation tabs -->
+    <div class="mt-6" data-controller="tabs">
+  <!-- Navigation des onglets -->
+  <div role="tablist" class="tabs tabs-bordered px-6">
+    <a class="tab tab-active" data-action="click->tabs#changeTab" data-tabs-target="tab" data-tab-name="description">Description</a>
+    <a class="tab" data-action="click->tabs#changeTab" data-tabs-target="tab" data-tab-name="horaires">Horaires</a>
+    <a class="tab" data-action="click->tabs#changeTab" data-tabs-target="tab" data-tab-name="wiki">Wiki</a>
+    <a class="tab" data-action="click->tabs#changeTab" data-tabs-target="tab" data-tab-name="video">Vidéo</a>
+  </div>
+
+  <!-- Contenu des onglets -->
+  <div class="px-6 mt-6">
+    <!-- Contenu de l'onglet Description -->
+    <div data-tabs-target="content" data-tab-name="description">
+      <h3 class="text-lg font-semibold text-gray-800">Description</h3>
+      <p class="text-sm text-gray-600 mt-2">
+        <%= @activity.description %>
+      </p>
+    </div>
+
+    <!-- Contenu de l'onglet Horaires -->
+    <div data-tabs-target="content" data-tab-name="horaires" class="hidden">
+      <h3 class="text-lg font-semibold text-gray-800">Horaires</h3>
+      <p class="text-sm text-gray-600 mt-2">
+        horaire
+      </p>
+    </div>
+
+    <!-- Contenu de l'onglet Wiki -->
+    <div data-tabs-target="content" data-tab-name="wiki" class="hidden">
+      <h3 class="text-lg font-semibold text-gray-800">Wiki</h3>
+      <p class="text-sm text-gray-600 mt-2">
+        wiki
+      </p>
+    </div>
+
+    <!-- Contenu de l'onglet Vidéo -->
+    <div data-tabs-target="content" data-tab-name="video" class="hidden">
+      <h3 class="text-lg font-semibold text-gray-800">Vidéo</h3>
+        <p class="text-sm text-gray-600 mt-2">
+          <em>Aucune vidéo disponible.</em>
+        </p>
+    </div>
+  </div>
+</div>
+
+    <!-- Bouton itinéraire -->
+    <div class="px-6 mt-6">
+      <button class="w-full bg-black text-white py-3 rounded-lg shadow-md">
+        Itinéraire
+      </button>
+    </div>
+  </div>
 </div>
