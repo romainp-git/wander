@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
-  static targets = ["mapView", "agendaView", "mapToggle", "agendaToggle"];
+  static targets = ["mapView", "agendaView", "mapToggle", "agendaToggle", "slider"];
 
   connect() {
     this.showMap();
@@ -18,28 +18,31 @@ export default class extends Controller {
   }
 
   showMap() {
+    this.sliderTarget.style.transform = "translateX(0%)";
+
     this.mapViewTarget.classList.remove("hidden");
     this.mapViewTarget.classList.add("block");
 
     this.agendaViewTarget.classList.replace("flex", "hidden");
 
-    this.mapToggleTarget.classList.add("bg-gray-800", "text-white");
-    this.mapToggleTarget.classList.remove("bg-white", "text-gray-800");
-
-    this.agendaToggleTarget.classList.add("bg-white", "text-gray-800");
-    this.agendaToggleTarget.classList.remove("bg-gray-800", "text-white");
+    this.agendaToggleTarget.classList.remove("text-gray-800");
+    this.agendaToggleTarget.classList.add("text-white");
+    this.mapToggleTarget.classList.add("text-gray-800");
+    this.mapToggleTarget.classList.remove("text-white");
   }
 
+
   showAgenda() {
+    this.sliderTarget.style.transform = "translateX(100%)";
+
     this.agendaViewTarget.classList.replace("hidden", "flex");
 
     this.mapViewTarget.classList.add("hidden");
     this.mapViewTarget.classList.remove("block");
 
-    this.agendaToggleTarget.classList.add("bg-gray-800", "text-white");
-    this.agendaToggleTarget.classList.remove("bg-white", "text-gray-800");
-
-    this.mapToggleTarget.classList.add("bg-white", "text-gray-800");
-    this.mapToggleTarget.classList.remove("bg-gray-800", "text-white");
+    this.mapToggleTarget.classList.add("text-white");
+    this.mapToggleTarget.classList.remove("text-gray-800");
+    this.agendaToggleTarget.classList.remove("text-white");
+    this.agendaToggleTarget.classList.add("text-gray-800");
   }
 }
