@@ -1,28 +1,104 @@
-<h1 class="text-2xl font-bold text-white mb-6">Show Destination</h1>
-
-<div class="space-y-4">
-  <p class="text-lg text-gray-300">
-    <span class="font-medium text-lime-400">ID:</span> <%= @destination.id %>
-  </p>
-  <p class="text-lg text-gray-300">
-    <span class="font-medium text-lime-400">Address:</span> <%= @destination.address %>
-  </p>
-  <p class="text-lg text-gray-300">
-    <span class="font-medium text-lime-400">Latitude:</span> <%= @destination.latitude %>
-  </p>
-  <p class="text-lg text-gray-300">
-    <span class="font-medium text-lime-400">Longitude:</span> <%= @destination.longitude %>
-  </p>
-  <p class="text-lg text-gray-300">
-    <span class="font-medium text-lime-400">Currency:</span> <%= @destination.currency %>
-  </p>
-  <p class="text-lg text-gray-300">
-    <span class="font-medium text-lime-400">Papers:</span> <%= @destination.papers %>
-  </p>
-  <p class="text-lg text-gray-300">
-    <span class="font-medium text-lime-400">Food:</span> <%= @destination.food %>
-  </p>
-  <p class="text-lg text-gray-300">
-    <span class="font-medium text-lime-400">Power:</span> <%= @destination.power %>
-  </p>
+<!-- app/views/destinations/show.html.erb -->
+<div class="min-h-screen bg-black text-white p-8">
+  <div class="max-w-4xl mx-auto">
+    <h1 class="text-4xl font-bold mb-4"><%= @destination.address %></h1>
+    <div class="flex justify-between mb-4">
+      <p class="text-lg">Start Date: <%= @trip.start_date %></p>
+      <p class="text-lg">End Date: <%= @trip.end_date %></p>
+    </div>
+    <div class="flex mb-8">
+      <div id="map" class="w-1/2 h-64 overflow-hidden rounded-lg mr-4"></div>
+      <div class="w-1/2 p-4 bg-gray-800 rounded-lg shadow-lg">
+        <h2 class="text-2xl font-bold mb-2">Destination Info</h2>
+        <p><strong>Currency:</strong> <%= @destination.currency %></p>
+        <p><strong>Papers:</strong> <%= @destination.papers %></p>
+        <p><strong>Food:</strong> <%= @destination.food %></p>
+        <p><strong>Power:</strong> <%= @destination.power %></p>
+      </div>
+    </div>
+    <div class="space-y-4">
+      <% @trip_activities.each do |activity| %>
+        <div class="p-4 bg-gray-800 rounded-lg shadow-lg">
+          <div class="flex justify-between items-center">
+            <div>
+              <p class="text-lg font-bold"><%= activity.activity.name %></p>
+              <p class="text-sm"><%= activity.start_date.strftime('%B %d, %Y %H:%M') %> - <%= activity.end_date.strftime('%B %d, %Y %H:%M') %></p>
+            </div>
+            <p class="text-lg font-bold"><%= activity.activity.reviews %></p>
+          </div>
+          <p class="mt-2"><%= activity.activity.description %></p>
+          <div class="mt-2 flex space-x-4">
+            <%= link_to 'Official Site', activity.activity.website_url, class: "text-blue-500 hover:underline", target: "_blank" %>
+            <%= link_to 'Wikipedia', activity.activity.wiki, class: "text-blue-500 hover:underline", target: "_blank" %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
 </div>
+
+<style>
+  .mapboxgl-popup-content {
+    background-color: rgba(255, 255, 255, 0.8);
+    font-weight: bold;
+    color: black;
+    padding: 10px;
+    border-radius: 7px;
+  }
+    .mapboxgl-popup-close-button {
+    display: none;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Récupération de la clé depuis le backend Rails
+    const mapboxToken = "<%= ENV['MAPBOX_API_KEY'] %>";
+
+    // Initialisation de Mapbox
+    mapboxgl.accessToken = mapboxToken;
+
+    const mapElement = document.querySelector('#map');
+    const destinationLatitude = <%= @destination.latitude %>;
+    const destinationLongitude = <%= @destination.longitude %>;
+
+    const map = new mapboxgl.Map({
+      container: mapElement,
+      style: 'mapbox://styles/mapbox/streets-v11',
+      center: [destinationLongitude, destinationLatitude],
+      zoom: 12
+    });
+
+    // Ajouter un pin rouge pour la destination
+    const destinationPopup = new mapboxgl.Popup({ closeButton: false, closeOnClick: false }).setHTML('<%= @destination.address %>');
+    const destinationMarker = new mapboxgl.Marker({ color: 'red' }).setLngLat([destinationLongitude, destinationLatitude]).setPopup(destinationPopup).addTo(map);
+    destinationMarker.getElement().addEventListener('mouseenter', () => { destinationPopup.addTo(map); });
+    destinationMarker.getElement().addEventListener('mouseleave', () => { destinationPopup.remove(); });
+
+    // Ajouter des pins bleus pour les activités avec popups
+    <% @trip_activities.each do |activity| %>
+      activityName = "<%= activity.activity.name %>";
+      startDate = "<%= activity.start_date.strftime('%B %d, %Y %H:%M') %>";
+      endDate = "<%= activity.end_date.strftime('%B %d, %Y %H:%M') %>";
+      popupContent = `<strong>${activityName}</strong><br>${startDate} - ${endDate}`;
+
+      activityPopup = new mapboxgl.Popup({ closeButton: false, closeOnClick: false }).setHTML(popupContent);
+
+      activityMarker = new mapboxgl.Marker({ color: 'blue' }).setLngLat([<%= activity.activity.longitude %>, <%= activity.activity.latitude %>]).setPopup(activityPopup).addTo(map);
+
+      activityMarker.getElement().addEventListener('mouseenter', () => { activityPopup.addTo(map); });
+
+      activityMarker.getElement().addEventListener('mouseleave', () => { activityPopup.remove(); });
+    <% end %>
+
+        // Calculer les limites de la carte pour inclure tous les pins
+    const bounds = new mapboxgl.LngLatBounds();
+    bounds.extend([destinationLongitude, destinationLatitude]);
+    <% @trip_activities.each do |activity| %>
+      bounds.extend([<%= activity.activity.longitude %>, <%= activity.activity.latitude %>]);
+    <% end %>
+
+    // Ajuster le zoom pour que toutes les pins soient visibles
+    map.fitBounds(bounds, { padding: 50 });
+  });
+</script>

@@ -1,179 +1,178 @@
 class DestinationsController < ApplicationController
-  require 'net/http'
-  require 'uri'
-  require 'json'
-
   before_action :set_destination, only: [:show]
 
   def index
     @destinations = Destination.all
   end
-  
+
   def new
     @destination = Destination.new
-    # create(params)
   end
 
   def show
     @destination = Destination.find(params[:id])
+    @trip = Trip.find_by(destination_id: @destination.id)
+    # @trip_activities = TripActivity.find_by(trip_id: @trip.id)
+    @activities = @trip.activities
+    @trip_activities = @trip.trip_activities
   end
 
   def create
+    # Récupération des informations
     name = params[:destination][:address]
-    # possibilité de faire l'appel avec un champ texte libre ou avec des coordonnées
-    # response = fetch_destination_info_by_coord(latitude, longitude)
-    
-    if name
-      response = fetch_destination_info_by_name(name)
+    user_trip = User.find_by_username('PYM')
 
-
-      # Si l'appel API est réussi, créer la destination
-      if response
-        @destination = Destination.new(
-          address: name,
-          currency: response['currency'],
-          papers: response['papers'],
-          food: response['food'],
-          power: response['power'],
-          latitude: response['latitude'].to_f,
-          longitude: response['longitude'].to_f
-        )
-
-        if @destination.save
-          redirect_to destination_path(@destination)
-        else
-          flash[:alert] = "Failed to create destination"
-        end
-      else
-        flash[:alert] = "Failed to fetch destination information"
-        redirect_to destinations_path
-      end
-    else
-      flash[:alert] = "No destination"
+    # Vérification des dates
+    if params[:start_date].to_date >= params[:end_date].to_date
+      flash[:error] = 'Dates incohérentes'
       render :new, status: :unprocessable_entity
     end
+
+    # Recherche et création de la destination
+    destination_ai = fetch_destination_info_by_name(name)
+
+    if destination_ai.nil? || destination_ai['currency'] == 'Unknow'
+      flash[:error] = 'Destination non trouvée ou information manquante'
+      render :new, status: :unprocessable_entity
+    end
+
+    # Récupération des activités
+    activities_ai = fetch_activities(name, params[:start_date], params[:end_date])
+
+    if activities_ai.nil? || activities_ai.empty?
+      flash[:error] = 'Aucune activité disponible pour cette période'
+      render :new, status: :unprocessable_entity
+    end
+
+    # Ecriture en base des données
+    result = create_destination_trip_activities(name, user_trip, destination_ai, activities_ai, params[:start_date], params[:end_date])
     
+    if result
+      redirect_to destination_path(result.destination_id)
+    else
+      flash[:error] = 'Failed to create destination trip activities'
+      render :new, status: :unprocessable_entity
+    end
+
   end
 
+  def create_destination_trip_activities(trip_name, user, destination_data, activities_data,  start_date, end_date)
+    return unless activities_data.is_a?(Hash) && activities_data.any?
+  
+    destination = Destination.create!(
+      address: trip_name.capitalize,
+      currency: destination_data['currency'],
+      papers: destination_data['papers'],
+      food: destination_data['food'],
+      power: destination_data['power'],
+      latitude: destination_data['latitude'].to_f,
+      longitude: destination_data['longitude'].to_f
+    )
+
+    trip = Trip.create!(
+      name: trip_name,
+      start_date: start_date,
+      end_date: end_date,
+      user_id: user.id,
+      destination_id: destination.id
+    )
+  
+    activities_data['activities'].each do |activity_data|
+      activity = Activity.find_or_create_by(
+        name: activity_data['name'],
+        description: activity_data['description'],
+        address: activity_data['address'],
+        reviews: activity_data['reviews'].to_f,
+        website_url: activity_data['website_url'],
+        wiki: activity_data['wiki'] || 'Unknown',
+        latitude: activity_data['latitude'].to_f,
+        longitude: activity_data['longitude'].to_f
+      )
+
+      trip_activity = TripActivity.create!(
+        activity: activity,
+        trip: trip,
+        start_date: activity_data['start_date'],
+        end_date: activity_data['end_date']
+      )
+    end
+  
+    return trip
+  end
+  
   private
 
-  def find_lat_long(expression)
-    result = Geocoder.search(expression)
-    coord = []
-
-    if result.any?
-      coord[:latitude] = result.first.latitude
-      coord[:longitude] = result.first.longitude
-    else
-      return nil
-    end
-  end
-
-
-  # Méthode pour effectuer l'appel API OpenAI
-  def fetch_destination_info_by_coord(latitude, longitude)
-    client = OpenAI::Client.new
-    response = client.chat(parameters: {
-      "model": "gpt-3.5-turbo",
-      "messages": [
-        {
-          "role": "system",
-          "content": "Tu es un assistant pour une application d'assistance au voyage. Tu génères des réponses au format JSON uniquement sans autres textes ni explication pour des destinations sous forme de JSON."
-        },
-        {
-          "role": "user",
-          "content": "Génère-moi dans ta donnée nommée content directement un JSON au format gpt-4 pour la destination #{latitude},#{longitude} avec :\n- \"address\" (adresse de la destination trouvée)\n- \"currency\" (monnaie locale)\n- \"papers\" (documents nécessaires pour entrer)\n- \"food\" (description courte de la gastronomie locale)\n- \"power\" (norme des prises électriques).\n- \"latitude\" (#{latitude})\n- \"longitude\" (#{longitude})"
-        }
-      ],
-      "temperature": 0.0
-    })
-
-    data = JSON.parse(response["choices"][0]["message"]["content"])
-
-    if data["currency"] 
-      return data
-    else
-      nil
-    end
-
-    # # Test de la réponse
-    # if response.is_a?(Net::HTTPSuccess)
-    #   # Traiter la réponse en cas de succès (codes 2xx)
-    #   puts "Succès : #{response.body}"
-    #   return data = JSON.parse(response["choices"][0]["message"]["content"])
-    # elsif response.is_a?(Net::HTTPRedirection)
-    #   # Gérer les redirections (codes 3xx)
-    #   puts "Redirection détectée : #{response['Location']}"
-    #   return nil
-    # elsif response.is_a?(Net::HTTPClientError)
-    #   # Gérer les erreurs de client (codes 4xx)
-    #   puts "Erreur du client : #{response.body}"
-    #   return nil
-    # elsif response.is_a?(Net::HTTPServerError)
-    #   # Gérer les erreurs du serveur (codes 5xx)
-    #   puts "Erreur du serveur : #{response.body}"
-    #   return nil
-    # else
-    #   # Cas par défaut pour d'autres codes non pris en charge
-    #   puts "Code retour inattendu : #{response.code}"
-    #   return nil
-    # end
-  end
-
-  # Méthode pour effectuer l'appel API OpenAI
   def fetch_destination_info_by_name(name)
+    system_content = 'Tu es un assistant pour une application de prépration de voyages. Tu génères uniquement des réponses au format JSON demandé pour la destination demandée.'
+    user_content = "Donne-moi un JSON avec les champs suivants pour la destination #{name} :\n" \
+    "- `address` : Adresse complète\n" \
+    "- `currency` : Monnaie locale\n" \
+    "- `papers` : Documents nécessaires pour entrer\n" \
+    "- `food` : Description courte de la gastronomie locale\n" \
+    "- `power` : Normes des prises électriques\n" \
+    "- `latitude` : Latitude\n" \
+    "- `longitude` : Longitude\n\n"
+    "Si la destination n'est pas trouvée alors latitude et longitude doivent contenir la chaine Unknow.\n"
+
     client = OpenAI::Client.new
     response = client.chat(parameters: {
-      "model": "gpt-3.5-turbo",
+      "model": 'gpt-3.5-turbo',
       "messages": [
-        {
-          "role": "system",
-          "content": "Tu es un assistant pour une application d'assistance au voyage. Tu génères des réponses au format JSON uniquement sans autres textes ni explication pour des destinations sous forme de JSON."
-        },
-        {
-          "role": "user",
-          "content": "Génère-moi dans ta donnée nommée content directement un JSON au format gpt-4 pour la destination #{name} avec :\n- \"address\" (#{name})\n- \"currency\" (monnaie locale)\n- \"papers\" (documents nécessaires pour entrer)\n- \"food\" (description courte de la gastronomie locale)\n- \"power\" (norme des prises électriques).\n- \"latitude\" (latitude de #{name})\n- \"longitude\" (longitude de #{name})"
-        }
+        { "role": 'system', "content": system_content },
+        { "role": 'user', "content": user_content }
       ],
       "temperature": 0.0
     })
 
-    data = JSON.parse(response["choices"][0]["message"]["content"])
+    data = JSON.parse(response['choices'][0]['message']['content'].strip)
 
-    if data["currency"] && data["currency"] != "Unknown"
-      return data
-    else
-      nil
-    end
+    return data if data['latitude'] && data['latitude'] != 'Unknown'
 
-    # # Test de la réponse
-    # if response.is_a?(Net::HTTPSuccess)
-    #   # Traiter la réponse en cas de succès (codes 2xx)
-    #   puts "Succès : #{response.body}"
-    #   return data = JSON.parse(response["choices"][0]["message"]["content"])
-    # elsif response.is_a?(Net::HTTPRedirection)
-    #   # Gérer les redirections (codes 3xx)
-    #   puts "Redirection détectée : #{response['Location']}"
-    #   return nil
-    # elsif response.is_a?(Net::HTTPClientError)
-    #   # Gérer les erreurs de client (codes 4xx)
-    #   puts "Erreur du client : #{response.body}"
-    #   return nil
-    # elsif response.is_a?(Net::HTTPServerError)
-    #   # Gérer les erreurs du serveur (codes 5xx)
-    #   puts "Erreur du serveur : #{response.body}"
-    #   return nil
-    # else
-    #   # Cas par défaut pour d'autres codes non pris en charge
-    #   puts "Code retour inattendu : #{response.code}"
-    #   return nil
-    # end
+    nil
   end
 
+  def fetch_activities(name, start_date, end_date)
+    system_content = "Tu es un assistant pour une application de prépration de voyages.\n" \
+    "Tu génères uniquement des réponses au format JSON demandé pour la destination demandée.\n" \
+    "A partir de la destination et du nombre de jours indiqués, tu dois proposer un planning d'activités pour chaque jour du voyage avec pas plus de 2 activités par jour.\n" \
+    "Les activités peuvent être un lieu, monument, festivité locale se déroulant pendant la période indiquée, musée, paysage, randonnée, activité sportive, visite culturelle, ...\n" \
+    "Chaque activité est organisée sur une journée avec une heure de début et une durée estimée.\n" \
+    "Les descriptions des activités doivent être détaillées et comporter entre 5 et 10 lignes.\n" \
+    "Les liens vers les sites officiels doivent être fiables et actifs.\n" \
+    "Pour chaque activité, suggère 1 à 3 photos libres de droits, fiables et représentatives de l'activité en mettant leur lien à la fin de la description sous la forme d'un lien par ligne avec une première ligne vide après la description de base.\n" \
+    "Ne pas inclure de caractères indésirables comme ```json\\n ou \\n``` au début et à la fin de la réponse. Le contenu de Content doit être propre est supporter un JSON.parse."
+
+    user_content = "Donne-moi un JSON contenant le tableau des activités pour la destination #{name} et la période #{start_date} à #{end_date}.\n" \
+    " Une activité sera formattée avec les champs suivants :\n" \
+    "- `start_date` : Date et heure de début\n" \
+    "- `end_date` : Date et heure de fin\n" \
+    "- `name` : Libellé de l'activité\n" \
+    "- `description` : Description courte de l'activité\n" \
+    "- `reviews` : Note décimale sur 5 de l'activité\n" \
+    "- `address` : Adresse de l'activité\n" \
+    "- `website_url` : Site officiel de l'activité\n" \
+    "- `wiki` : Url wikipédia de l'activité si existante sinon Unknow\n" \
+    "- `latitude` : Latitude de l'adresse\n" \
+    "- `longitude` : Longitude de l'adresse\n\n"
+
+    client = OpenAI::Client.new
+    response = client.chat(parameters: {
+      "model": 'gpt-3.5-turbo',
+      "messages": [
+        { "role": 'system', "content": system_content },
+        { "role": 'user', "content": user_content }
+      ],
+      "temperature": 0.0
+    })
+
+    data = JSON.parse(response['choices'][0]['message']['content'].strip)
+
+    return data if data && data["activities"][0]["latitude"] != 'Unknown'
+
+    nil
+  end
 
   def set_destination
     @destination = Destination.find(params[:id])
   end
-
 end
-
