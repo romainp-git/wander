@@ -1,0 +1,10 @@
+.halo{
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.3), 0 0 40px rgba(255, 255, 255, 0.2);
+}
+
+#title-part {
+  display: block;
+  overflow: hidden;
+  margin-top: calc(100vh - 260px);
+  transition: margin-top 1s ease-in-out;
+}

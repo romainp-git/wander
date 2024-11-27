@@ -1,4 +1,13 @@
-<div>
-  <h1 class="font-bold text-4xl">Trips#new</h1>
-  <p>Find me in app/views/trips/new.html.erb</p>
+<div id="screen-container" class="relative h-screen overflow-hidden" data-controller="add-trip-animation">
+  <div class="absolute inset-0 animate-gradient mesh-gradient-dark opacity-70"></div>
+
+  <div id="pulse-button" data-add-trip-animation-target="pulseButton" class="absolute transition-opacity duration-1000 animate-pulse-slow flex justify-center items-center bottom-10 w-full">
+    <div class="w-16 h-16 halo animate-gradient mesh-gradient-orange rounded-full"></div>
+  </div>
+
+  <div id="title-part" data-add-trip-animation-target="titlePart" class="relative min-h-28 flex items-start w-full">
+    <p id="typewriter-text" data-add-trip-animation-target="text" class="px-3 text-white text-2xl font-semibold"></p>
+  </div>
+
+  <%= render 'form_dates' %>
 </div>

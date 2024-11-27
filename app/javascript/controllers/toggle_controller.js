@@ -22,8 +22,7 @@ export default class extends Controller {
     this.mapViewTarget.classList.remove("hidden");
     this.mapViewTarget.classList.add("block");
 
-    this.agendaViewTarget.classList.add("hidden");
-    this.agendaViewTarget.classList.remove("block");
+    this.agendaViewTarget.classList.replace("flex", "hidden");
 
     this.mapToggleTarget.classList.add("bg-gray-800", "text-white");
     this.mapToggleTarget.classList.remove("bg-white", "text-gray-800");
@@ -33,8 +32,7 @@ export default class extends Controller {
   }
 
   showAgenda() {
-    this.agendaViewTarget.classList.remove("hidden");
-    this.agendaViewTarget.classList.add("block");
+    this.agendaViewTarget.classList.replace("hidden", "flex");
 
     this.mapViewTarget.classList.add("hidden");
     this.mapViewTarget.classList.remove("block");
