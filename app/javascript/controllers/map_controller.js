@@ -49,18 +49,12 @@ export default class extends Controller {
 
   highlightMarker(index) {
     const marker = this.markersValue[index];
-    console.log("Index sélectionné :", index); // Log pour vérifier l'index
-    console.log("Marqueur correspondant :", marker); // Log pour vérifier le marqueur
 
     if (!marker) return;
-
-    // Centrer la carte sur le marqueur sélectionné
     this.map.flyTo({
       center: [marker.lng, marker.lat],
       zoom: 15
     });
-
-    // Ajouter une classe pour mettre en surbrillance le marqueur sélectionné
     this.markerElements.forEach((el, i) => {
       if (i === index) {
         el.classList.add("bg-yellow-500", "scale-300");

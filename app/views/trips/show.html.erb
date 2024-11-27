@@ -1,29 +1,15 @@
-<div data-controller="toggle" class="relative h-screen">
+<div data-controller="toggle" class="relative h-screen ">
   <!-- Toggle en bas de la page -->
-  <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-20 flex space-x-2 bg-gray-200 p-2 rounded-full">
-    <button
-      data-action="click->toggle#toggle"
-      data-view="map"
-      data-toggle-target="mapToggle"
-      class="p-2 bg-gray-800 text-white rounded-full">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
-        <path d="M12 2C8.134 2 5 5.134 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.866-3.134-7-7-7zm0 9.5c-1.381 0-2.5-1.119-2.5-2.5s1.119-2.5 2.5-2.5 2.5 1.119 2.5 2.5-1.119 2.5-2.5 2.5z" />
-      </svg>
-    </button>
-    <button
-      data-action="click->toggle#toggle"
-      data-view="agenda"
-      data-toggle-target="agendaToggle"
-      class="p-2 bg-white text-gray-800 rounded-full">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
-        <path d="M3 3h18v2H3V3zm0 7h18v2H3v-2zm0 7h18v2H3v-2z" />
-      </svg>
-    </button>
-  </div>
-
+  <%= render "toggle_nav" %>
   <!-- Vue actuelle avec la carte et le carrousel -->
-
   <div class="map absolute top-0 left-0 right-0 bottom-0 z-0 block h-full" data-toggle-target="mapView">
+  <!-- Bouton retour -->
+    <button class="absolute top-4 left-4 btn  bg-white text-gray-900 w-12 h-12 flex items-center justify-center z-10">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+      </svg>
+    </button>
+
   <div id="map" class="w-full h-full"
     data-controller="map"
     data-map-api-key-value='<%= ENV["MAPBOX_API_KEY"] %>'
@@ -34,47 +20,62 @@
   <div data-controller="carrousel">
     <div class="carousel carousel-center rounded-box space-x-4 p-4">
       <% @activities.each_with_index do |activity, index| %>
-        <div
-          class="carousel-item bg-white shadow-lg rounded-lg w-80 p-4 border border-gray-200 cursor-pointer hover:shadow-xl transition-shadow"
-          data-action="click->carrousel#select"
-          data-carousel-index-value="<%= index %>">
-
-          <!-- Photo -->
-          <% if activity.photos.first.key.present? %>
-            <%= cl_image_tag activity.photos.first.key, class: "rounded-full size-20" %>
-          <% else %>
-            <%= image_tag 'no_picture.jpg', class: "rounded-full size-20", alt: "No picture available" %>
-          <% end %>
-
-          <!-- Infos -->
-          <div class="flex-col pl-4">
-            <div class="flex items-center justify-between">
-              <h3 class="text-lg font-semibold text-gray-800"><%= activity.name %></h3>
-            </div>
-            <p class="text-sm text-gray-600 mt-2"><%= activity.description %></p>
-            <div class="flex items-center space-x-1 text-yellow-400">
-              <% activity.reviews.to_i.times do %>
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 .587l3.668 7.429L24 9.753l-6 5.837 1.417 8.26L12 18.897l-7.417 4.953L6 15.59l-6-5.837 8.332-1.737z" />
-                </svg>
-              <% end %>
-            </div>
-            <div class="mt-4 text-sm text-gray-500 flex items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 2C8.134 2 5 5.134 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.866-3.134-7-7-7zm0 9.5c-1.381 0-2.5-1.119-2.5-2.5s1.119-2.5 2.5-2.5 2.5 1.119 2.5 2.5-1.119 2.5-2.5 2.5z" />
-              </svg>
-              <%= activity.address %>
-            </div>
-          </div>
-
-        </div>
+        <%= render "carrousel_item", activity: activity, index: index %>
       <% end %>
     </div>
   </div>
 </div>
 </div>
   <!-- Vue agenda -->
-  <div data-toggle-target="agendaView" class="hidden h-full items-center justify-center">
-    <p class="text-xl font-semibold text-gray-700">Vue Agenda à venir</p>
+
+  <div data-toggle-target="agendaView" class="hidden h-full flex ">
+<div class="w-full bg-black text-white" data-controller="tabs">
+  <!-- Calendrier -->
+  <div class="flex-col items-center justify-between px-4 py-3 bg-gray-900">
+    <!-- Bouton retour -->
+   <button class="btn btn-outline border-gray-500 text-gray-400 mr-4 w-12 h-12 flex items-center justify-center">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+      </svg>
+    </button>
+
+    <!-- Jours dynamiques -->
+    <div class="flex items-center overflow-x-scroll no-scrollbar space-x-2 mt-4" data-tabs-target="days">
+      <% @calendar_dates.each_with_index do |date, index| %>
+        <div class="flex flex-col items-center cursor-pointer text-gray-400 px-4 py-3 <%= 'text-black bg-white rounded-lg px-4 py-3' if index == 0 %>"
+            data-action="click->tabs#changeTab"
+            data-tabs-day="<%= index %>"
+            data-tabs-target="day">
+          <span class="text-sm"><%= I18n.l(date, format: '%a')[0].upcase %></span>
+          <span class="text-xs font-bold"><%= date.strftime('%d') %></span>
+        </div>
+      <% end %>
+    </div>
   </div>
+
+  <!-- Tabs pour les jours -->
+  <div role="tablist" class="tabs tabs-bordered bg-black text-white py-4 overflow-x-scroll">
+    <% @calendar_dates.each_with_index do |date, index| %>
+      <a class="tab <%= index == 0 ? 'tab-active text-white border-white w-36' : 'text-gray-400 w-36' %>"
+        data-action="click->tabs#changeTab"
+        data-tabs-day="<%= index %>"
+        data-tabs-target="tab"> Jour <%= index + 1 %></a>
+    <% end %>
+  </div>
+
+  <!-- Timeline Section -->
+  <% @day_activities.each_with_index do |(date, activities), index| %>
+  <div class="p-4 hidden overflow-hidden" data-tabs-target="content" data-tabs-day="<%= index %>">
+    <ul class="relative">
+      <% if activities.any? %>
+        <% activities.each do |trip_activity| %>
+          <%= render partial: 'activity_card', locals: { trip_activity: trip_activity } %>
+        <% end %>
+      <% else %>
+        <li class="text-gray-400 text-sm">Aucune activité prévue pour ce jour.</li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+</div>
 </div>
