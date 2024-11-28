@@ -23,13 +23,19 @@
             <div>
               <p class="text-lg font-bold"><%= activity.activity.name %></p>
               <p class="text-sm"><%= activity.start_date.strftime('%B %d, %Y %H:%M') %> - <%= activity.end_date.strftime('%B %d, %Y %H:%M') %></p>
+              <p class="text-sm"><%= activity.activity.address %> (<%= activity.activity.latitude %>, <%= activity.activity.latitude %>)</p>
             </div>
             <p class="text-lg font-bold"><%= activity.activity.reviews %></p>
           </div>
           <p class="mt-2"><%= activity.activity.description %></p>
           <div class="mt-2 flex space-x-4">
-            <%= link_to 'Official Site', activity.activity.website_url, class: "text-blue-500 hover:underline", target: "_blank" %>
-            <%= link_to 'Wikipedia', activity.activity.wiki, class: "text-blue-500 hover:underline", target: "_blank" %>
+            <% if activity.activity.website_url != "Unknown" %>
+              <%= link_to 'Official Site', activity.activity.website_url, class: "text-blue-500 hover:underline", target: "_blank" %>
+            <% end %>
+            
+            <% if activity.activity.wiki != "Unknown" %>
+              <%= link_to 'Wikipedia', activity.activity.wiki, class: "text-blue-500 hover:underline", target: "_blank" %>
+            <% end %>
           </div>
         </div>
       <% end %>
