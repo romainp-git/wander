@@ -21,7 +21,8 @@ class DestinationsController < ApplicationController
   def create
   # Récupération des informations
     name = params[:destination][:address]
-    user_trip = current_user || User.find_by_username('PYM')
+    # user_trip = current_user
+    user_trip = User.find_by_username('PYM')
 
   # Vérification des dates
     if params[:start_date].to_date >= params[:end_date].to_date
@@ -198,8 +199,8 @@ class DestinationsController < ApplicationController
       "- 'address' qui contiendra l'adresse de départ de l'activité.\n" \
       "- 'description'.\n" \
       "Si la destination n'est pas identifiable, le champ 'content' de ta réponse au format JSON doit contenir uniquement 'ERROR'." \
-      "Si ta réponse est trop longue, tu dois retirer les activités du soir, si elle est encore trop longue, tu dois proposer une seule activité par jour. Si c'est encore trop long, tu fais des descriptions de 3 ou 4 mots.\n" \
-      "Si ça ne suffit pas, tu retournes le nombre maximum d'activités que tu es capable de retourner sans tronquer les données et tu ferme le tableau JSON proprement sans mettre '...' à la fin pour dire que tu n'as pas pu tout mettre.\n"
+      # "Si la taille du fichier JSON de sortie est trop longue, tu peux retirer les activités du soir, si après cette suppression elle est encore trop longue, tu peux ne proposer qu'une seule activité par jour. Si c'est encore trop long, tu peux raccourcir les descriptions à 3 ou 4 mots.\n" \
+      "Si la taille du fichier JSON de sortie est trop longue, tu dois retourner que des activités complètes retournes le nombre maximum d'activités que tu es capable de retourner sans tronquer les données et tu ferme le tableau JSON proprement sans mettre '...' à la fin pour dire que tu n'as pas pu tout mettre.\n"
 
     user_content = 
     "La destination de mon voyage est #{trip_name} du #{start_date} au #{end_date} et je recherche des activités appartenant aux catégories suivantes : Culturelle, Nature."
