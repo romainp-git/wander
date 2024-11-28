@@ -8,12 +8,11 @@ export default class extends Controller {
   }
 
   activateTab(event) {
-    this.tabsTargets.forEach((content) => {
-      content.classList.replace("bg-white", "border");
-    });
+    const targetIndex = event.detail.index + 1;
 
-    console.log(event.detail.index);
-    const targetIndex = event.detail.index;
-    this.tabsTargets[targetIndex].classList.replace("border", "bg-white");
+    this.tabsTargets.forEach((content, index) => {
+      if(index > targetIndex) content.classList.remove("step-warning");
+      else content.classList.add("step-warning");
+    });
   }
 }

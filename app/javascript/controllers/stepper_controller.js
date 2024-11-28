@@ -1,74 +1,65 @@
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
+  static targets = ["step", "prevButton"];
+  currentStepIndex = 0;
+
   connect() {
-    console.log("stepper_controller");
-
-    const steps = document.querySelectorAll(".step");
-    this.curr_step = 1;
-
-    document.querySelectorAll(".next-step").forEach((button) => {
-      button.addEventListener("click", () => {
-        const nextStep = parseInt(button.dataset.nextStep, 10);
-        this.goToStep(nextStep);
-      });
-    });
-
-    document.querySelectorAll(".prev-step").forEach((button) => {
-      button.addEventListener("click", () => {
-        const prevStep = parseInt(button.dataset.prevStep, 10);
-        this.goToStep(prevStep);
-      });
-    });
-
-    document.querySelectorAll("input.required").forEach((input) => {
-      input.addEventListener("input", () => this.updateNextButtonState());
-    });
-
-    document.addEventListener("keydown", (event) => {
-      if (event.key === "Enter") {
-        event.preventDefault();
-        //this.curr_step += 1;
-        //this.goToStep(this.curr_step);
-      }
-    });
-
-    this.goToStep(this.curr_step);
-    this.updateNextButtonState()
+    this.updateBtnVisibility();
+    this.updateTabs(this.currentStepIndex + 1);
   }
 
-  updateNextButtonState() {
-    const currentStep = document.querySelector(`.step[data-step="${this.curr_step}"]`);
-    console.log(currentStep)
-    const requiredFields = currentStep.querySelectorAll("input.required");
-    const nextButton = currentStep.querySelector(".next-step");
-
-    // Vérifie si tous les champs "required" ont une valeur non vide
-    const allFieldsValid = Array.from(requiredFields).every((input) => input.value.trim() !== "");
-
-    if (nextButton) {
-      nextButton.disabled = !allFieldsValid; // Active ou désactive le bouton
+  nextStep() {
+    if (this.currentStepIndex < this.stepTargets.length - 1) {
+      this.animateSteps(this.currentStepIndex, this.currentStepIndex + 1);
+      this.currentStepIndex++;
+      this.updateBtnVisibility();
     }
   }
 
-  goToStep(stepIndex) {
-    this.curr_step = stepIndex;
+  previousStep() {
+    if (this.currentStepIndex > 0) {
+      this.animateSteps(this.currentStepIndex, this.currentStepIndex - 1);
+      this.currentStepIndex--;
+      this.updateBtnVisibility();
+    }
+  }
 
+  animateSteps(currentIndex, nextIndex) {
+    const currentStep = this.stepTargets[currentIndex];
+    const nextStep = this.stepTargets[nextIndex];
+
+    if (nextIndex > currentIndex) {
+      currentStep.classList.add("translate-x-[-100%]");
+      currentStep.classList.remove("translate-x-0");
+
+      nextStep.classList.add("translate-x-0");
+      nextStep.classList.remove("translate-x-full");
+    } else {
+      currentStep.classList.add("translate-x-full");
+      currentStep.classList.remove("translate-x-0");
+
+      nextStep.classList.add("translate-x-0");
+      nextStep.classList.remove("translate-x-[-100%]");
+    }
+
+    this.updateTabs(nextIndex);
+  }
+  updateTabs(index) {
     const tabsController = this.application.getControllerForElementAndIdentifier(
       document.querySelector('[data-controller="tabs-form-new-trip"]'),
       "tabs-form-new-trip"
     );
     if (tabsController) {
-      tabsController.activateTab({ detail: { index: stepIndex } });
+      tabsController.activateTab({ detail: { index: index } });
     }
-
-    const steps = document.querySelectorAll(".step");
-    const summary = document.getElementById("summary");
-
-    steps.forEach((step, index) => {
-      step.classList.toggle("hidden", index + 1 !== stepIndex);
-    });
   }
 
-
+  updateBtnVisibility() {
+    if (this.currentStepIndex > 0) {
+      this.prevButtonTarget.classList.remove("hidden");
+    } else {
+      this.prevButtonTarget.classList.add("hidden");
+    }
+  }
 }
