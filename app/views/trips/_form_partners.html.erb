@@ -1,0 +1,87 @@
+<div class="p-4">
+  <div class="flex items-start gap-5 mb-2">
+    <p class="text-sm font-medium text-white mt-1 flex-0">Step 3 :</p>
+    <div class="flex flex-col flex-1">
+      <p class="text-xl font-extralight text-white mb-4 ">Choisissez un nombre d'acompagnants :</p>
+    </div>
+  </div>
+
+  <!-- Step 2 Section -->
+  <div class="mt-8">
+    <div class="flex items-center gap-4">
+      <!-- Contact Avatars -->
+      <div class="flex items-center gap-2">
+        <img src="https://via.placeholder.com/40" alt="Vera" class="w-10 h-10 rounded-full border-2 border-white">
+        <span>Vera</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <img src="https://via.placeholder.com/40" alt="Josie" class="w-10 h-10 rounded-full border-2 border-white">
+        <span>Josie</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <img src="https://via.placeholder.com/40" alt="Ricardo" class="w-10 h-10 rounded-full border-2 border-white">
+        <span>Ricardo</span>
+      </div>
+    </div>
+    <div class="mt-4 flex items-center gap-2">
+      <button class="flex items-center px-4 py-2 text-sm bg-white text-blue-600 rounded-full">
+        Add contact +
+      </button>
+    </div>
+  </div>
+
+  <!-- Room and Guests Counters -->
+  <div class="mt-8 bg-white bg-opacity-10 rounded-2xl p-4">
+    <div class="flex flex-col gap-4">
+      <!-- Adults -->
+      <div class="flex justify-between items-center">
+        <div class="flex items-center gap-2">
+          <span class="font-material">person</span>
+          <p>Adults</p>
+          <small class="text-gray-300 text-sm">Ages 13 or above</small>
+        </div>
+        <div class="flex items-center gap-4">
+          <button class="w-8 h-8 bg-black text-white rounded-full">-</button>
+          <span>3</span>
+          <button class="w-8 h-8 bg-black text-white rounded-full">+</button>
+        </div>
+      </div>
+      <!-- Children -->
+      <div class="flex justify-between items-center">
+        <div class="flex items-center gap-2">
+          <span class="material-icons">child_friendly</span>
+          <p>Children</p>
+          <small class="text-gray-300 text-sm">Ages 2-13</small>
+        </div>
+        <div class="flex items-center gap-4">
+          <button class="w-8 h-8 bg-black text-white rounded-full">-</button>
+          <span>0</span>
+          <button class="w-8 h-8 bg-black text-white rounded-full">+</button>
+        </div>
+      </div>
+      <!-- Infants -->
+      <div class="flex justify-between items-center">
+        <div class="flex items-center gap-2">
+          <span class="material-icons">baby_changing_station</span>
+          <p>Infants</p>
+          <small class="text-gray-300 text-sm">Under 2</small>
+        </div>
+        <div class="flex items-center gap-4">
+          <button class="w-8 h-8 bg-black text-white rounded-full">-</button>
+          <span>0</span>
+          <button class="w-8 h-8 bg-black text-white rounded-full">+</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <%= simple_form_for @trip, html: { class: "space-y-6" }  do |f| %>
+  <% end %>
+
+</div>
+
+<div class="absolute bottom-10 w-full flex justify-center mt-6 gap-5">
+  <button class="prev-step bg-opacity-50 text-sm font-medium text-white border px-4 py-2 hover:bg-white" data-prev-step="2">Retour</button>
+  <button id="submit" class="bg-opacity-50 text-sm font-medium text-white border px-4 py-2 hover:bg-white">Valider</button>
+</div>

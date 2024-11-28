@@ -5,14 +5,20 @@ export default class extends Controller {
   static targets = ["startDate", "endDate", "calendar"]; // Liens vers les champs masqués
 
   connect() {
-    console.log("flatpicker_controller")
+    console.log("flatpicker_controller");
     this.initializeDatepicker();
+
+    const calendarElements = document.querySelectorAll(".arrowBottom");
+    calendarElements.forEach((element) => {
+      element.classList.remove("arrowBottom");
+    });
   }
 
   initializeDatepicker() {
     flatpickr(this.element, {
       minDate: "today",
       appendTo: this.calendarTarget,
+      disableMobile: true,
       mode: "range",
       dateFormat: "Y-m-d",
       locale: {
