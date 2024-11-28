@@ -22,7 +22,8 @@ class DestinationsController < ApplicationController
   # Récupération des informations
     name = params[:destination][:address]
     # user_trip = current_user
-    user_trip = User.find_by_username('PYM')
+    user_trip = User.find_by(username: 'PYM')
+    # user_trip = User.find_by_username('PYM')
 
   # Vérification des dates
     if params[:start_date].to_date >= params[:end_date].to_date
