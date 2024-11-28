@@ -11,7 +11,7 @@ export default class extends Controller {
 
     this.map = new mapboxgl.Map({
       container: this.element,
-      style: "mapbox://styles/mapbox/streets-v11",
+      style: "mapbox://styles/pdunleav/cjofefl7u3j3e2sp0ylex3cyb",
       center: [2.3522, 48.8566],
       zoom: 12
     });
@@ -19,6 +19,10 @@ export default class extends Controller {
     this.markerElements = [];
     this.markersValue.forEach((marker, index) => {
       const el = document.createElement("div");
+      el.addEventListener("click", () => {
+        this.highlightMarker(index);
+        window.dispatchEvent(new CustomEvent("scrollToItem", { detail: { index } }));
+      });
       el.className = "marker";
       el.style.backgroundImage = 'url("https://docs.mapbox.com/help/demos/custom-markers-gl-js/mapbox-icon.png")';
       el.style.width = "30px";

@@ -4,7 +4,9 @@ export default class extends Controller {
   static targets = ["mapView", "agendaView", "mapToggle", "agendaToggle", "slider"];
 
   connect() {
+    console.log("controller toggle actif");
     this.showMap();
+
   }
 
   toggle(event) {
@@ -20,29 +22,20 @@ export default class extends Controller {
   showMap() {
     this.sliderTarget.style.transform = "translateX(0%)";
 
-    this.mapViewTarget.classList.remove("hidden");
-    this.mapViewTarget.classList.add("block");
-
     this.agendaViewTarget.classList.replace("flex", "hidden");
+    this.mapViewTarget.classList.replace("hidden", "block");
 
-    this.agendaToggleTarget.classList.remove("text-gray-800");
-    this.agendaToggleTarget.classList.add("text-white");
-    this.mapToggleTarget.classList.add("text-gray-800");
-    this.mapToggleTarget.classList.remove("text-white");
+    this.agendaToggleTarget.classList.replace("text-gray-800", "text-white");
+    this.mapToggleTarget.classList.replace("text-white", "text-gray-800");
   }
-
 
   showAgenda() {
     this.sliderTarget.style.transform = "translateX(100%)";
 
+    this.mapViewTarget.classList.replace("block", "hidden");
     this.agendaViewTarget.classList.replace("hidden", "flex");
 
-    this.mapViewTarget.classList.add("hidden");
-    this.mapViewTarget.classList.remove("block");
-
-    this.mapToggleTarget.classList.add("text-white");
-    this.mapToggleTarget.classList.remove("text-gray-800");
-    this.agendaToggleTarget.classList.remove("text-white");
-    this.agendaToggleTarget.classList.add("text-gray-800");
+    this.mapToggleTarget.classList.replace("text-gray-800", "text-white");
+    this.agendaToggleTarget.classList.replace("text-white", "text-gray-800");
   }
 }

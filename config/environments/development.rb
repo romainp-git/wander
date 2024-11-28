@@ -16,6 +16,9 @@ Rails.application.configure do
 
   # Enable server timing
   config.server_timing = true
+  config.assets.debug = true
+  config.assets.compile = true
+  config.assets.check_precompiled_asset = false
 
   # Enable/disable caching. By default caching is disabled.
   # Run rails dev:cache to toggle caching.

@@ -1,20 +1,22 @@
-<li class="flex items-center space-x-4 relative mb-5">
-  <!-- Timeline time -->
-  <div class="text-gray-400 text-sm w-16 text-right">
-    <div>10:00</div>
-    <%# <%= trip_activity.start_time.strftime('%H:%M') %>
-    <div>10:30</div>
-  </div>
+<%= link_to activity_path(trip_activity.activity) do %>
+  <li class="flex items-center space-x-4 relative mb-5">
+    <!-- Timeline time -->
+    <div class="text-gray-400 text-sm w-16 text-right">
+      <div>10:00</div>
+      <%# <%= trip_activity.start_time.strftime('%H:%M') %>
+      <div>10:30</div>
+    </div>
 
-  <!-- Timeline node and line -->
-  <div class="relative flex flex-col items-center">
-    <div class="w-4 h-4 bg-white rounded-full z-10"></div>
-    <div class="absolute h-28 w-0.5 bg-white -top-28 left-1/2 transform -translate-x-1/2"></div>
-  </div>
+    <!-- Timeline node and line -->
+    <div class="relative flex flex-col items-center">
+      <div class="w-4 h-4 bg-white rounded-full z-10"></div>
+      <div class="absolute h-28 w-0.5 bg-white -top-28 left-1/2 transform -translate-x-1/2"></div>
+    </div>
 
-  <!-- Timeline card -->
-  <div class="bg-gray-800 text-white rounded-lg shadow-md p-4 w-full">
-    <h3 class="font-bold"><%= trip_activity.activity.name %></h3>
-    <p class="text-sm"><%= trip_activity.activity.description %></p>
-  </div>
-</li>
+    <!-- Timeline card -->
+    <div class="bg-gray-800 text-white rounded-lg shadow-md p-4 w-full">
+      <h3 class="font-bold"><%= trip_activity.activity.name %></h3>
+      <p class="text-sm"><%= trip_activity.activity.description %></p>
+    </div>
+  </li>
+<% end %>

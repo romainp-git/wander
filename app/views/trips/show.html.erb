@@ -2,13 +2,14 @@
   <!-- Toggle en bas de la page -->
   <%= render "toggle_nav" %>
   <!-- Vue actuelle avec la carte et le carrousel -->
-  <div class="map absolute top-0 left-0 right-0 bottom-0 z-0 block h-full" data-toggle-target="mapView">
+  <div class=" map absolute top-0 left-0 right-0 bottom-0 z-0 block h-full" data-toggle-target="mapView">
   <!-- Bouton retour -->
-    <button class="absolute top-4 left-4 btn  bg-white text-gray-900 w-12 h-12 flex items-center justify-center z-10">
+    <button class="absolute top-4 left-4 btn  bg-white text-gray-900 w-12 h-12 flex items-center justify-center z-10" onclick="history.back()">
       <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
       </svg>
     </button>
+
 
   <div id="map" class="w-full h-full"
     data-controller="map"
@@ -16,14 +17,14 @@
     data-map-markers-value='<%= raw @markers.to_json %>'>
   </div>
 
-<div class="absolute bottom-16 left-0 right-0 z-10 overflow-y-auto">
-  <div data-controller="carrousel">
-    <div class="carousel carousel-center rounded-box space-x-4 p-4">
+<div class="absolute bottom-16 left-0 right-0 z-10 overflow-x-auto" data-controller="carrousel">
+    <div class="carousel carousel-center rounded-box space-x-4 p-4" data-carrousel-target="container" >
+    <!--pour comportement caroussel ajouter max-w-full mais controller KO-->
       <% @activities.each_with_index do |activity, index| %>
+
         <%= render "carrousel_item", activity: activity, index: index %>
       <% end %>
     </div>
-  </div>
 </div>
 </div>
   <!-- Vue agenda -->
@@ -33,11 +34,15 @@
   <!-- Calendrier -->
   <div class="flex-col items-center justify-between px-4 py-3 bg-gray-900">
     <!-- Bouton retour -->
-   <button class="btn btn-outline border-gray-500 text-gray-400 mr-4 w-12 h-12 flex items-center justify-center">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-      </svg>
-    </button>
+    <div class="flex justify-between items-center">
+      <button class="btn btn-outline border-gray-500 text-gray-400 mr-4 w-12 h-12 flex items-center justify-center" onclick="history.back()">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
+      <h1 class="w-100 text-center font-bold text-lg"><%= @trip.name %></h1>
+      <div class="ml-4 w-12 h-12"></div>
+    </div>
 
     <!-- Jours dynamiques -->
     <div class="flex items-center overflow-x-scroll no-scrollbar space-x-2 mt-4" data-tabs-target="days">
