@@ -270,7 +270,7 @@ class DestinationsController < ApplicationController
     location = []
     # address = "Padre Burgos Ave, Ermita, Manila, 1000 Metro Manila"
     results = Geocoder.search(address)
-    raise
+    
     if results.any?
       location = results.first
       {
