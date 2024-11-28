@@ -1,4 +1,4 @@
-<div id="calendar-part" data-controller="datepicker" class="p-4">
+<div id="calendar-part" data-controller="datepicker" class="px-4">
   <div class="flex items-start gap-5 mb-2">
     <p class="text-sm font-medium text-white mt-1 flex-0">Step 2 :</p>
     <div class="flex flex-col flex-1">
@@ -21,9 +21,4 @@
     <%= f.hidden_field :start_date, id: "start-date" %>
     <%= f.hidden_field :end_date, id: "end-date" %>
   <% end %>
-</div>
-
-<div class="absolute bottom-10 w-full flex justify-center mt-6 gap-5">
-  <button class="prev-step bg-opacity-50 text-sm font-medium text-white border px-4 py-2 hover:bg-white" data-prev-step="1">Retour</button>
-  <button class="next-step bg-opacity-50 text-sm font-medium text-white border px-4 py-2 hover:bg-white" data-next-step="3">Suivant</button>
 </div>
