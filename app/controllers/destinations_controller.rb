@@ -2,25 +2,26 @@ class DestinationsController < ApplicationController
   require 'json'
 
   before_action :set_destination, only: [:show]
-
-  def index
+# ---------------------------------------------------------------------------------------
+def index
     @destinations = Destination.all
   end
-
-  def new
+# ---------------------------------------------------------------------------------------
+def new
     @destination = Destination.new
   end
-
-  def show
+# ---------------------------------------------------------------------------------------
+def show
     @destination = Destination.find(params[:id])
     @trip = Trip.find_by(destination_id: @destination.id)
     @activities = @trip.activities
     @trip_activities = @trip.trip_activities
   end
-
+# ---------------------------------------------------------------------------------------
   def create
   # Récupération des informations
     name = params[:destination][:address]
+    type = params[:destination][:type]
     # user_trip = current_user
     user_trip = User.find_by(username: 'PYM')
     # user_trip = User.find_by_username('PYM')
@@ -49,8 +50,13 @@ class DestinationsController < ApplicationController
       Rails.logger.debug "#create_DESTINATION\n#{destination_ai}"
     end
 
-  # Récupération des activités
-    activities_ai = fetch_activities(name, params[:start_date], params[:end_date])
+    if type == "Ville"
+      # Récupération des activités city
+      activities_ai = fetch_activities_city(name, params[:start_date], params[:end_date])
+    else
+      # Récupération des activités country
+      activities_ai = fetch_activities_country(name, params[:start_date], params[:end_date])
+    end
 
     if activities_ai.nil? || activities_ai == "ERROR"
       flash[:error] = 'Aucune activité disponible pour cette période'
@@ -63,7 +69,7 @@ class DestinationsController < ApplicationController
     end
 
     # Ecriture en base des données
-    result = create_destination_trip_activities(name, user_trip, destination_ai, activities_ai, params[:start_date], params[:end_date])
+    result = create_destination_trip_activities(type, name, user_trip, destination_ai, activities_ai, params[:start_date], params[:end_date])
     
     if result
       redirect_to destination_path(result.destination_id)
@@ -74,12 +80,12 @@ class DestinationsController < ApplicationController
       return
     end
   end
-
-  def create_destination_trip_activities(trip_name, user, destination_data, activities_data,  start_date, end_date)
+# ---------------------------------------------------------------------------------------
+  def create_destination_trip_activities(type, trip_name, user, destination_data, activities_data,  start_date, end_date)
     return unless activities_data.is_a?(Array) && activities_data.any?
   
     destination = Destination.create!(
-      address: trip_name.capitalize,
+      address: "#{trip_name.capitalize} - #{destination_data['alpha3code']}",
       currency: destination_data['currency'],
       papers: destination_data['papers'],
       food: destination_data['food'],
@@ -88,7 +94,7 @@ class DestinationsController < ApplicationController
       longitude: destination_data['longitude'].to_f
     )
     Rails.logger.debug "#-----------------------------------------------------------"
-    Rails.logger.debug "#create_destination_trip_activities_DESTINATION\n#{destination}"
+    Rails.logger.debug "#create_destination_trip_activities_DESTINATION\n#{destination} - #{type}"
 
     trip = Trip.create!(
       name: trip_name,
@@ -109,26 +115,30 @@ class DestinationsController < ApplicationController
       Rails.logger.debug "#trip_name : #{trip_name} - activity_name : #{activity_data['name']} - address : #{activity_data['address']}"
       Rails.logger.debug "#description : #{activity_data['description']}"
 
-      details_activity = fetch_activity(activity_data['name'], activity_data['address'], activity_data['description'])
-      
-      # Tentative de récupération de l'adresse de l'activité avec le nom
-      location = search_geocoder(activity_data["address"])
-      if location
-      Rails.logger.debug "#-----------------------------------------------------------"
-      Rails.logger.debug "#create_destination_trip_activities_GEOCODER\nLocation : #{activity_data["name"]}, correspond à : #{location.address}"
-      Rails.logger.debug "#Google Maps url : https://www.google.com/maps?q=#{location.latitude},#{location.longitude}"
+      if type == "Ville"
+        details_activity = fetch_activity(activity_data['name'], activity_data['address'], activity_data['description'])
+        activity = Activity.find_or_create_by(
+          name: "#{details_activity['name']} (#{details_activity['category']})",
+          description: details_activity['description'],
+          reviews: details_activity['reviews'].to_f,
+          website_url: url_alive?(details_activity['website_url']) ? details_activity['website_url'] : "Unknown",
+          wiki: url_alive?(details_activity['wiki']) ? details_activity['wiki'] : "Unknown",
+          address: activity_data["address"],
+          latitude: activity_data["latitude"].to_f,
+          longitude: activity_data["longitude"].to_f
+        )
+      else
+        activity = Activity.find_or_create_by(
+          name: activity_data['name'],
+          description: activity_data['description'],
+          reviews: activity_data['reviews'],
+          website_url: "Unknown",
+          wiki: "Unknown",
+          address: activity_data["address"],
+          latitude: activity_data["latitude"].to_f,
+          longitude: activity_data["longitude"].to_f
+        )
       end
-      
-      activity = Activity.find_or_create_by(
-        name: "#{details_activity['name']} (#{details_activity['category']})",
-        description: details_activity['description'],
-        address: location.address,
-        reviews: details_activity['reviews'].to_f,
-        website_url: url_alive?(details_activity['website_url']) ? details_activity['website_url'] : "Unknown",
-        wiki: url_alive?(details_activity['wiki']) ? details_activity['wiki'] : "Unknown",
-        latitude: location.latitude.to_f,
-        longitude: location.longitude.to_f
-      )
 
       trip_activity = TripActivity.create!(
         activity: activity,
@@ -140,9 +150,9 @@ class DestinationsController < ApplicationController
   
     return trip
   end
-  
+# ---------------------------------------------------------------------------------------
   private
-
+# ---------------------------------------------------------------------------------------
   def fetch_destination_info_by_name(destination)
     system_content = 
       "Tu es un expert de l'organisation d'activités et de découverte d'une destination de voyage.\n" \
@@ -157,7 +167,8 @@ class DestinationsController < ApplicationController
       "8- Tu dois fournir ta réponse sous la forme d'un fichier JSON qui sera parser en Ruby on rails et dont le format pour chaque activité correspond aux clés primaire suivantes :\n" \
 	  "- `address` : Adresse complète.\n" \
 	  "- `latitude` : Latitude.\n" \
-	  "- `longitude` : Longitude.\n"
+	  "- `longitude` : Longitude.\n" \
+	  "- `alpha3code` : Code ALPHA3 du pays de la destination.\n" \
 	  "- `currency` : Monnaie locale.\n" \
 	  "- `papers` : Documents nécessaires pour entrer.\n" \
 	  "- `food` : Description courte de la gastronomie locale.\n" \
@@ -183,24 +194,31 @@ class DestinationsController < ApplicationController
 
     nil
   end
-
-  def fetch_activities(trip_name, start_date, end_date)
+# ---------------------------------------------------------------------------------------
+  def fetch_activities_city(trip_name, start_date, end_date)
     system_content = 
       "Tu es un expert de l'organisation d'activités et de découverte d'une destination de voyage.\n" \
-      "L'utilisateur va fournir une destination de voyage, une date de début et une date de fin incluses.\n" \
-      "1- tu dois calculer le nombre de jours de voyage.\n" \
-      "2- tu dois rechercher des activités à réaliser pour cette destination.\n" \
-      "3- tu dois proposer pour chaque journée une activité le matin, une l'après-midi et une le soir.\n" \
-      "4- Tu dois regrouper de façon pertinente ces activités de façon à optimiser les déplacements.\n" \
-      "5- Tu dois rédiger une description courte de chaque activité proposée mentionnant son type et en quoi elle consiste (description dans le JSON)." \
-      "6- Tu dois fournir ta réponse sous la forme d'un fichier JSON qui sera parser en Ruby on rails et dont le format est un tableau d'activités avec pour chaque activité les clés primaire suivantes :\n" \
+      "L'utilisateur va fournir une destination de voyage, une date de début et une date de fin.\n" \
+      "Ton objectif va être de rechercher des occupations pour chaque journée du voyage de la date de début à la date de fin incluses pour la destination indiquée comprenant : \n" \
+      "- des activités prenant un certain temps comme la visite d'un musée, une ballade dans un parc, une randonnée, un vol en montgolfière, ...\n" \
+      "- des points d'intérêt correspondant à quelque chose à voir juste en passant devant comme un batiment historique, un monument type statue ou street art dans une ville, une vue sur un paysage, une rue typique à faire, un magasin vendant des spécialités culinaires typiques (comme une patisserie, un glacier, un plat à emporter, ...) dont la renommée est importante, une route touristique à faire en voiture, ...\n" \
+      "- des lieux de restauration réputés par leur rating consommateurs trés bien notés pour le midi et le soir.\n" \
+      "1- tu dois imaginer pour chaque journée complète, date de début et fin du voyage incluses, une liste chronologique, cohérente avec les horaires d'ouverture ou la lumière du jour, optimisée pour limiter les déplacements de ces information : \n" \
+      "- des occupations pour le matin,\n" \
+      "- un restaurant le midi,\n" \
+      "- des occupations l'après-midi,\n" \
+      "- un restaurant le soir,\n" \
+      "- des occupations pour le soir.\n" \
+      "2- Tu dois rédiger une description courte de chaque activité proposée mentionnant son type et en quoi elle consiste (description dans le JSON).\n" \
+      "3- Tu dois fournir ta réponse sous la forme d'un fichier JSON qui sera parser en Ruby on rails et dont le format est un tableau d'activités avec pour chaque activité les clés primaire suivantes :\n" \
       "- 'start_date' qui contiendra le datetime de début de l'activité.\n" \
       "- 'end_date' qui contiendra le datetime de fin de l'activité.\n" \
       "- 'name' qui contiendra le nom usuel de l'activité.\n" \
       "- 'address' qui contiendra l'adresse de départ de l'activité.\n" \
-      "- 'description'.\n" \
+      "- `latitude` : Latitude de l'adresse.\n" \
+      "- `longitude` : Longitude de l'adresse.\n" \
+      "- 'description' qui contiendra la description de l'activité.\n" \
       "Si la destination n'est pas identifiable, le champ 'content' de ta réponse au format JSON doit contenir uniquement 'ERROR'." \
-      # "Si la taille du fichier JSON de sortie est trop longue, tu peux retirer les activités du soir, si après cette suppression elle est encore trop longue, tu peux ne proposer qu'une seule activité par jour. Si c'est encore trop long, tu peux raccourcir les descriptions à 3 ou 4 mots.\n" \
       "Si la taille du fichier JSON de sortie est trop longue, tu dois retourner que des activités complètes retournes le nombre maximum d'activités que tu es capable de retourner sans tronquer les données et tu ferme le tableau JSON proprement sans mettre '...' à la fin pour dire que tu n'as pas pu tout mettre.\n"
 
     user_content = 
@@ -224,12 +242,52 @@ class DestinationsController < ApplicationController
 
     nil
   end
+# ---------------------------------------------------------------------------------------
+  def fetch_activities_country(trip_name, start_date, end_date)
+    system_content = 
+      "Tu es un expert de l'organisation d'activités et de découverte d'une destination de voyage.\n" \
+      "L'utilisateur va fournir une destination de voyage, une date de début et une date de fin.\n" \
+      "1- tu dois calculer le nombre de jours de voyage.\n" \
+      "2- tu dois proposer un itinéraire de voyage sous la forme d'étapes pour découvrir cette destination.\n" \
+      "7- Tu dois optimiser les déplacements.\n" \
+      "8- Tu dois fournir ta réponse sous la forme d'un fichier JSON qui sera parser en Ruby on rails et dont le format est un tableau d'activités avec pour chaque activité les clés primaire suivantes :\n" \
+      "- 'start_date' qui contiendra le datetime de début de l'étape.\n" \
+      "- 'end_date' qui contiendra le datetime de fin de l'étape.\n" \
+      "- 'name' qui contiendra le nom de l'étape.\n" \
+      "- `reviews` qui contiendra une note décimale sur 5 correspondant à l'avis des personnes ayant réalisées cette étape\n" \
+      "- 'address' qui contiendra l'adresse de départ de l'étape.\n" \
+      "- `latitude` : Latitude de l'adresse de départ.\n" \
+      "- `longitude` : Longitude de l'adresse de départ.\n" \
+      "- 'description' qui contiendra la description détaillée de l'étape avec ses différentes activités et leurs intérêts touristiques. Chaque activité doit être catégorisée.\n" \
+      "Si la destination n'est pas identifiable, le champ 'content' de ta réponse au format JSON doit contenir uniquement 'ERROR'."
 
+    user_content = 
+    "La destination de mon voyage est #{trip_name} du #{start_date} au #{end_date}"
+
+    client = OpenAI::Client.new
+    response = client.chat(parameters: {
+      "model": 'gpt-3.5-turbo',
+      "messages": [
+        { "role": 'system', "content": system_content },
+        { "role": 'user', "content": user_content }
+      ],
+      "temperature": 0.0
+    })
+    
+    data = JSON.parse(response['choices'][0]['message']['content'])
+    
+    if data != "ERROR"
+      return data['activities']
+    end
+
+    nil
+  end
+# ---------------------------------------------------------------------------------------
   def fetch_activity(name, address, description)
     system_content = 
       "Tu es un expert de l'organisation d'activités et de découverte d'une destination de voyage.\n" \
       "L'utilisateur va fournir une activité qui lui a été recommandée avec un nom et une adresse.\n" \
-      "1- tu dois analyser l'activité, son adresse et sa description succinte pour comprendre la nature de l'activité et l'identifier précisément.\n" \
+      "1- tu dois analyser l'activité et sa description succinte pour comprendre la nature de l'activité et l'identifier précisément.\n" \
       "2- tu dois rédiger une description de l'activité (description dans le JSON) en 3 paragraphes non numérotés expliquant : 1er paragraphe en quoi elle consiste, 2eme paragraphe son intérêt intrinsèque, 3eme paragraphe pourquoi il ne faut pas la rater selon les experts.\n" \
       "3- tu dois rédiger un titre (name dans le JSON) donnant envie de faire l'activité.\n" \
       "4- Tu dois rechercher fournir une note décimale (reviews dans le JSON) sur 5 correspondant à l'avis des personnes ayant réalisées cette activité.\n" \
@@ -267,11 +325,16 @@ class DestinationsController < ApplicationController
 
     nil
   end
-
+# ---------------------------------------------------------------------------------------
   def search_geocoder(address)
     location = []
     # address = "Padre Burgos Ave, Ermita, Manila, 1000 Metro Manila"
+    Rails.logger.debug "#-----------------------------------------------------------"
+    Rails.logger.debug "# GEOCODER address : #{address}"
+
     results = Geocoder.search(address)
+
+    Rails.logger.debug "# GEOCODER results : #{results}"
     
     if results.any?
       location = results.first
@@ -280,12 +343,15 @@ class DestinationsController < ApplicationController
         latitude: location.latitude,
         longitude: location.longitude
       }
+
+      Rails.logger.debug "# GEOCODER address : #{location.address} (#{location.latitude},{location.longitude})"
+
       return location
     else
       return nil
     end
   end
-
+# ---------------------------------------------------------------------------------------
   def url_alive?(url)
     begin
       # Parse l'URL
@@ -303,7 +369,7 @@ class DestinationsController < ApplicationController
       false
     end
   end
-
+# ---------------------------------------------------------------------------------------
   def clean_json(json_string)
     # Supprimer les caractères d'échappement inutiles
     json_string = json_string.gsub('\\n', '').gsub('\\"', '"')
