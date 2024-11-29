@@ -222,7 +222,7 @@ def show
       "Si la taille du fichier JSON de sortie est trop longue, tu dois retourner que des activités complètes retournes le nombre maximum d'activités que tu es capable de retourner sans tronquer les données et tu ferme le tableau JSON proprement sans mettre '...' à la fin pour dire que tu n'as pas pu tout mettre.\n"
 
     user_content = 
-    "La destination de mon voyage est #{trip_name} du #{start_date} au #{end_date} et je recherche des activités appartenant aux catégories suivantes : Culturelle, Nature."
+    "La destination de mon voyage est #{trip_name} du #{start_date} au #{end_date} et je recherche des activités appartenant aux catégories suivantes : Culturelle, Nature. Tu dois prendre en compte également ce besoin spécifique : Restaurant végétarien et une activité par jour spécifique pour des enfants."
 
     client = OpenAI::Client.new
     response = client.chat(parameters: {
