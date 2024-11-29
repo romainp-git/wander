@@ -14,5 +14,6 @@ Rails.application.routes.draw do
   get 'searches/:id/launch', to: 'searches#launch', as: 'launch_search'
 
   get 'form', to: 'pages#form'
+  get 'test', to: 'pages#test'
   get "up" => "rails/health#show", as: :rails_health_check
 end

@@ -3,6 +3,8 @@
   <head>
     <title>Wander</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="turbo-visit-control" content="reload">
+
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
@@ -14,7 +16,7 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body class="<%= controller_name %>-controller <%= action_name %>-action">
+  <body class="<%= controller_name %>-controller <%= action_name %>-action" data-search-id="<%= @search&.id %>">
 
     <div class="fixed inset-0 animate-gradient mesh-gradient-dark opacity-70 z-0"></div>
 

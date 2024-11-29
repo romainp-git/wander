@@ -1,35 +1,35 @@
-<turbo-frame id="modal-frame">
+<turbo-frame action="replace" id="modal-frame">
   <div data-controller="stories">
-  <div class="fixed inset-0 z-20 rounded-t-lg shadow-lg transition-transform duration-500 transform translate-y-full" data-controller="modal">
-    <button class="absolute top-4 right-4 z-50" data-action="click->modal#close">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="white" class="size-6">
-        <path stroke-linecap="round" class="shadow" stroke-linejoin="round" d="M19.5 13.5 12 21m0 0-7.5-7.5M12 21V3" />
-      </svg>
-    </button>
+    <div class="fixed inset-0 z-20 rounded-t-lg shadow-lg transition-transform duration-500 transform translate-y-full" data-controller="modal">
+      <button class="absolute top-4 right-4 z-50" data-action="click->modal#close">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="white" class="size-6">
+          <path stroke-linecap="round" class="shadow" stroke-linejoin="round" d="M19.5 13.5 12 21m0 0-7.5-7.5M12 21V3" />
+        </svg>
+      </button>
 
-    <div data-stories-target="track" class="carousel-track flex transition-transform duration-1000 ease-in-out w-full h-full">
-      <div data-stories-target="item" class="carousel-item w-full flex-shrink-0">
-        <%= cl_image_tag suggestion.photos[0].key, class: "w-full h-full object-cover" %>
+      <div data-stories-target="track" class="carousel-track flex transition-transform duration-1000 ease-in-out w-full h-full">
+        <div data-stories-target="item" class="carousel-item w-full flex-shrink-0">
+          <%= cl_image_tag suggestion.photos[0].key, class: "w-full h-full object-cover" %>
+        </div>
+        <div data-stories-target="item" class="carousel-item w-full flex-shrink-0">
+          <%= cl_image_tag suggestion.photos[1].key, class: "w-full h-full object-cover" %>
+        </div>
+        <div data-stories-target="item" class="carousel-item w-full flex-shrink-0">
+          <%= cl_image_tag suggestion.photos[2].key, class: "w-full h-full object-cover" %>
+        </div>
       </div>
-      <div data-stories-target="item" class="carousel-item w-full flex-shrink-0">
-        <%= cl_image_tag suggestion.photos[1].key, class: "w-full h-full object-cover" %>
-      </div>
-      <div data-stories-target="item" class="carousel-item w-full flex-shrink-0">
-        <%= cl_image_tag suggestion.photos[2].key, class: "w-full h-full object-cover" %>
-      </div>
-    </div>
 
-    <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex w-full gap-2 px-4">
-      <div class="flex-1 bg-gray-300 h-1">
-        <div data-stories-target="progressBar" class="h-full bg-gray-800"></div>
-      </div>
-      <div class="flex-1 bg-gray-300 h-1">
-        <div data-stories-target="progressBar" class="h-full bg-gray-800"></div>
-      </div>
-      <div class="flex-1 bg-gray-300 h-1">
-        <div data-stories-target="progressBar" class="h-full bg-gray-800"></div>
+      <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex w-full gap-2 px-4">
+        <div class="flex-1 bg-gray-300 h-1">
+          <div data-stories-target="progressBar" class="h-full bg-gray-800"></div>
+        </div>
+        <div class="flex-1 bg-gray-300 h-1">
+          <div data-stories-target="progressBar" class="h-full bg-gray-800"></div>
+        </div>
+        <div class="flex-1 bg-gray-300 h-1">
+          <div data-stories-target="progressBar" class="h-full bg-gray-800"></div>
+        </div>
       </div>
     </div>
   </div>
-</div>
 </turbo-frame>
