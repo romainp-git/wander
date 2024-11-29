@@ -23,7 +23,7 @@
             <div>
               <p class="text-lg font-bold"><%= activity.activity.name %></p>
               <p class="text-sm"><%= activity.start_date.strftime('%B %d, %Y %H:%M') %> - <%= activity.end_date.strftime('%B %d, %Y %H:%M') %></p>
-              <p class="text-sm"><%= activity.activity.address %> (<%= activity.activity.latitude %>, <%= activity.activity.latitude %>)</p>
+              <p class="text-sm"><%= activity.activity.address %> (<%= activity.activity.latitude %>, <%= activity.activity.longitude %>)</p>
             </div>
             <p class="text-lg font-bold"><%= activity.activity.reviews %></p>
           </div>
@@ -84,9 +84,10 @@
     // Ajouter des pins bleus pour les activités avec popups
     <% @trip_activities.each do |activity| %>
       activityName = "<%= activity.activity.name %>";
+      activityCoord = "<%= activity.activity.latitude %>, <%= activity.activity.longitude %>";
       startDate = "<%= activity.start_date.strftime('%B %d, %Y %H:%M') %>";
       endDate = "<%= activity.end_date.strftime('%B %d, %Y %H:%M') %>";
-      popupContent = `<strong>${activityName}</strong><br>${startDate} - ${endDate}`;
+      popupContent = `<strong>${activityName}</strong><br>${activityCoord}<br>${startDate} - ${endDate}`;
 
       activityPopup = new mapboxgl.Popup({ closeButton: false, closeOnClick: false }).setHTML(popupContent);
 

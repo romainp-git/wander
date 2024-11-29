@@ -18,7 +18,6 @@ export default class extends Controller {
     flatpickr(this.element, {
       minDate: "today",
       appendTo: this.calendarTarget,
-      disableMobile: true,
       mode: "range",
       dateFormat: "Y-m-d",
       locale: {

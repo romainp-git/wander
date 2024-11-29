@@ -1,12 +1,11 @@
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
-  static targets = ["text", "titlePart", "formPart", "pulseButton"];
+  static targets = ["text", "titlePart", "formPart", "pulseButton", "buttons"];
 
   connect() {
     console.log("add_trip_controller");
-    this.text = `Bonjour, Je suis Wander 👾, votre assistant personnel de voyage.
-    J'ai besoin de quelques informations pour créer votre programme.`;
+    this.text = `J'ai besoin de quelques informations pour créer votre programme.`;
     this.index = 0;
     setTimeout(() => this.typeWriter(), 500);
   }
@@ -23,20 +22,13 @@ export default class extends Controller {
       setTimeout(() => this.typeWriter(), 30);
     } else {
       setTimeout(() => {
-        this.titlePartTarget.style.marginTop = "10px";
+        this.titlePartTarget.style.marginTop = "0";
         this.pulseButtonTarget.classList.add("opacity-0");
-
-        const tabsController = this.application.getControllerForElementAndIdentifier(
-          document.querySelector('[data-controller="tabs-form-new-trip"]'),
-          "tabs-form-new-trip"
-        );
-        if (tabsController) {
-          tabsController.activateTab({ detail: { index: 1 } });
-        }
 
         setTimeout(() => {
           this.pulseButtonTarget.classList.add("hidden");
-          this.formPartTarget.classList.replace("opacity-0", "opacity-100");
+          this.formPartTarget.classList.remove("opacity-0");
+          this.buttonsTarget.classList.remove("opacity-0");
         }, 1000);
       }, 500);
     }
