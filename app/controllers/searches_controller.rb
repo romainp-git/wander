@@ -9,7 +9,7 @@ class SearchesController < ApplicationController
     if @search.save
       OpenaiService.new(@search).generate_program
       trip = Trip.find(@search.trip_id)
-      redirect_to trips_path(trip)
+      redirect_to trip_path(trip)
     else
       render :new
     end
