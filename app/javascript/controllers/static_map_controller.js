@@ -8,6 +8,7 @@ export default class extends Controller {
   static targets = ["static-map"];
 
   connect() {
+    console.log("connect")
     console.log(this.isoCodesValue)
     mapboxgl.accessToken = this.apiKeyValue;
     const map = new mapboxgl.Map({
