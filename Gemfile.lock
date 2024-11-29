@@ -172,6 +172,7 @@ GEM
     irb (1.14.1)
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
+    iso_country_codes (0.7.8)
     jbuilder (2.13.0)
       actionview (>= 5.0.0)
       activesupport (>= 5.0.0)
@@ -364,6 +365,7 @@ DEPENDENCIES
   faker (~> 3.2)
   geocoder
   importmap-rails
+  iso_country_codes
   jbuilder
   pg (~> 1.1)
   puma (>= 5.0)

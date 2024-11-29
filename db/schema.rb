@@ -65,6 +65,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_28_203350) do
     t.datetime "updated_at", null: false
     t.float "latitude"
     t.float "longitude"
+    t.string "alpha3code"
   end
 
   create_table "suggestions", force: :cascade do |t|
