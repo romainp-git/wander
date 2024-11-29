@@ -22,7 +22,7 @@ export default class extends Controller {
       setTimeout(() => this.typeWriter(), 30);
     } else {
       setTimeout(() => {
-        this.titlePartTarget.style.marginTop = "10px";
+        this.titlePartTarget.style.marginTop = "0";
         this.pulseButtonTarget.classList.add("opacity-0");
 
         setTimeout(() => {

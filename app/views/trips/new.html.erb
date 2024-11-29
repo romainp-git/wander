@@ -1,5 +1,11 @@
-<div id="screen-container" class="relative h-screen overflow-hidden pb-safe-bottom flex flex-col" data-controller="add-trip-animation">
+<div id="screen-container" class="relative h-screen overflow-hidden flex flex-col" data-controller="add-trip-animation">
   <div data-controller="stepper">
+    <button class="relative p-4 shadow " data-action="click->stepper#goBack" data-url="<%= trips_path %>" >
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="white" class="size-6">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+      </svg>
+    </button>
+
     <div id="pulse-button" data-add-trip-animation-target="pulseButton" class="absolute transition-opacity duration-1000 animate-pulse-slow flex justify-center items-center bottom-10 w-full">
       <div class="w-16 h-16 halo animate-gradient mesh-gradient-orange rounded-full"></div>
     </div>
@@ -13,22 +19,22 @@
 
       <div id="stepper-container" class="stepper relative">
         <!-- Étape 1 -->
-        <div class="absolute step transition-transform transform translate-x-0" data-stepper-target="step">
+        <div class="absolute step transition-transform transform translate-x-0 w-screen overflow-x-hidden" data-stepper-target="step">
           <%= render 'form_destination' %>
         </div>
 
         <!-- Étape 2 -->
-        <div class="absolute step transition-transform transform translate-x-full" data-stepper-target="step">
+        <div class="absolute step transition-transform transform translate-x-full w-screen overflow-x-hidden" data-stepper-target="step">
           <%= render 'form_dates' %>
         </div>
 
         <!-- Étape 3 -->
-        <div class="absolute step transition-transform transform translate-x-full" data-stepper-target="step">
+        <div class="absolute step transition-transform transform translate-x-full w-screen overflow-x-hidden" data-stepper-target="step">
           <%= render 'form_partners' %>
         </div>
 
         <!-- Étape 4 -->
-        <div class="absolute step transition-transform transform translate-x-full" data-stepper-target="step">
+        <div class="absolute step transition-transform transform translate-x-full w-screen overflow-x-hidden" data-stepper-target="step">
           <%= render 'form_partners' %>
         </div>
       </div>
@@ -36,10 +42,10 @@
 
     <div class="w-full flex justify-center mt-6 gap-5 absolute bottom-10 opacity-0 transition-opacity duration-500"
       data-add-trip-animation-target="buttons">
-      <button class="prev-step bg-opacity-50 text-sm font-medium text-white border px-4 py-2 hover:bg-white"
+      <button class="prev-step bg-opacity-50 text-sm font-medium text-white border px-4 py-2 active:bg-white"
               data-stepper-target="prevButton"
               data-action="click->stepper#previousStep">Précédent</button>
-      <button class="next-step bg-opacity-50 text-sm font-medium text-white border px-4 py-2 hover:bg-white" data-action="click->stepper#nextStep">Suivant</button>
+      <button class="next-step bg-opacity-50 text-sm font-medium text-white border px-4 py-2 active:bg-white" data-action="click->stepper#nextStep">Suivant</button>
     </div>
   </div>
 </div>

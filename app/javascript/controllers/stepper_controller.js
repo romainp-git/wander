@@ -62,4 +62,9 @@ export default class extends Controller {
       this.prevButtonTarget.classList.add("hidden");
     }
   }
+
+  goBack(event) {
+    const url = event.currentTarget.dataset.url || "/trips";
+    window.location.href = url;
+  }
 }
