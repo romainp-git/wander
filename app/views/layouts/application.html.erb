@@ -8,7 +8,7 @@
 
     <%= stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
-    
+
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
     <link rel="manifest" href="/manifest.json">
     <%= javascript_importmap_tags %>
@@ -19,6 +19,7 @@
     <div class="fixed inset-0 animate-gradient mesh-gradient-dark opacity-70 z-0"></div>
 
     <main class="relative z-10 inset-0">
+    <%= console %>
       <%= yield %>
     </main>
 

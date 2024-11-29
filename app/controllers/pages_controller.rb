@@ -1,5 +1,4 @@
 class PagesController < ApplicationController
-
   def home
     @trips = Trip.where(user: current_user)
     @destinations = self.trips.empty? ? ["FRA","FRA","GBR","NLD","AUS"] : trips
