@@ -81,4 +81,3 @@ production:
   <<: *default
   database: wander_production
   username: wander
-  password: <%= ENV["WANDER_DATABASE_PASSWORD"] %>

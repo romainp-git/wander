@@ -1,0 +1,16 @@
+<div class="container-stats">
+  <label for="my_modal_7" class="btn"></label>
+  <h2>Mes statistiques de voyage</h2>
+  <input type="checkbox" id="my_modal_7" class="modal-toggle" />
+  <div class="modal" role="dialog">
+    <div class="modal-box">
+      <h3 class="text-lg font-bold">Statistique de voyage</h3>
+      <div id="static-map" data-controller="static-map"
+        data-static-map-api-key-value="<%= ENV['MAPBOX_API_KEY'] %>"
+        data-static-map-iso-codes-value= "<%= @destinations %>"
+        data-static-map-target="static-map"
+        class="w-full h-64"></div>
+    </div>
+    <label class="modal-backdrop" for="my_modal_7">Close</label>
+  </div>
+</div>

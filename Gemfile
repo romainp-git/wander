@@ -54,6 +54,7 @@ gem 'ruby-openai'
 gem 'sass-rails', '~> 6.0'
 gem 'simple_form', github: 'heartcombo/simple_form'
 gem 'tailwindcss-rails'
+gem 'iso_country_codes'
 
 group :development, :test do
   gem 'dotenv-rails'
