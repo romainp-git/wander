@@ -1,4 +1,5 @@
 class OpenaiService
+  include Sidekiq::Worker
   # ---------------------------------------------------------------------------------------
   def initialize(search)
     @search = search
@@ -29,7 +30,7 @@ class OpenaiService
     Rails.logger.debug "#-----------------------------------------------------------"
     Rails.logger.debug "#get_activities(#{type}) : #{activities['activities']}"
 
-    create_trip_activities(type, trip, activities['activities'])
+    create_trip_activities(type, @search, trip, activities['activities'])
 
     # photo_url = Unsplash::Photo.search("#{destination_ai['city']}", 1, 1)
     # photo_url = Unsplash::Photo.search("Lille", 1, 1)
@@ -98,15 +99,15 @@ class OpenaiService
     call_openai(prompt_activities)
   end
   # ---------------------------------------------------------------------------------------
-  def get_activity_details(activity)
-    prompt_activity = get_prompt_activity(activity)
+  def get_activity_details(search, activity)
+    prompt_activity = get_prompt_activity(search, activity)
     call_openai(prompt_activity)
   end
   # ---------------------------------------------------------------------------------------
-  def create_trip_activities(type, trip, activities)
-    activities.each_with_index do |activity, index|
+  def create_trip_activities(type, search, trip, activities)
+    activities.each do |activity|
       if type == "CITY"
-        activity_details = get_activity_details(activity)
+        activity_details = get_activity_details(search, activity)
 
         new_activity = Activity.find_or_create_by(
           name: "#{activity_details['name']} (#{activity_details['category']})",
@@ -149,14 +150,25 @@ class OpenaiService
         { "role": 'user', "content": prompt[:user_content] }
       ],
       "temperature": 0.0
-    })
+    }, timeout: 120)
 
     data = JSON.parse(response['choices'][0]['message']['content'])
 
-    Rails.logger.debug "#-----------------------------------------------------------"
-    Rails.logger.debug "#call_openai : #{data}"
-
-    return data
+    if parsed_response['choices'] && parsed_response['choices'][0] && parsed_response['choices'][0]['message'] && parsed_response['choices'][0]['message']['content']
+      data = JSON.parse(parsed_response['choices'][0]['message']['content'])
+      Rails.logger.debug "#-----------------------------------------------------------"
+      Rails.logger.debug "#call_openai : #{data}"
+      return data
+    else
+      Rails.logger.error "Invalid response format: #{parsed_response}"
+      return { 'content' => 'ERROR' }
+    end
+  rescue RestClient::ExceptionWithResponse => e
+    Rails.logger.error "API call failed: #{e.response}"
+    return { 'content' => 'ERROR' }
+  rescue JSON::ParserError => e
+    Rails.logger.error "JSON parsing failed: #{e.message}"
+    return { 'content' => 'ERROR' }
   end
   # ---------------------------------------------------------------------------------------
   def get_prompt_destination(search)
@@ -215,15 +227,21 @@ class OpenaiService
     "Si la destination n'est pas identifiable, le champ 'content' de ta réponse au format JSON doit contenir uniquement 'ERROR'." \
     "Si la taille du fichier JSON de sortie est trop longue, tu dois retourner que des activités complètes retournes le nombre maximum d'activités que tu es capable de retourner sans tronquer les données et tu ferme le tableau JSON proprement sans mettre '...' à la fin pour dire que tu n'as pas pu tout mettre.\n"
 
-    # if search.nb_children > 0
-    #   children = "Tu dois prévoir une activité spécifique pour les enfants par jour."
-    # end
-    # if search.infants > 0
-    #   infants = "Tu dois t'assurer que les activités soient compatibles avec la présence de bébés et l'utilisation d'une poussette."
-    # end
 
     user_content =
-    "La destination de mon voyage est #{search.destination} du #{search.start_date} au #{search.end_date} et je recherche des activités appartenant aux catégories suivantes si précisées : #{search.categories}. Tu dois prendre en compte également ce besoin spécifique si précisé : #{search.inspiration.to_s}."
+    "La destination de mon voyage est #{search.destination} du #{search.start_date} au #{search.end_date}."
+    if search.categories.length > 0
+      user_content = user_content + "Les catagories d'activités attendues sont celles-ci : #{search.categories}."
+    end
+    if search.nb_children > 0
+      user_content = user_content + "Tu dois prévoir une activité spécifique pour les enfants par jour."
+    end
+    if search.infants > 0
+      user_content = user_content + "Tu dois t'assurer que les activités soient compatibles avec la présence d'un bébé et l'utilisation d'une poussette."
+    end
+    if search.inspiration.to_s.length > 0
+      user_content = user_content + "Tu dois prendre en compte également cette demande compléementaire : #{search.inspiration.to_s}."
+    end
 
     return { "system_content": system_content, "user_content": user_content }
   end
@@ -252,7 +270,7 @@ class OpenaiService
     return { "system_content": system_content, "user_content": user_content }
   end
   # ---------------------------------------------------------------------------------------
-  def get_prompt_activity(activity)
+  def get_prompt_activity(search, activity)
     system_content =
       "Tu es un expert de l'organisation d'activités et de découverte d'une destination de voyage.\n" \
       "L'utilisateur va fournir une activité qui lui a été recommandée avec un nom et une adresse.\n" \
@@ -260,7 +278,7 @@ class OpenaiService
       "2- tu dois rédiger une description de l'activité (description dans le JSON) en 3 paragraphes non numérotés expliquant : 1er paragraphe en quoi elle consiste, 2eme paragraphe son intérêt intrinsèque, 3eme paragraphe pourquoi il ne faut pas la rater selon les experts.\n" \
       "3- tu dois rédiger un titre (name dans le JSON) donnant envie de faire l'activité.\n" \
       "4- Tu dois rechercher fournir une note décimale (reviews dans le JSON) sur 5 correspondant à l'avis des personnes ayant réalisées cette activité.\n" \
-      "5- Tu dois catégoriser (category dans le JSON) tes activités selon la liste suivante : Culturelle, Nature, Aventure, Détente, Gastronomique, Sociale, Shopping. Si tu hésite entre 2 tu peux mettre les 2 sous la forme d'une chaine unique avec les catégories séparées par une virgule et un espace." \
+      "5- Tu dois catégoriser (category dans le JSON) tes activités selon la liste suivante : #{search.categories}. Si tu hésite entre 2 tu peux mettre les 2 sous la forme d'une chaine unique avec les catégories séparées par une virgule et un espace." \
       "6- Si il existe, tu dois fournir l'url du site web commerciale ou organisationnel de cette activité (website_url dans le JSON).\n" \
       "7- Si il existe, tu dois fournir l'url wikipédia de cette activité (wiki dans le JSON).\n" \
       "8- Tu dois fournir ta réponse sous la forme d'un fichier JSON qui sera parser en Ruby on rails et dont le format est pour chaque activité les clés primaire suivantes :\n" \
