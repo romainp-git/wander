@@ -1,5 +1,6 @@
 development:
   adapter: async
+  channel_prefix: wander_development
 
 test:
   adapter: test

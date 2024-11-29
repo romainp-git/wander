@@ -7,9 +7,8 @@ class SearchesController < ApplicationController
     @search = Search.new(search_params)
 
     if @search.save
-      OpenaiService.new(@search).generate_program
-      trip = Trip.find(@search.trip_id)
-      redirect_to trip_path(trip)
+      render turbo_stream: turbo_stream.replace( "modal-frame", partial: "shared/loading", locals: { search: @search } )
+      OpenaiJob.perform_later(@search.id)
     else
       render :new
     end
