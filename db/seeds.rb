@@ -30,7 +30,8 @@ users = [
     password: "password",
     first_name: "Pierre-Yves",
     last_name: "MEVEL",
-    username: "PYM"
+    username: "PYM",
+    address: "2 avenue des saules, 59800 LILLE"
   }
 ]
 
@@ -55,7 +56,8 @@ users.each_with_index do |user, index|
       password_confirmation: user[:password],
       first_name: user[:first_name],
       last_name: user[:last_name],
-      username: user[:username]
+      username: user[:username],
+      address: user[:address]
     )
     puts "Created user: #{current_user.email}"
 

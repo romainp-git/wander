@@ -2,13 +2,17 @@ class TripsController < ApplicationController
 
   def index
     @trips = Trip.where(user: current_user)
+
     @destinations = self.trips.empty? ? ["FRA","FRA","GBR","NLD","AUS"] : trips
     @travels = self.journeys.empty? ? ["FRA","FRA","GBR","NLD","AUS"] : journeys
+
     @stats = {
       total_countries_visited: @destinations.count,
       ratio: ((@destinations.count / 249.0) * 100).round(2),
       total_travels: @travels.count
     }
+
+    @total_km = total_km(@trips)
   end
 
   def show
@@ -28,6 +32,22 @@ class TripsController < ApplicationController
   end
 
   def edit
+
+  end
+
+  def total_km(trips)
+    total = 0
+    options = {
+      units: :km
+    }
+    @trips.each do |trip|
+      total += Geocoder::Calculations.distance_between(
+        [current_user.latitude, current_user.longitude],
+        [trip.destination.latitude, trip.destination.longitude],
+        options
+      )
+    end
+    total.round(2)
   end
 
   private
@@ -36,7 +56,7 @@ class TripsController < ApplicationController
     activities.map do |activity|
       {
         lat: activity.latitude,
-        lng: activity.longitude,
+        lng: activity.longitude
       }
     end
   end
@@ -48,5 +68,4 @@ class TripsController < ApplicationController
   def trips
     @trips.map(&:destination).map(&:alpha3code).compact.uniq
   end
-
 end

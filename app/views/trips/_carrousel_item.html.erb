@@ -6,7 +6,7 @@
   data-carousel-index-value="<%= index %>"
 >
   <!-- Photo -->
-  <% if activity.photos.first.key.present? %>
+  <% if activity.photos.first.present? %>
     <%= cl_image_tag activity.photos.first.key, class: "rounded-full size-20" %>
   <% else %>
     <%= image_tag 'no_picture.jpg', class: "rounded-full size-20", alt: "No picture available" %>
