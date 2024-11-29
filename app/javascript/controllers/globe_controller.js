@@ -33,6 +33,7 @@ export default class extends Controller {
 
     let userInteracting = false;
     let spinEnabled = true;
+    let spinTimeout; // Variable pour stocker l'identifiant du timeout
 
     const spinGlobe = () => {
       const zoom = this.map.getZoom();
@@ -49,12 +50,27 @@ export default class extends Controller {
       }
     };
 
+    const restartSpinWithDelay = () => {
+      clearTimeout(spinTimeout); // Annule le timeout précédent
+      spinTimeout = setTimeout(() => {
+        userInteracting = false;
+        spinGlobe();
+      }, 500); // Délai en millisecondes (ici 1 seconde)
+    };
+
     this.map.on('mousedown', () => { userInteracting = true; });
-    this.map.on('mouseup', () => { userInteracting = false; spinGlobe(); });
-    this.map.on('dragend', () => { userInteracting = false; spinGlobe(); });
-    this.map.on('pitchend', () => { userInteracting = false; spinGlobe(); });
-    this.map.on('rotateend', () => { userInteracting = false; spinGlobe(); });
-    this.map.on('moveend', () => { spinGlobe(); });
+    this.map.on('mouseup', () => { restartSpinWithDelay(); });
+    this.map.on('dragend', () => { restartSpinWithDelay(); });
+    this.map.on('pitchend', () => { restartSpinWithDelay(); });
+    this.map.on('rotateend', () => { restartSpinWithDelay(); });
+    this.map.on('moveend', () => { restartSpinWithDelay(); });
+
+    // Gestion des gestes mobiles
+    this.map.on('touchstart', () => { userInteracting = true; });
+    this.map.on('touchend', () => { restartSpinWithDelay(); });
+    this.map.on('touchmove', () => {
+      userInteracting = true; // Détection du déplacement tactile
+    });
 
     spinGlobe();
   }
