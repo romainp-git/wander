@@ -15,9 +15,7 @@
     </div>
   </div>
 
-  <%= simple_form_for @trip do |f| %>
-    <div id="calendar" data-datepicker-target="calendar" class="w-full"></div>
-    <%= f.hidden_field :start_date, id: "start-date" %>
-    <%= f.hidden_field :end_date, id: "end-date" %>
-  <% end %>
+  <div id="calendar" data-datepicker-target="calendar" class="w-full"></div>
+  <%= f.hidden_field :start_date, value: "",data: { "datepicker-target": "startInput" } %>
+  <%= f.hidden_field :end_date, value: "", data: { "datepicker-target": "endInput" } %>
 </div>

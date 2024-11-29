@@ -1,10 +1,6 @@
-<div class="container-stats">
-  <label for="my_modal_7" class="btn"></label>
-  <h2>Mes statistiques de voyage</h2>
-  <input type="checkbox" id="my_modal_7" class="modal-toggle" />
-  <div class="modal" role="dialog">
-    <div class="modal-box">
-      <h3 class="text-lg font-bold text-center">Statistique de voyage</h3>
+<dialog id="my_modal_2" class="modal">
+  <div class="modal-box">
+    <h3 class="text-lg font-bold text-center">Statistique de voyage</h3>
       <div class="flex justify-around my-5">
         <p class="border border-orange-500 w-20 h-20 rounded-lg text-center
  text-white
@@ -19,6 +15,8 @@
         data-static-map-target="static-map"
         class="w-full h-64 rounded-lg"></div>
     </div>
-    <label class="modal-backdrop" for="my_modal_7">Close</label>
   </div>
-</div>
+  <form method="dialog" class="modal-backdrop">
+    <button>close</button>
+  </form>
+</dialog>

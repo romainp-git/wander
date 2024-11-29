@@ -1,5 +1,6 @@
 class DestinationsController < ApplicationController
   require 'json'
+  require 'unsplash'
 
   before_action :set_destination, only: [:show]
 # ---------------------------------------------------------------------------------------
@@ -53,6 +54,9 @@ def show
     if type == "Ville"
       # Récupération des activités city
       activities_ai = fetch_activities_city(name, params[:start_date], params[:end_date])
+      # photo_url = Unsplash::Photo.search("#{destination_ai['city']}", 1, 1)
+      photo_url = Unsplash::Photo.search("Lille", 1, 1)
+raise
     else
       # Récupération des activités country
       activities_ai = fetch_activities_country(name, params[:start_date], params[:end_date])
@@ -166,6 +170,7 @@ def show
       "7- tu dois fournir, sous la forme d'une description courte, les normes de prises électriques (power dans le JSON).\n" \
       "8- Tu dois fournir ta réponse sous la forme d'un fichier JSON qui sera parser en Ruby on rails et dont le format pour chaque activité correspond aux clés primaire suivantes :\n" \
 	  "- `address` : Adresse complète.\n" \
+	  "- `city` : ville de l'adresse.\n" \
 	  "- `latitude` : Latitude.\n" \
 	  "- `longitude` : Longitude.\n" \
 	  "- `alpha3code` : Code ALPHA3 du pays de la destination.\n" \
@@ -215,6 +220,7 @@ def show
       "- 'end_date' qui contiendra le datetime de fin de l'activité.\n" \
       "- 'name' qui contiendra le nom usuel de l'activité.\n" \
       "- 'address' qui contiendra l'adresse de départ de l'activité.\n" \
+      "- 'city' qui contiendra la ville de l'activité.\n" \
       "- `latitude` : Latitude de l'adresse.\n" \
       "- `longitude` : Longitude de l'adresse.\n" \
       "- 'description' qui contiendra la description de l'activité.\n" \
@@ -222,7 +228,7 @@ def show
       "Si la taille du fichier JSON de sortie est trop longue, tu dois retourner que des activités complètes retournes le nombre maximum d'activités que tu es capable de retourner sans tronquer les données et tu ferme le tableau JSON proprement sans mettre '...' à la fin pour dire que tu n'as pas pu tout mettre.\n"
 
     user_content = 
-    "La destination de mon voyage est #{trip_name} du #{start_date} au #{end_date} et je recherche des activités appartenant aux catégories suivantes : Culturelle, Nature."
+    "La destination de mon voyage est #{trip_name} du #{start_date} au #{end_date} et je recherche des activités appartenant aux catégories suivantes : Culturelle, Nature. Tu dois prendre en compte également ce besoin spécifique : Restaurant végétarien et une activité par jour spécifique pour des enfants."
 
     client = OpenAI::Client.new
     response = client.chat(parameters: {
