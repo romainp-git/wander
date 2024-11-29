@@ -1,20 +1,20 @@
 <div class="px-4">
   <div class="flex flex-col flex-1">
-    <p class="text-xl font-extralight text-white">Choisissez une destination :</p>
+    <p class="text-lg font-extralight text-white">Choisissez une destination :</p>
   </div>
 
   <%= simple_form_for @trip, html: { class: ""} do |f| %>
   <%= f.input :destination,
               label: false,
               class: "required",
-              input_html: { placeholder: "Entrez une destination...",
+              input_html: { placeholder: "Paris, Rome, New York...",
               style:"all: unset;width: 100%;
                     border: solid 1px white;
                     display: block;
                     padding: 10px 20px;
                     box-sizing: border-box;
                     color: white;
-                    font-weight: lighter;
+                    font-weight: light;
                     margin-top: 15px;" },
               error_html: { class: "text-red-500 text-sm mt-2" }
                 %>
@@ -23,59 +23,12 @@
 
 <h2 class="text-white font-light p-4">Besoin d'inspiration ?</h2>
 
-<div class="carousel carousel-center max-w-md h-60 px-4 gap-4">
-  <div class="carousel-item w-1/2 ">
-    <div class="relative overflow-hidden rounded-box w-full h-full flex flex-col items-center">
-      <div class="absolute inset-0 bg-gradient-to-b from-black to-transparent opacity-80 h-1/3"></div>
-      <div class="absolute text-white top-5 left-5">
-        <h2 class="text-xs font-light">USA</h2>
-        <p class="text-2xl font-bold font-playfair">New York City</p>
-      </div>
-      <%= image_tag 'nyc.jpg', class: "rounded-box w-full h-full object-cover" %>
-      <button
-        class="absolute bottom-4 right-4 bg-black text-white w-10 h-10 rounded-full flex items-center justify-center shadow-lg hover:bg-gray-800"
-        aria-label="Add">
-        +
-      </button>
+<div class="carousel carousel-center w-screen px-14 gap-1" data-controller="carousel-suggestions">
+  <% @suggestions.each do |suggestion| %>
+    <div data-carousel-suggestions-target="item"
+         class="scale-95 transition-all duration-500 opacity-75 cursor-pointer"
+         data-value="<%= suggestion.city %>">
+      <%= render 'shared/suggestion_card', suggestion: suggestion %>
     </div>
-  </div>
-  <div class="carousel-item w-1/2 ">
-    <div class="relative overflow-hidden rounded-box w-full h-full flex flex-col items-center">
-      <div class="absolute inset-0 bg-gradient-to-b from-black to-transparent opacity-80 h-1/3"></div>
-      <div class="absolute text-white top-5 left-5">
-        <h2 class="text-xs font-light">France</h2>
-        <p class="text-2xl font-bold font-playfair">Paris</p>
-      </div>
-      <%= image_tag 'paris.jpg', class: "rounded-box w-full h-full object-cover" %>
-      <button
-        class="absolute bottom-4 right-4 bg-black text-white w-10 h-10 rounded-full flex items-center justify-center shadow-lg hover:bg-gray-800"
-        aria-label="Add">
-        +
-      </button>
-    </div>
-  </div>
-  <div class="carousel-item w-1/2 ">
-    <div class="relative overflow-hidden rounded-box w-full h-full flex flex-col items-center">
-      <div class="absolute inset-0 bg-gradient-to-b from-black to-transparent opacity-80 h-1/3"></div>
-      <div class="absolute text-white top-5 left-5">
-        <h2 class="text-xs font-light">Italie</h2>
-        <p class="text-2xl font-bold font-playfair">Rome</p>
-      </div>
-      <%= image_tag 'rome.jpg', class: "rounded-box w-full h-full object-cover" %>
-      <button
-        class="absolute bottom-4 right-4 bg-black text-white w-10 h-10 rounded-full flex items-center justify-center shadow-lg hover:bg-gray-800"
-        aria-label="Add">
-        +
-      </button>
-    </div>
-  </div>
-  <div class="carousel-item w-1/2">
-    <%= image_tag 'nyc.jpg', class: "rounded-box w-full h-full object-cover" %>
-  </div>
-  <div class="carousel-item w-1/2">
-    <%= image_tag 'paris.jpg', class: "rounded-box w-full h-full object-cover" %>
-  </div>
-  <div class="carousel-item w-1/2">
-    <%= image_tag 'rome.jpg', class: "rounded-box w-full h-full object-cover" %>
-  </div>
+  <% end %>
 </div>

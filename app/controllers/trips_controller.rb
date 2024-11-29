@@ -17,6 +17,7 @@ class TripsController < ApplicationController
 
   def new
     @trip = Trip.new()
+    @suggestions = Suggestion.all
   end
 
   def edit
