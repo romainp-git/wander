@@ -16,7 +16,7 @@ class TripsController < ApplicationController
   end
 
   def new
-    @trip = Trip.new()
+    @search = Search.new()
     @suggestions = Suggestion.all
   end
 
