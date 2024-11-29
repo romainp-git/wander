@@ -1,0 +1,45 @@
+<div class="h-screen flex flex-col justify-center text-white p-4">
+  <h1 class="text-3xl font-bold mb-6">Détails de la Recherche</h1>
+
+  <!-- Destination -->
+  <div class="mb-4">
+    <h2 class="text-xl font-semibold">Destination</h2>
+    <p class="text-lg"><%= @search.destination %></p>
+  </div>
+
+  <!-- Dates -->
+  <div class="mb-4">
+    <h2 class="text-xl font-semibold">Dates</h2>
+    <p class="text-lg">Départ : <%= @search.start_date %></p>
+    <p class="text-lg">Retour : <%= @search.end_date %></p>
+  </div>
+
+  <!-- Participants -->
+  <div class="mb-4">
+    <h2 class="text-xl font-semibold">Participants</h2>
+    <p class="text-lg">Adultes : <%= @search.nb_adults %></p>
+    <p class="text-lg">Enfants : <%= @search.nb_children %></p>
+    <p class="text-lg">Bébés : <%= @search.nb_infants %></p>
+  </div>
+
+  <!-- Catégories -->
+  <div class="mb-4">
+    <h2 class="text-xl font-semibold">Catégories</h2>
+    <ul class="list-disc list-inside">
+      <% JSON.parse(@search.categories).each do |category| %>
+        <li class="text-lg"><%= category %></li>
+      <% end %>
+    </ul>
+  </div>
+
+  <!-- Inspiration -->
+  <div class="mb-4">
+    <h2 class="text-xl font-semibold">Inspiration</h2>
+    <p class="text-lg"><%= @search.inspiration %></p>
+  </div>
+
+  <!-- Retour -->
+  <div class="mt-6">
+    <%= link_to "Retour", searches_path, class: "bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded" %>
+  </div>
+</div>

@@ -1,0 +1,11 @@
+<div class="h-screen flex flex-col items-center justify-center text-white">
+  <h1 class="text-4xl font-bold mb-4">Lancement de la recherche...</h1>
+  <p class="text-lg">Votre programme est en cours de génération pour <%= @search.destination %> !</p>
+  <div class="spinner border-t-4 border-white border-opacity-50 w-12 h-12 rounded-full animate-spin"></div>
+
+  <script>
+    setTimeout(() => {
+      window.location.href = "<%= search_path(@search) %>";
+    }, 5000);
+  </script>
+</div>

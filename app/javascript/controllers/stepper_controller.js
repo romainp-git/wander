@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
-  static targets = ["step", "prevButton"];
+  static targets = ["step", "prevButton", "nextButton", "submitButton"];
   currentStepIndex = 0;
 
   connect() {
@@ -60,6 +60,14 @@ export default class extends Controller {
       this.prevButtonTarget.classList.remove("hidden");
     } else {
       this.prevButtonTarget.classList.add("hidden");
+    }
+
+    if (this.currentStepIndex < this.stepTargets.length - 1) {
+      this.nextButtonTarget.classList.remove("hidden");
+      this.nextButtonTarget.classList.add("block"); // Assure que le bouton est visible
+    } else {
+      this.nextButtonTarget.classList.add("hidden");
+      this.submitButtonTarget.classList.remove("hidden");
     }
   }
 

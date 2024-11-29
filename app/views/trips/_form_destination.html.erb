@@ -3,22 +3,20 @@
     <p class="text-lg font-extralight text-white">Choisissez une destination :</p>
   </div>
 
-  <%= simple_form_for @trip, html: { class: ""} do |f| %>
-  <%= f.input :destination,
-              label: false,
-              class: "required",
-              input_html: { placeholder: "Paris, Rome, New York...",
-              style:"all: unset;width: 100%;
-                    border: solid 1px white;
-                    display: block;
-                    padding: 10px 20px;
-                    box-sizing: border-box;
-                    color: white;
-                    font-weight: light;
-                    margin-top: 15px;" },
-              error_html: { class: "text-red-500 text-sm mt-2" }
-                %>
-  <% end %>
+<%= f.input :destination,
+            label: false,
+            class: "required",
+            input_html: { placeholder: "Paris, Rome, New York...",
+            style:"all: unset;width: 100%;
+                  border: solid 1px white;
+                  display: block;
+                  padding: 10px 20px;
+                  box-sizing: border-box;
+                  color: white;
+                  font-weight: light;
+                  margin-top: 15px;" },
+            error_html: { class: "text-red-500 text-sm mt-2" }
+              %>
 </div>
 
 <h2 class="text-white font-light p-4">Besoin d'inspiration ?</h2>

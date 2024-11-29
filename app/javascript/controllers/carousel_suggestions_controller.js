@@ -13,7 +13,7 @@ export default class extends Controller {
     this.updateActiveItem();
     this.carousel.addEventListener("scroll", this.updateActiveItem.bind(this));
 
-    this.input = document.querySelector("input[name='trip[destination]']"); // Sélectionne l'input destination
+    this.input = document.querySelector("input[name='search[destination]']");
     this.itemTargets.forEach((item) => {
       item.addEventListener("click", this.setDestination.bind(this));
     });
@@ -23,10 +23,14 @@ export default class extends Controller {
     const item = event.currentTarget;
     const value = item.dataset.value;
 
+    if (event.target.closest("a[data-turbo-frame='modal-frame']")) {
+      return;
+    }
+
     if (item.dataset.clickable === "true") {
-      const value = item.dataset.value; // Récupère la valeur stockée dans data-value
+      const value = item.dataset.value;
       if (this.input) {
-        this.input.value = value; // Met à jour l'input destination
+        this.input.value = value;
       }
     }
   }
