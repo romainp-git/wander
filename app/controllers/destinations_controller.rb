@@ -56,7 +56,7 @@ def show
       activities_ai = fetch_activities_city(name, params[:start_date], params[:end_date])
       # photo_url = Unsplash::Photo.search("#{destination_ai['city']}", 1, 1)
       photo_url = Unsplash::Photo.search("Lille", 1, 1)
-raise
+
     else
       # Récupération des activités country
       activities_ai = fetch_activities_country(name, params[:start_date], params[:end_date])

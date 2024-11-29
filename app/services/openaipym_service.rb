@@ -18,7 +18,14 @@ class OpenaiService
   private
 
   def create_destination
-    
+    if destination_ai.nil? || destination_ai == "ERROR"
+      flash[:error] = 'Destination non trouvée ou information manquante'
+      render :new, status: :unprocessable_entity
+      return
+    else
+      Rails.logger.debug "#-----------------------------------------------------------"
+      Rails.logger.debug "#create_DESTINATION\n#{destination_ai}"
+    end
   end
 
   def fetch_destination_info_by_name(destination)
