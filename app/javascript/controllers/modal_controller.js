@@ -15,7 +15,7 @@ export default class extends Controller {
     setTimeout(() => {
       const modalFrame = this.element.closest("turbo-frame");
       if (modalFrame) {
-        modalFrame.innerHTML = ""; // Vide le contenu du Turbo Frame
+        modalFrame.innerHTML = "";
       }
     }, 300);
   }
