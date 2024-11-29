@@ -10,6 +10,11 @@ class PagesController < ApplicationController
       total_travels: @travels.count
     }
   end
+
+  def test
+    render turbo_stream: turbo_stream.replace('modal-frame', partial: 'shared/loading')
+  end
+
   def journeys
     @trips.map(&:destination).map(&:alpha3code).compact
   end

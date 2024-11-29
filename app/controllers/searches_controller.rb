@@ -7,10 +7,10 @@ class SearchesController < ApplicationController
     @search = Search.new(search_params)
 
     if @search.save
-      OpenaiService.new(@search).generate_program
-      redirect_to launch_search_path(@search)
+      OpenaiJob.perform_later(@search.id)
+      redirect_to launch_search_path(@search), notice: "Programme généré avec succès."
     else
-      render :new
+      render :new, status: :unprocessable_entity
     end
   end
 
