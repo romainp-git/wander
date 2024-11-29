@@ -31,69 +31,6 @@ users = [
     first_name: "Pierre-Yves",
     last_name: "MEVEL",
     username: "PYM"
-  },
-  {
-    email: "sam@gmail.com",
-    password: "password",
-    first_name: "Samuel",
-    last_name: "WILLEM",
-    username: "SAM"
-  },
-  {
-    email: "rom@gmail.com",
-    password: "password",
-    first_name: "Romain",
-    last_name: "PORTIER",
-    username: "ROM"
-  },
-  {
-    email: "abe@gmail.com",
-    password: "password",
-    first_name: "Aurélien",
-    last_name: "BERNARD",
-    username: "ABE"
-  },
-  {
-    email: "pyh@gmail.com",
-    password: "password",
-    first_name: "Pierre-Yves",
-    last_name: "HOORENS",
-    username: "PYH"
-  },
-  {
-    email: "afl@gmail.com",
-    password: "password",
-    first_name: "Arnaud",
-    last_name: "FLORIANI",
-    username: "AFL"
-  },
-  {
-    email: "cgu@gmail.com",
-    password: "password",
-    first_name: "Camille",
-    last_name: "GUILMAIN",
-    username: "CGU"
-  },
-  {
-    email: "cba@gmail.com",
-    password: "password",
-    first_name: "Clara",
-    last_name: "BARBE",
-    username: "CBA"
-  },
-  {
-    email: "jde@gmail.com",
-    password: "password",
-    first_name: "Jean",
-    last_name: "DELABRE",
-    username: "JDE"
-  },
-  {
-    email: "jtc@gmail.com",
-    password: "password",
-    first_name: "John",
-    last_name: "TCHOMGUI",
-    username: "JTC"
   }
 ]
 
@@ -141,69 +78,102 @@ users.each_with_index do |user, index|
   end
 end
 
+puts "Cleaning database..."
+TripActivity.destroy_all
+Activity.destroy_all
+Destination.destroy_all
+
 # Seed destinations
 puts "Seeding destinations..."
-destinations = []
-5.times do
-  destinations << Destination.create!(
-    address: Faker::Address.full_address,
-    currency: Faker::Currency.code,
-    papers: Faker::Lorem.sentence(word_count: 5),
-    food: Faker::Food.dish,
-    power: "#{rand(110..240)}V"
-  )
-end
+london = Destination.create!(
+  address: "London, United Kingdom",
+  currency: "GBP",
+  papers: "Passport required for most countries.",
+  food: "Fish and Chips, Afternoon Tea, Sunday Roast",
+  power: "230V"
+)
+
+puts "Destination London created!"
 
 # Seed activities
 puts "Seeding activities..."
-activities = []
-10.times do
+
+activities_data = [
+  { name: "Tower of London", category: "découverte", address: "Tower Hill, London EC3N 4AB, UK", description: "A historic castle and UNESCO World Heritage Site, home to the Crown Jewels.", reviews: 4.7 },
+  { name: "British Museum", category: "musée", address: "Great Russell St, London WC1B 3DG, UK", description: "A world-famous museum showcasing global history and culture.", reviews: 4.8 },
+  { name: "Borough Market", category: "gastronomie", address: "8 Southwark St, London SE1 1TL, UK", description: "A bustling food market offering a wide range of gourmet and street food.", reviews: 4.6 },
+  { name: "The Shard - Aqua Shard", category: "boissons", address: "32 London Bridge St, London SE1 9SG, UK", description: "A chic bar and restaurant offering panoramic views of London.", reviews: 4.5 },
+  { name: "Hyde Park", category: "loisirs", address: "Hyde Park, London W2 2UH, UK", description: "A vast park perfect for picnics, paddle boating, and relaxing walks.", reviews: 4.7 },
+  { name: "Thames River Cruise", category: "aventure", address: "Westminster Pier, London SW1A 2JH, UK", description: "A scenic cruise along the River Thames, exploring iconic landmarks.", reviews: 4.6 },
+  { name: "Oxford Street", category: "shopping", address: "Oxford St, London W1D 1BS, UK", description: "A shopping destination with over 300 shops and designer outlets.", reviews: 4.3 },
+  { name: "Natural History Museum", category: "musée", address: "Cromwell Rd, London SW7 5BD, UK", description: "A renowned museum with exhibits on natural history, including dinosaur skeletons.", reviews: 4.8 },
+  { name: "Covent Garden", category: "découverte", address: "Covent Garden, London WC2E 9DD, UK", description: "A vibrant area known for its shopping, dining, and street performances.", reviews: 4.5 },
+  { name: "Shakespeare's Globe Theatre", category: "loisirs", address: "21 New Globe Walk, London SE1 9DT, UK", description: "A reconstruction of the original Globe Theatre, offering live performances.", reviews: 4.7 }
+]
+
+activities = activities_data.map do |data|
   activity = Activity.create!(
-    name: Faker::Lorem.words(number: 3).join(" "),
-    description: Faker::Lorem.paragraph(sentence_count: 3),
-    reviews: rand(1.0..5.0).round(1),
-    address: addresses.sample,
+    name: data[:name],
+    description: data[:description],
+    reviews: data[:reviews],
+    address: data[:address],
+    category: data[:category],
     website_url: Faker::Internet.url,
     wiki: Faker::Internet.url(host: "wikipedia.org")
   )
 
-  # Attacher plusieurs photos
+  # Attach photos via Cloudinary
+  puts "Uploading photos for activity: #{activity.name}"
   3.times do
     begin
-      result = Cloudinary::Uploader.upload(Faker::LoremFlickr.image(search_terms: ['travel', 'activity']))
-      activity.photos.attach(io: URI.open(result['secure_url']), filename: result['original_filename'])
-      puts "Uploaded photo for activity: #{activity.name}"
+      result = Cloudinary::Uploader.upload(
+        Faker::LoremFlickr.image(search_terms: ['london', data[:category]]),
+        folder: "activities/#{activity.id}"
+      )
+      activity.photos.attach(
+        io: URI.open(result['secure_url']),
+        filename: "#{activity.name.downcase.tr(' ', '_')}_#{rand(1000)}.jpg",
+        content_type: 'image/jpeg'
+      )
+      puts "Photo uploaded for activity: #{activity.name}"
     rescue => e
-      puts "Failed to upload photo for activity #{activity.name}: #{e.message}. Using default photo."
-      result = Cloudinary::Uploader.upload(default_photo_path)
-      activity.photos.attach(io: URI.open(result['secure_url']), filename: "default_photo.jpg")
+      puts "Failed to upload photo for activity #{activity.name}: #{e.message}. Skipping."
     end
   end
 
-  activities << activity
+  activity
 end
 
 # Seed trips
 puts "Seeding trips..."
-10.times do
-  trip = Trip.create!(
-    name: Faker::Lorem.words(number: 2).join(" "),
-    start_date: Faker::Date.between(from: 1.year.ago, to: Date.today),
-    end_date: Faker::Date.forward(days: 30),
-    destination: destinations.sample,
-    user: User.all.sample
-  )
+trip = Trip.create!(
+  name: "London Adventure",
+  start_date: Date.today + 1,
+  end_date: Date.today + 5,
+  destination: london,
+  user: User.first
+)
 
-  # Add random activities to the trip
-  3.times do
+puts "Trip created: #{trip.name}"
+
+# Assign activities to trip by day
+puts "Assigning activities to trip..."
+
+days = (0..4).to_a
+days.each do |day|
+  day_activities = activities.sample(2)
+  day_activities.each do |activity|
     TripActivity.create!(
       trip: trip,
-      activity: activities.sample,
-      start_date: trip.start_date + rand(1..5).days,
-      end_date: trip.start_date + rand(6..10).days
+      activity: activity,
+      start_date: trip.start_date + day,
+      end_date: trip.start_date + day
     )
+    puts "Assigned activity #{activity.name} to Day #{day + 1}"
   end
 end
+
+puts "Seed completed successfully!"
 
 suggestions_data = [
   {
@@ -260,17 +230,6 @@ suggestions_data = [
       "https://images.unsplash.com/photo-1524562865630-b991c6c2f261?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8U3lkbmV5fGVufDB8fDB8fHww",
       "https://images.unsplash.com/photo-1549180030-48bf079fb38a?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8U3lkbmV5fGVufDB8fDB8fHww",
       "https://images.unsplash.com/photo-1554629907-479bff71f153?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTR8fFN5ZG5leXxlbnwwfHwwfHx8MA%3D%3D"
-    ]
-  },
-  {
-    country: "Turkey",
-    city: "Istanbul",
-    description: "Le carrefour des cultures orientales et occidentales.",
-    highlight: "Mosquée bleue",
-    photos: [
-      "https://asset.cloudinary.com/dvjncr2sv/700ad0e5d95c3ac801c4e5450207c527",
-      "https://asset.cloudinary.com/dvjncr2sv/308863261bfb54e9e47652c65d15f870",
-      "https://asset.cloudinary.com/dvjncr2sv/1db23534985c0b13ce28fa7502955f03"
     ]
   }
 ]

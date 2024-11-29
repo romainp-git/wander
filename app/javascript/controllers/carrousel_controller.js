@@ -1,16 +1,52 @@
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
-  static values = { index: Number };
+  static targets = ["container", "item"];
 
   connect() {
+    console.log("Carrousel controller connecté");
 
-    this.items = this.element.querySelectorAll(".carousel-item");
+    this.carousel = this.element;
+    this.onScroll();
+    this.carousel.addEventListener("scroll", this.onScroll.bind(this));
+
+    window.addEventListener("scrollToItem", (event) => {
+      this.scrollToItem(event.detail.index);
+    });
   }
 
-  select(event) {
-    const index = event.currentTarget.dataset.carouselIndexValue;
-    console.log(`Dispatch global de l'événement 'highlight' avec l'index : ${index}`);
-    window.dispatchEvent(new CustomEvent("highlight", { detail: { index: parseInt(index) } }));
+  scrollToItem(index) {
+    const target = this.itemTargets[index];
+    if (target) {
+      this.carousel.scrollTo({
+        left: (target.offsetLeft - 34) - this.carousel.offsetLeft,
+        behavior: "smooth",
+      });
+    }
+  }
+
+  onScroll() {
+    console.log("Défilement détecté dans le carrousel");
+    const carouselRect = this.carousel.getBoundingClientRect();
+
+    this.itemTargets.forEach((item) => {
+      const itemRect = item.getBoundingClientRect();
+      const isCentered =
+        itemRect.left >= carouselRect.left &&
+        itemRect.right <= carouselRect.right;
+
+      if (isCentered) {
+        const index = parseInt(item.dataset.carouselIndexValue, 10);
+        console.log("Élément centré détecté :", index);
+        window.dispatchEvent(
+          new CustomEvent("highlight", { detail: { index } })
+        );
+      }
+    });
+  }
+
+
+  disconnect() {
+    this.carousel.removeEventListener("scroll", this.onScroll.bind(this));
   }
 }
