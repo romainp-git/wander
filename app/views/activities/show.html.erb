@@ -89,24 +89,32 @@
     <div class="mt-6" data-controller="tabs">
   <!-- Navigation des onglets -->
   <div role="tablist" class="tabs tabs-bordered px-6">
-    <a class="tab tab-active" data-action="click->tabs#changeTab" data-tabs-target="tab" data-tab-name="description">Description</a>
-    <a class="tab" data-action="click->tabs#changeTab" data-tabs-target="tab" data-tab-name="horaires">Horaires</a>
-    <a class="tab" data-action="click->tabs#changeTab" data-tabs-target="tab" data-tab-name="wiki">Wiki</a>
-    <a class="tab" data-action="click->tabs#changeTab" data-tabs-target="tab" data-tab-name="video">Vidéo</a>
-  </div>
+    <a class="tab tab-active" data-action="click->tabs#switchTab" data-tabs-target="tabActivity" data-tab-name="description">Description</a>
+    <a class="tab" data-action="click->tabs#switchTab" data-tabs-target="tabActivity" data-tab-name="horaires">Horaires</a>
+    <a class="tab" data-action="click->tabs#switchTab" data-tabs-target="tabActivity" data-tab-name="wiki">Wiki</a>
+    <a class="tab" data-action="click->tabs#switchTab" data-tabs-target="tabActivity" data-tab-name="video">Vidéo</a>
+</div>
+
 
   <!-- Contenu des onglets -->
   <div class="px-6 mt-6">
     <!-- Contenu de l'onglet Description -->
-    <div data-tabs-target="content" data-tab-name="description">
+    <div data-tabs-target="content" data-tab-name="description" >
       <h3 class="text-lg font-semibold text-gray-800">Description</h3>
-      <p class="text-sm text-gray-600 mt-2">
-        <%= @activity.description %>
-      </p>
+
+      <div data-controller="read-more" data-read-more-more-text-value="Voir plus" data-read-more-less-text-value="Voir moins">
+        <p class="my-content" data-read-more-target="content">
+          <%# <%= @activity.description %>
+          Embark on a memorable adventure with Tamis Cruise, an experience that combines relaxation, breathtaking views, and a touch of cultural immersion. This activity offers a serene journey across picturesque waterways, ideal for couples, families, or anyone looking to escape the hustle and bustle of daily life.
+
+          As you board the Tamis Cruise, you'll be greeted by a warm and friendly crew dedicated to making your journey unforgettable. The cruise is designed to provide panoramic views of the surrounding landscapes, from shimmering waters to lush greenery and iconic landmarks along the way.
+        </p>
+        <button class="text-gray-500" data-action="read-more#toggle">Voir plus</button>
+      </div>
     </div>
 
     <!-- Contenu de l'onglet Horaires -->
-    <div data-tabs-target="content" data-tab-name="horaires" class="hidden">
+    <div data-tabs-target="content" data-tab-name="horaires" class="hidden ">
       <h3 class="text-lg font-semibold text-gray-800">Horaires</h3>
       <p class="text-sm text-gray-600 mt-2">
         horaire
