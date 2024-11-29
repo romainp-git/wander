@@ -8,10 +8,10 @@ class SearchesController < ApplicationController
 
     if @search.save
       OpenaiService.new(@search).generate_program
-      trip = Trip.find(@search.trip)
+      trip = Trip.find(@search.trip_id)
       redirect_to trip_path(trip)
     else
-      render :new, status: :unprocessable_entity
+      render :new
     end
   end
 
@@ -27,6 +27,6 @@ class SearchesController < ApplicationController
 
   def search_params
     params[:search][:categories] = params[:search][:categories].reject { |category| category == "0" } if params[:search][:categories].is_a?(Array)
-    params.require(:search).permit(:destination, :start_date, :end_date, :nb_infants, :nb_adults, :nb_children, { categories: [] }, :options)
+    params.require(:search).permit(:destination, :inspiration, :start_date, :end_date, :nb_infants, :nb_adults, :nb_children, { categories: [] }, :options)
   end
 end
