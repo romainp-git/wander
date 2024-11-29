@@ -14,7 +14,7 @@
       <p id="typewriter-text" data-add-trip-animation-target="text" class="px-3 text-white text-2xl font-semibold"></p>
     </div>
 
-    <%= simple_form_for @search, url: searches_path do |f| %>
+    <%= simple_form_for @search, url: searches_path, data: { turbo_frame: "loading-frame" } do |f| %>
       <div id="form-part" class="form relative opacity-0 transition-opacity inset-0 flex flex-col flex-grow" data-add-trip-animation-target="formPart">
         <%= render 'tabs_form' %>
 

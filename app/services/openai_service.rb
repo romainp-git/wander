@@ -5,8 +5,6 @@ class OpenaiService
   end
   # ---------------------------------------------------------------------------------------
   def generate_program
-    sleep(10)
-
     # Création de la destination et du trip
     destination = create_destination(@search)
     Rails.logger.debug "#-----------------------------------------------------------"
