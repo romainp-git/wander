@@ -31,7 +31,7 @@ export default class extends Controller {
           'source-layer': 'country_boundaries',
           type: 'fill',
           paint: {
-            'fill-color': '#d2361e',
+            'fill-color': '#EB5B00',
             'fill-opacity': 0.4,
           },
         },
