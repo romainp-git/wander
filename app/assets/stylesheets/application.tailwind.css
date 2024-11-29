@@ -31,3 +31,10 @@ main {
   min-height: 100vh;
   transition: opacity 1s ease;
 }
+
+.my-content {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: var(--read-more-line-clamp, 2);
+}
