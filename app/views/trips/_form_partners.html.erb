@@ -55,9 +55,7 @@
     </div>
   </div>
 
-  <%= simple_form_for @trip, html: { class: "space-y-6" } do |f| %>
-    <%= f.hidden_field :adults, value: 0, id: "trip_adults", data: { type: "adults", "counter-target": "input" } %>
-    <%= f.hidden_field :children, value: 0, id: "trip_children", data: { type: "children", "counter-target": "input" } %>
-    <%= f.hidden_field :infants, value: 0, id: "trip_infants", data: { type: "infants", "counter-target": "input" } %>
-  <% end %>
+  <%= f.hidden_field :nb_adults, value: 1, id: "trip_adults", data: { type: "adults", "counter-target": "input" } %>
+  <%= f.hidden_field :nb_children, value: 0, id: "trip_children", data: { type: "children", "counter-target": "input" } %>
+  <%= f.hidden_field :nb_infants, value: 0, id: "trip_infants", data: { type: "infants", "counter-target": "input" } %>
 </div>

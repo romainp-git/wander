@@ -14,38 +14,42 @@
       <p id="typewriter-text" data-add-trip-animation-target="text" class="px-3 text-white text-2xl font-semibold"></p>
     </div>
 
-    <div id="form-part" class="form relative opacity-0 transition-opacity inset-0 flex flex-col flex-grow" data-add-trip-animation-target="formPart">
-      <%= render 'tabs_form' %>
+    <%= simple_form_for @search, url: searches_path do |f| %>
+      <div id="form-part" class="form relative opacity-0 transition-opacity inset-0 flex flex-col flex-grow" data-add-trip-animation-target="formPart">
+        <%= render 'tabs_form' %>
 
-      <div id="stepper-container" class="stepper relative">
-        <!-- Étape 1 -->
-        <div class="absolute step transition-transform transform translate-x-0 w-screen overflow-x-hidden" data-stepper-target="step">
-          <%= render 'form_destination' %>
+        <div id="stepper-container" class="stepper relative">
+          <div class="absolute step transition-transform transform translate-x-0 w-screen overflow-x-hidden" data-stepper-target="step">
+            <%= render 'form_destination', f: f %>
+          </div>
+
+          <div class="absolute step transition-transform transform translate-x-full w-screen overflow-x-hidden" data-stepper-target="step">
+            <%= render 'form_dates', f: f %>
+          </div>
+
+          <div class="absolute step transition-transform transform translate-x-full w-screen overflow-x-hidden" data-stepper-target="step">
+            <%= render 'form_partners', f: f %>
+          </div>
+
+          <div class="absolute step transition-transform transform translate-x-full w-screen overflow-x-hidden" data-stepper-target="step">
+            <%= render 'form_options', f: f %>
+          </div>
         </div>
 
-        <!-- Étape 2 -->
-        <div class="absolute step transition-transform transform translate-x-full w-screen overflow-x-hidden" data-stepper-target="step">
-          <%= render 'form_dates' %>
-        </div>
-
-        <!-- Étape 3 -->
-        <div class="absolute step transition-transform transform translate-x-full w-screen overflow-x-hidden" data-stepper-target="step">
-          <%= render 'form_partners' %>
-        </div>
-
-        <!-- Étape 4 -->
-        <div class="absolute step transition-transform transform translate-x-full w-screen overflow-x-hidden" data-stepper-target="step">
-          <%= render 'form_partners' %>
-        </div>
       </div>
-    </div>
 
-    <div class="w-full flex justify-center mt-6 gap-5 absolute bottom-10 opacity-0 transition-opacity duration-500"
-      data-add-trip-animation-target="buttons">
-      <button class="prev-step bg-opacity-50 text-sm font-medium text-white border px-4 py-2 active:bg-white"
-              data-stepper-target="prevButton"
-              data-action="click->stepper#previousStep">Précédent</button>
-      <button class="next-step bg-opacity-50 text-sm font-medium text-white border px-4 py-2 active:bg-white" data-action="click->stepper#nextStep">Suivant</button>
-    </div>
+      <div class="w-full flex justify-center mt-6 gap-5 absolute bottom-10 opacity-0 transition-opacity duration-500"
+        data-add-trip-animation-target="buttons">
+        <button type="button"
+                class="prev-step bg-opacity-50 text-sm font-medium text-white border px-4 py-2 active:bg-white"
+                data-stepper-target="prevButton"
+                data-action="click->stepper#previousStep">Précédent</button>
+        <button type="button"
+                class="next-step bg-opacity-50 text-sm font-medium text-white border px-4 py-2 active:bg-white"
+                data-action="click->stepper#nextStep"
+                data-stepper-target="nextButton">Suivant</button>
+        <%= f.submit "Générer le programme", class:"hidden bg-opacity-50 text-sm font-medium text-white border px-4 py-2 active:bg-white cursor-pointer", data: { "stepper-target" => "submitButton" } %>
+      </div>
+    <% end %>
   </div>
 </div>
