@@ -225,7 +225,7 @@ class OpenaiService
     # end
 
     user_content =
-    "La destination de mon voyage est #{search.destination} du #{search.start_date} au #{search.end_date} et je recherche des activités appartenant aux catégories suivantes si précisées : #{search.categories}. Tu dois prendre en compte également ce besoin spécifique si précisé : #{inspiration.to_s}."
+    "La destination de mon voyage est #{search.destination} du #{search.start_date} au #{search.end_date} et je recherche des activités appartenant aux catégories suivantes si précisées : #{search.categories}. Tu dois prendre en compte également ce besoin spécifique si précisé : #{search.inspiration.to_s}."
 
     return { "system_content": system_content, "user_content": user_content }
   end
