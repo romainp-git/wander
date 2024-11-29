@@ -2,9 +2,8 @@
   <li class="flex items-center space-x-4 relative mb-5">
     <!-- Timeline time -->
     <div class="text-gray-400 text-sm w-16 text-right">
-      <div>10:00</div>
-      <%# <%= trip_activity.start_time.strftime('%H:%M') %>
-      <div>10:30</div>
+      <div><%= trip_activity.start_date.strftime('%H:%M') %></div>
+      <div><%= trip_activity.end_date.strftime('%H:%M') %></div>
     </div>
 
     <!-- Timeline node and line -->
@@ -16,7 +15,7 @@
     <!-- Timeline card -->
     <div class="bg-gray-800 text-white rounded-lg shadow-md p-4 w-full">
       <h3 class="font-bold"><%= trip_activity.activity.name %></h3>
-      <p class="text-sm"><%= trip_activity.activity.description %></p>
+      <p class="text-sm"><%= trip_activity.activity.description.truncate(50) %></p>
     </div>
   </li>
 <% end %>
