@@ -7,6 +7,20 @@ export default class extends Controller {
   connect() {
     this.updateBtnVisibility();
     this.updateTabs(this.currentStepIndex + 1);
+    this.element.addEventListener("keydown", this.handleKeyDown.bind(this));
+  }
+
+  disconnect() {
+    this.element.removeEventListener("keydown", this.handleKeyDown.bind(this));
+  }
+
+  handleKeyDown(event) {
+    if (event.key === "Enter") {
+      if (this.currentStepIndex < this.stepTargets.length - 1){
+        event.preventDefault();
+        this.nextStep();
+      }
+    }
   }
 
   nextStep() {
@@ -45,6 +59,7 @@ export default class extends Controller {
 
     this.updateTabs(nextIndex);
   }
+
   updateTabs(index) {
     const tabsController = this.application.getControllerForElementAndIdentifier(
       document.querySelector('[data-controller="tabs-form-new-trip"]'),
@@ -64,7 +79,8 @@ export default class extends Controller {
 
     if (this.currentStepIndex < this.stepTargets.length - 1) {
       this.nextButtonTarget.classList.remove("hidden");
-      this.nextButtonTarget.classList.add("block"); // Assure que le bouton est visible
+      this.nextButtonTarget.classList.add("block");
+      this.submitButtonTarget.classList.add("hidden");
     } else {
       this.nextButtonTarget.classList.add("hidden");
       this.submitButtonTarget.classList.remove("hidden");

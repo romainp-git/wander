@@ -18,12 +18,22 @@ export default class extends Controller {
       style: 'mapbox://styles/mapbox/satellite-v9',
       attributionControl: false,
       projection: 'globe',
-      zoom: 1.5,
+      zoom: 1.5
     });
 
-
     this.map.on('style.load', () => { this.map.setFog({}); });
+    this.addMarkers();
     this.setupGlobeRotation();
+  }
+
+  addMarkers() {
+    this.markersValue.forEach(marker => {
+      if (marker.lat && marker.lng) {
+        new mapboxgl.Marker()
+          .setLngLat([marker.lng, marker.lat])
+          .addTo(this.map);
+      }
+    });
   }
 
   setupGlobeRotation() {

@@ -1,0 +1,53 @@
+
+<div id="countdown" class="flex flex-col justify-center items-center px-4 text-white">
+  <div  class="grid auto-cols-max grid-flow-col gap-3 text-center">
+    <div class="flex flex-col items-center">
+      <span class="countdown font-playfair text-2xl font-bold">
+        <span id="days" style="--value:0;"></span>
+      </span>
+      <span class="text-xs">jours</span>
+    </div>
+    <div class="flex flex-col items-center">
+      <span class="countdown font-playfair text-2xl font-bold">
+        <span id="hours" style="--value:0;"></span>
+      </span>
+      <span class="text-xs">heures</span>
+    </div>
+    <div class="flex flex-col items-center">
+      <span class="countdown font-playfair text-2xl font-bold">
+        <span id="minutes" style="--value:0;"></span>
+      </span>
+      <span class="text-xs">min</span>
+    </div>
+    <div class="flex flex-col items-center">
+      <span class="countdown font-playfair text-2xl font-bold">
+        <span id="seconds" style="--value:0;"></span>
+      </span>
+      <span class="text-xs">sec</span>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const endDate = new Date("2024-12-06T00:00:00");
+
+    function updateCountdown() {
+      const now = new Date();
+      const diff = endDate - now;
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+      document.getElementById("days").setAttribute("style", `--value:${days};`);
+      document.getElementById("hours").setAttribute("style", `--value:${hours};`);
+      document.getElementById("minutes").setAttribute("style", `--value:${minutes};`);
+      document.getElementById("seconds").setAttribute("style", `--value:${seconds};`);
+    }
+
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+  });
+</script>

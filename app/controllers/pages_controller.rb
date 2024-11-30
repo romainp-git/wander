@@ -1,13 +1,11 @@
 class PagesController < ApplicationController
   def home
-    @trips = Trip.where(user: current_user)
-    @destinations = self.trips.empty? ? ["FRA","FRA","GBR","NLD","AUS"] : trips
-    @travels = self.journeys.empty? ? ["FRA","FRA","GBR","NLD","AUS"] : journeys
-    @stats = {
-      total_countries_visited: @destinations.count,
-      ratio: ((@destinations.count / 249.0) * 100).round(2),
-      total_travels: @travels.count
-    }
+    if user_signed_in?
+      @path = trips_path # Génère une URL vers les trips
+    else
+      @path = new_user_session_path # Génère une URL vers la page de connexion
+    end
+    render layout: false if turbo_frame_request?
   end
 
   def test
