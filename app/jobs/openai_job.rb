@@ -6,6 +6,8 @@ class OpenaiJob < ApplicationJob
 
     OpenaiService.new(search).generate_program
 
+    Rails.logger.info "Broadcasting to loading_#{search_id} with URL: #{Rails.application.routes.url_helpers.trip_path(search.trip_id)}"
+
     ActionCable.server.broadcast(
       "loading_#{search_id}",
       { redirect_url: Rails.application.routes.url_helpers.trip_path(search.trip_id) }

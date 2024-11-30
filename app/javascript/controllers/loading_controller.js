@@ -3,7 +3,7 @@ import { createConsumer } from "@rails/actioncable";
 
 export default class extends Controller {
   connect() {
-    console.log(this.element.dataset.loadingSearchId  )
+    console.log("action cable : " + this.element.dataset.loadingSearchId)
 
     this.subscription = createConsumer().subscriptions.create(
       { channel: "LoadingChannel", search_id: this.element.dataset.loadingSearchId },

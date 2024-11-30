@@ -57,6 +57,8 @@ gem 'simple_form', github: 'heartcombo/simple_form'
 gem 'tailwindcss-rails'
 gem 'iso_country_codes'
 gem 'unsplash'
+gem 'sidekiq'
+gem 'rest-client'
 
 group :development, :test do
   gem 'dotenv-rails'

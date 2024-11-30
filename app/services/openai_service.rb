@@ -150,19 +150,19 @@ class OpenaiService
         { "role": 'user', "content": prompt[:user_content] }
       ],
       "temperature": 0.0
-    }, timeout: 120)
+    })
 
     data = JSON.parse(response['choices'][0]['message']['content'])
 
-    if parsed_response['choices'] && parsed_response['choices'][0] && parsed_response['choices'][0]['message'] && parsed_response['choices'][0]['message']['content']
-      data = JSON.parse(parsed_response['choices'][0]['message']['content'])
-      Rails.logger.debug "#-----------------------------------------------------------"
-      Rails.logger.debug "#call_openai : #{data}"
-      return data
-    else
-      Rails.logger.error "Invalid response format: #{parsed_response}"
-      return { 'content' => 'ERROR' }
-    end
+    # if parsed_response['choices'] && parsed_response['choices'][0] && parsed_response['choices'][0]['message'] && parsed_response['choices'][0]['message']['content']
+    #   data = JSON.parse(parsed_response['choices'][0]['message']['content'])
+    #   Rails.logger.debug "#-----------------------------------------------------------"
+    #   Rails.logger.debug "#call_openai : #{data}"
+    #   return data
+    # else
+    #   Rails.logger.error "Invalid response format: #{parsed_response}"
+    #   return { 'content' => 'ERROR' }
+    # end
   rescue RestClient::ExceptionWithResponse => e
     Rails.logger.error "API call failed: #{e.response}"
     return { 'content' => 'ERROR' }
@@ -236,7 +236,7 @@ class OpenaiService
     if search.nb_children > 0
       user_content = user_content + "Tu dois prévoir une activité spécifique pour les enfants par jour."
     end
-    if search.infants > 0
+    if search.nb_infants > 0
       user_content = user_content + "Tu dois t'assurer que les activités soient compatibles avec la présence d'un bébé et l'utilisation d'une poussette."
     end
     if search.inspiration.to_s.length > 0
