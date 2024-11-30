@@ -2,7 +2,13 @@ import { Controller } from "@hotwired/stimulus"
 
 // Connects to data-controller="datepicker"
 export default class extends Controller {
-  static targets = ["startDate", "endDate", "calendar", "startInput", "endInput"];
+  static targets = [
+    //"startDate",
+    //"endDate",
+    "calendar",
+    "startInput",
+    "endInput"
+  ];
 
   connect() {
     console.log("flatpicker_controller");
@@ -42,8 +48,8 @@ export default class extends Controller {
   updateFields(selectedDates) {
     if (selectedDates.length === 2) {
       const [start, end] = selectedDates;
-      this.startDateTarget.textContent  = this.formatDate(start);
-      this.endDateTarget.textContent = this.formatDate(end);
+      //this.startDateTarget.textContent  = this.formatDate(start);
+      //this.endDateTarget.textContent = this.formatDate(end);
 
       this.startInputTarget.value = start;
       this.endInputTarget.value = end;

@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
-  static targets = ["text", "titlePart", "formPart", "pulseButton", "buttons"];
+  static targets = ["text", "titlePart", "formPart", "pulseButton", "robotIcon", "buttons"];
 
   connect() {
     console.log("add_trip_controller");
@@ -22,8 +22,9 @@ export default class extends Controller {
       setTimeout(() => this.typeWriter(), 30);
     } else {
       setTimeout(() => {
-        this.titlePartTarget.style.marginTop = "0";
+        this.titlePartTarget.style.marginTop = "14px";
         this.pulseButtonTarget.classList.add("opacity-0");
+        this.robotIconTarget.classList.add("opacity-0");
 
         setTimeout(() => {
           this.pulseButtonTarget.classList.add("hidden");

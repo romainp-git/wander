@@ -1,0 +1,14 @@
+<% if @trips.present? %>
+  <div class="text-white flex">
+    <div class="relative flex-1 flex flex-col gap-2 px-6">
+      <div class="absolute top-6 bottom-0 left-[77px] w-px bg-white"></div>
+
+      <% @trips.each do |trip| %>
+        <% if trip.id != @trips[0].id%>
+          <%= render "timeline_card", trip: trip %>
+        <% end %>
+      <% end %>
+
+    </div>
+  </div>
+<% end %>

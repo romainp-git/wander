@@ -1,18 +1,32 @@
 class TripsController < ApplicationController
 
   def index
-    @trips = Trip.where(user: current_user)
+    unless current_user
+      redirect_to new_user_session_path and return
+    end
 
+    @user = current_user
+    @trips = Trip.where(user: current_user).order(end_date: :desc)
+
+    ## STATS
     @destinations = self.trips.empty? ? ["FRA","FRA","GBR","NLD","AUS"] : trips
     @travels = self.journeys.empty? ? ["FRA","FRA","GBR","NLD","AUS"] : journeys
-
     @stats = {
       total_countries_visited: @destinations.count,
       ratio: ((@destinations.count / 249.0) * 100).round(2),
       total_travels: @travels.count
     }
-
     @total_km = total_km(@trips)
+
+    ## MAP
+    @markers = @trips.filter_map do |trip|
+      if trip.destination.latitude && trip.destination.longitude
+        {
+          lat: trip.destination.latitude,
+          lng: trip.destination.longitude
+        }
+      end
+    end
   end
 
   def show

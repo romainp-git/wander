@@ -11,9 +11,10 @@ require "faker"
 require "open-uri"
 
 # Clear existing data
-TripActivity.destroy_all
-Trip.destroy_all
 Activity.destroy_all
+TripActivity.destroy_all
+Search.destroy_all
+Trip.destroy_all
 Destination.destroy_all
 User.destroy_all
 Suggestion.destroy_all

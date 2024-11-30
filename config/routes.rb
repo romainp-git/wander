@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  root to: "trips#index"
+  root "pages#home"
   devise_for :users
 
   resources :trips, only: %i[show index new edit] do
@@ -10,8 +10,6 @@ Rails.application.routes.draw do
 
   resources :suggestions, only: %i[show]
   resources :searches, only: [:new, :create, :show]
-
-  get 'searches/:id/launch', to: 'searches#launch', as: 'launch_search'
 
   get "up" => "rails/health#show", as: :rails_health_check
 end

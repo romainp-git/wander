@@ -1,3 +1,3 @@
 class Search < ApplicationRecord
-  has_one :trip, dependent: :destroy
+  #has_one :trip, dependent: :destroy
 end
