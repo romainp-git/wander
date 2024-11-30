@@ -1,5 +1,4 @@
 class OpenaiService
-  include Sidekiq::Worker
   # ---------------------------------------------------------------------------------------
   def initialize(search)
     @search = search
