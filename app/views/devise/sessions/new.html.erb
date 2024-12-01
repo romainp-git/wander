@@ -1,28 +1,48 @@
 <turbo-frame id="main-turbo" target="_top">
-  <div class="container-login max-w-md mx-10 p-6 bg-white shadow-md rounded-lg">
-    <h2 class="text-2xl font-bold text-center text-gray-700 mb-6">Log in</h2>
+  <div class="container-login max-w-md mx-auto p-6 mt-20">
+    <h1 class="text-4xl font-bold text-center text-white mb-6">wander</h1>
     <div class="form-login">
       <%= simple_form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
-      <div class="form-inputs space-y-4">
-        <%= f.input :email,
-                    required: false,
-                    autofocus: true,
-                    input_html: { autocomplete: "email" } %>
-        <%= f.input :password,
-                    required: false,
-                    input_html: { autocomplete: "current-password" } %>
-        <div class= "h-5 w-5 border-gray-300 rounded-sm focus:ring-indigo-500">
-          <%= f.input :remember_me, as: :boolean if devise_mapping.rememberable? %>
+        <div class="form-inputs space-y-4">
+          <%= f.input :email,
+                      label: false,
+                      placeholder: "Email",
+                      required: false,
+                      input_html: { class: "bg-gray-800 text-white w-full py-3 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500", autocomplete: "email" } %>
+          <div class="relative">
+            <%= f.input :password,
+                        label: false,
+                        placeholder: "Password",
+                        required: false,
+                        input_html: { class: "bg-gray-800 text-white w-full py-3 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500", autocomplete: "current-password" } %>
+            <span class="absolute right-4 top-3 cursor-pointer text-gray-500 hover:text-white">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-.636 2.063-2.03 3.805-3.888 4.948M5.12 16.12c-1.326-.876-2.308-2.224-2.662-3.799" />
+              </svg>
+            </span>
+          </div>
+          <div class="flex items-center justify-between text-sm text-gray-400">
+            <div class="flex items-center flex-1">
+              <div class= "h-6 w-4 border-gray-300 rounded-sm">
+                <%= f.input :remember_me, as: :boolean, input_html: { class:"focus:ring-2 focus:ring-orange-500 indeterminate:bg-orange-300 default:ring-2 checked:bg-orange-500" }, label: false if devise_mapping.rememberable? %>
+              </div>
+              <span class="ml-2">Se souvenir de moi</span>
+            </div>
+            <%- if devise_mapping.recoverable? && controller_name != 'passwords' && controller_name != 'registrations' %>
+              <%= link_to "Mot de passe oublié ?", new_password_path(resource_name), class:"text-right", data: { turbo_frame: "_top" }  %><br />
+            <% end %>
+          </div>
         </div>
+
+        <div class="form-actions mt-11 flex justify-center">
+          <%= f.button :submit, "Se connecter", class:"w-full bg-orange-500 text-white py-3 px-6 rounded-lg text-lg font-bold active:bg-orange-§00", data: { turbo_frame: "_top" } %>
+        </div>
+        <% end %>
       </div>
 
-      <div class="form-actions mt-11 flex justify-center">
-        <%= f.button :submit, "Log in", class: "bg-blue-500 text-white text-sm font-medium py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2", data: { turbo_frame: "_top" } %>
-      </div>
-      <% end %>
-    </div>
     <div class="mt-4 text-center">
       <%= render "devise/shared/links" %>
     </div>
   </div>
-</div>
+</turbo-frame>

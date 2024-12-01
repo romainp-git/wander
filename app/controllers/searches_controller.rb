@@ -7,7 +7,8 @@ class SearchesController < ApplicationController
     @search = Search.new(search_params)
 
     if @search.save
-      render turbo_stream: turbo_stream.replace( "modal-frame", partial: "shared/loading", locals: { search: @search } )
+      render turbo_stream: turbo_stream.replace( "modal-frame", partial: "searches/loading", locals: { search: @search } )
+
       OpenaiJob.perform_later(@search.id)
     else
       render :new

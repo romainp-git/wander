@@ -15,3 +15,7 @@
                     radial-gradient(at 62% 71%, rgb(154, 52, 18) 0, transparent 26%),
                     radial-gradient(at 39% 22%, rgb(234, 88, 12) 0, transparent 100%);
 }
+
+.radial-gradient-dark-orange {
+  background-image: radial-gradient(75% 75% at 52% -18%, #102E5BFF 0%, #181B1F 100%);
+}
