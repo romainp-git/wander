@@ -1,7 +1,7 @@
 
 <%= link_to activity_path(activity) do%>
   <div
-  class="carousel-item snap-start bg-gray-800 shadow-lg rounded-lg p-4 w-80 border border-gray-200 cursor-pointer hover:shadow-xl transition-shadow w-72"
+  class="carousel-item snap-start bg-gray-800 shadow-lg rounded-lg p-4 cursor-pointer hover:shadow-xl transition-shadow w-72 h-60 overflow-hidden"
   data-carrousel-target="item"
   data-carousel-index-value="<%= index %>"
 >
@@ -15,17 +15,17 @@
   <!-- Infos -->
   <div class="flex-col pl-4">
     <div class="flex items-center justify-between">
-      <h3 class="text-lg font-semibold text-white"><%= activity.name %></h3>
+      <h3 class="text-lg font-semibold text-white"><%= truncate(activity.name, length: 50, omission: "...") %></h3>
     </div>
-    <p class="text-white"><%= activity.name %></p>
-    <div class="flex items-center space-x-1 text-yellow-400">
+    <p class="text-white text-xs mt-2"><%= truncate(activity.description, length: 100, omission: "...") %></p>
+    <div class="flex items-center space-x-1 text-orange-400  mt-2">
       <% activity.reviews.to_i.times do %>
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-3" fill="currentColor" viewBox="0 0 24 24">
           <path d="M12 .587l3.668 7.429L24 9.753l-6 5.837 1.417 8.26L12 18.897l-7.417 4.953L6 15.59l-6-5.837 8.332-1.737z" />
         </svg>
       <% end %>
     </div>
-    <div class="text-xs text-white flex items-center mt-2">
+    <div class="text-xs text-white mt-2 flex items-center gap-2">
       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
         <path d="M12 2C8.134 2 5 5.134 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.866-3.134-7-7-7zm0 9.5c-1.381 0-2.5-1.119-2.5-2.5s1.119-2.5 2.5-2.5 2.5 1.119 2.5 2.5-1.119 2.5-2.5 2.5z" />
       </svg>

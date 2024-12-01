@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
-  static targets = ["menu"];
+  static targets = ["menu", "overlay"];
 
   connect() {
     this.isOpen = false;
@@ -14,16 +14,11 @@ export default class extends Controller {
 
   updateMenuState() {
     if (this.isOpen) {
-      this.menuTarget.classList.remove("-translate-x-full");
+      this.menuTarget.classList.remove("translate-x-full");
+      this.overlayTarget.classList.remove("hidden");
     } else {
-      this.menuTarget.classList.add("-translate-x-full");
-    }
-  }
-
-  close(event) {
-    if (this.isOpen && !this.menuTarget.contains(event.target)) {
-      this.isOpen = false;
-      this.updateMenuState();
+      this.menuTarget.classList.add("translate-x-full");
+      this.overlayTarget.classList.add("hidden");
     }
   }
 }

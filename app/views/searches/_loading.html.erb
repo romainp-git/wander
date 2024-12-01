@@ -1,0 +1,9 @@
+<turbo-frame id="modal-frame">
+  <div  class="fixed inset-0 flex flex-col items-center justify-center z-50 h-screen w-screen radial-gradient-dark-orange">
+    <span class="loading loading-ring loading-lg"></span>
+    <p class="px-4 text-center text-white mt-4">Création de votre programme en cours</p>
+    <p class="text-white mt-4 text-4xl">Votre destination :</p>
+    <p class="text-white text-4xl font-bold font-playfair"><%= search.destination %></p>
+    <div data-controller="loading" data-loading-search-id="<%= search.id %>"></div>
+  </div>
+<turbo-frame>

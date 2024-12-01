@@ -7,6 +7,10 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+
     <%= stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
 
@@ -18,20 +22,25 @@
   <body class="<%= controller_name %>-controller <%= action_name %>-action" data-search-id="<%= @search&.id %>">
 
     <!-- Mesh Gradient BG -->
-    <div class="fixed inset-0 animate-gradient mesh-gradient-dark opacity-70 z-0"></div>
+    <div class="fixed inset-0 radial-gradient-dark-orange z-0"></div>
 
     <div data-controller="menu">
       <!-- Menu Burger -->
-      <button class="fixed top-4 left-4 z-20 p-2 bg-black rounded-full text-white" data-action="click->menu#toggle">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
-        </svg>
+      <button class="fixed top-2 right-2 p-1 rounded-full text-white z-20" data-action="click->menu#toggle">
+        <p class="font-material drop-shadow-xl text-4xl">menu</p>
       </button>
 
+      <!-- Overlay (voile noir) -->
+      <div
+        class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-10 hidden"
+        data-menu-target="overlay"
+        data-action="click->menu#toggle">
+      </div>
+
       <!-- Slide-In Menu -->
-      <div class="fixed inset-y-0 left-0 w-64 bg-white shadow-lg z-30 transform -translate-x-full transition-transform" data-menu-target="menu">
+      <div class="fixed inset-y-0 right-0 w-64 bg-white shadow-lg z-20 transform translate-x-full transition-transform" data-menu-target="menu">
         <div class="p-4">
-          <h2 class="text-lg font-bold"><%= current_user&.username || "Guest" %></h2>
+          <h2 class="text-lg font-bold text-black"><%= current_user&.username || "Guest" %></h2>
           <ul class="mt-4 space-y-2">
             <li>
               <%= link_to "Se déconnecter", destroy_user_session_path, data: {turbo_method: :delete} %>
@@ -42,7 +51,7 @@
     </div>
 
     <!-- Main Content -->
-    <main class="relative z-10 inset-0">
+    <main class="relative inset-0">
       <%= yield %>
     </main>
 

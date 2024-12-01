@@ -8,7 +8,7 @@ export default class extends Controller {
   }
 
   increment(event) {
-    const type = event.currentTarget.dataset.type; // Type (adults, children, infants)
+    const type = event.currentTarget.dataset.type;
     const valueElement = this.valueTargets.find((el) => el.dataset.type === type);
     const hiddenInput = this.inputTargets.find((input) => input.dataset.type === type);
 
@@ -20,7 +20,7 @@ export default class extends Controller {
   }
 
   decrement(event) {
-    const type = event.currentTarget.dataset.type; // Type (adults, children, infants)
+    const type = event.currentTarget.dataset.type;
     const valueElement = this.valueTargets.find((el) => el.dataset.type === type);
     const hiddenInput = this.inputTargets.find((input) => input.dataset.type === type);
 
