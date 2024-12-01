@@ -18,16 +18,16 @@
         </div>
 
         <div class="text-center mt-16 ">
-          <h1 class="text-xl text-white font-bold"><%= "#{current_user.first_name} #{current_user.last_name}"%></h1>
-          <div class="flex justify-center items-center gap-2">
-            <p class="font-material text-white">location_on</p>
-            <p class="text-gray-300">City, Country</p>
+          <h1 class="text-md text-white font-bold leading-5"><%= "#{current_user.first_name} #{current_user.last_name}"%></h1>
+          <div class="flex justify-center items-center gap-2 text-sm">
+            <p class="font-material text-white">person</p>
+            <p class="text-gray-300"><%= current_user.username %></p>
           </div>
         </div>
 
-        <div class="text-center my-5 flex gap-3 justify-center">
-          <%= link_to 'Ajouter un voyage', new_trip_path, class: "bg-orange-600 text-white py-2 px-6 rounded-md text-md active:bg-orange-700 h-12 flex items-center justify-center", data: { turbo_frame: "_top" } %>
-          <button class="border border-orange-600 text-white py-2 px-6 rounded-md text-md active:bg-orange-700 h-12 flex items-center justify-center" onclick="my_modal_2.showModal()">Mes statistiques</button>
+        <div class="text-center my-5 flex gap-3 justify-center px-2">
+          <%= link_to 'Ajouter un voyage', new_trip_path, class: "bg-orange-600 text-white py-2 px-6 rounded-md text-sm active:bg-orange-700 h-12 flex flex-grow items-center justify-center", data: { turbo_frame: "_top" } %>
+          <button class="border border-white text-white py-2 px-6 rounded-md text-sm active:border-orange-600 h-12 flex flex-grow items-center justify-center" onclick="stats_modal.showModal()">Mes statistiques</button>
         </div>
 
         <% if !@trips.empty? %>
@@ -49,7 +49,7 @@
         </div>
         <% end %>
 
-        <div class="pt-5">
+        <div class="pt-3">
           <%= render "timeline"%>
         </div>
 

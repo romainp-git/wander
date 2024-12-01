@@ -3,20 +3,16 @@
     <p class="text-lg font-extralight text-white">Choisissez une destination :</p>
   </div>
 
-<%= f.input :destination,
-            label: false,
-            class: "required",
-            input_html: { placeholder: "Paris, Rome, New York...",
-            style:"all: unset;width: 100%;
-                  border: solid 1px white;
-                  display: block;
-                  padding: 10px 20px;
-                  box-sizing: border-box;
-                  color: white;
-                  font-weight: light;
-                  margin-top: 15px;" },
-            error_html: { class: "text-red-500 text-sm mt-2" }
-              %>
+  <%= f.input :destination,
+              label: false,
+              placeholder: "Paris, Londres, New York City",
+              required: true,
+              input_html: { class: "bg-white bg-opacity-10 text-white placeholder:italic placeholder:text-slate-400 block w-full border border-white rounded-md py-3 shadow-sm focus:outline-none focus:border-orange-500 focus:ring-orange-600 focus:ring-1 sm:text-sm",
+              autocomplete: "current-password" } %>
+</div>
+
+<div class="flex flex-col flex-1 px-4">
+  <p class="text-lg font-extralight text-white">Nos suggestions :</p>
 </div>
 
 <div class="carousel carousel-center w-screen pl-4 pr-20 gap-1" data-controller="carousel-suggestions">
@@ -27,7 +23,7 @@
         <!-- <%= image_tag "rome", class: "w-full h-full object-cover opacity-50" %> -->
         <div class="absolute text-white w-full p-4">
           <p class="text-2xl font-bold font-playfair leading-6 mb-2">En panne d'idée ?</p>
-          <p class="text-md leading-2">Découvrez les destinations les plus demandées par nos travellers</p>
+          <p class="text-md leading-5 font-light">Découvrez les destinations les plus demandées par nos travellers</p>
         </div>
       </div>
     </div>

@@ -1,10 +1,8 @@
 <turbo-frame action="replace" id="modal-frame">
   <div data-controller="stories">
     <div class="fixed inset-0 z-20 rounded-t-lg shadow-lg transition-transform duration-500 transform translate-y-full" data-controller="modal">
-      <button class="absolute top-4 right-4 z-50" data-action="click->modal#close">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="white" class="size-6">
-          <path stroke-linecap="round" class="shadow" stroke-linejoin="round" d="M19.5 13.5 12 21m0 0-7.5-7.5M12 21V3" />
-        </svg>
+      <button class="absolute p-4 z-50" data-action="click->modal#close">
+        <p class="icon icon-100 drop-shadow-xl text-4xl text-white">arrow_back</p>
       </button>
 
       <div data-stories-target="track" class="carousel-track flex transition-transform duration-1000 ease-in-out w-full h-full">

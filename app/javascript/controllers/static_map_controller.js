@@ -13,8 +13,9 @@ export default class extends Controller {
     mapboxgl.accessToken = this.apiKeyValue;
     const map = new mapboxgl.Map({
       container: 'static-map',
-      style: 'mapbox://styles/mapbox/light-v11',
+      style: 'mapbox://styles/mapbox/dark-v11',
       center: [5, 46],
+      projection: "mercator",
       zoom: 0
     });
 

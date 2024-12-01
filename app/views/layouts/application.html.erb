@@ -7,6 +7,7 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
+
     <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -14,7 +15,7 @@
     <%= stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
 
-    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
     <link rel="manifest" href="/manifest.json">
     <%= javascript_importmap_tags %>
   </head>
@@ -26,19 +27,19 @@
 
     <div data-controller="menu">
       <!-- Menu Burger -->
-      <button class="fixed top-2 right-2 p-1 rounded-full text-white z-20" data-action="click->menu#toggle">
-        <p class="font-material drop-shadow-xl text-4xl">menu</p>
+      <button class="fixed top-3 right-4 p-1 rounded-full text-white z-20" data-action="click->menu#toggle">
+        <p class="icon icon-100 drop-shadow-xl text-4xl">menu</p>
       </button>
 
       <!-- Overlay (voile noir) -->
       <div
-        class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-10 hidden"
+        class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-30 hidden"
         data-menu-target="overlay"
         data-action="click->menu#toggle">
       </div>
 
       <!-- Slide-In Menu -->
-      <div class="fixed inset-y-0 right-0 w-64 bg-white shadow-lg z-20 transform translate-x-full transition-transform" data-menu-target="menu">
+      <div class="fixed inset-y-0 right-0 w-64 bg-white shadow-lg z-50 transform translate-x-full transition-transform" data-menu-target="menu">
         <div class="p-4">
           <h2 class="text-lg font-bold text-black"><%= current_user&.username || "Guest" %></h2>
           <ul class="mt-4 space-y-2">

@@ -1,41 +1,29 @@
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
-  static targets = ["mapView", "agendaView", "mapToggle", "agendaToggle", "slider"];
+  static targets = ["mapView", "agendaView"];
 
-  connect() {
-    console.log("controller toggle actif");
-    this.showMap();
-
+  connect(){
+    console.log("show map toggle controller")
   }
 
-  toggle(event) {
+  toggleView(event) {
     const view = event.currentTarget.dataset.view;
+    console.log(event.currentTarget.dataset)
 
     if (view === "map") {
       this.showMap();
-    } else if (view === "agenda") {
+    } else {
       this.showAgenda();
     }
   }
 
   showMap() {
-    this.sliderTarget.style.transform = "translateX(0%)";
-
-    this.agendaViewTarget.classList.replace("flex", "hidden");
-    this.mapViewTarget.classList.replace("hidden", "block");
-
-    this.agendaToggleTarget.classList.replace("text-gray-800", "text-white");
-    this.mapToggleTarget.classList.replace("text-white", "text-gray-800");
+    console.log("show map")
+    this.mapViewTarget.classList.replace("translate-y-full", "translate-y-[70px]");
   }
 
   showAgenda() {
-    this.sliderTarget.style.transform = "translateX(100%)";
-
-    this.mapViewTarget.classList.replace("block", "hidden");
-    this.agendaViewTarget.classList.replace("hidden", "flex");
-
-    this.mapToggleTarget.classList.replace("text-gray-800", "text-white");
-    this.agendaToggleTarget.classList.replace("text-white", "text-gray-800");
+    this.mapViewTarget.classList.replace("translate-y-[70px]", "translate-y-full");
   }
 }

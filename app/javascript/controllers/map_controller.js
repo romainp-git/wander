@@ -11,9 +11,9 @@ export default class extends Controller {
 
     this.map = new mapboxgl.Map({
       container: this.element,
-      style: "mapbox://styles/pdunleav/cjofefl7u3j3e2sp0ylex3cyb",
-      center: [2.3522, 48.8566],
-      zoom: 12
+      style: "mapbox://styles/mapbox/standard",
+      projection: "mercator",
+      zoom: 1
     });
 
     this.markerElements = [];
@@ -23,11 +23,11 @@ export default class extends Controller {
         this.highlightMarker(index);
         window.dispatchEvent(new CustomEvent("scrollToItem", { detail: { index } }));
       });
-      el.className = "marker";
-      el.style.backgroundImage = 'url("https://docs.mapbox.com/help/demos/custom-markers-gl-js/mapbox-icon.png")';
-      el.style.width = "30px";
-      el.style.height = "30px";
-      el.style.backgroundSize = "cover";
+      el.className = "marker icon icon-filled icon-40";
+      el.textContent = "location_on";
+      el.style.color = "#ffffff";
+      el.style.cursor = "pointer";
+      el.style.transform = "translate(-50%, -100%)";
       el.dataset.index = index;
 
       this.markerElements.push(el);
@@ -38,11 +38,7 @@ export default class extends Controller {
     });
 
     if (this.markersValue.length) {
-      const bounds = new mapboxgl.LngLatBounds();
-      this.markersValue.forEach((marker) =>
-        bounds.extend([marker.lng, marker.lat])
-      );
-      this.map.fitBounds(bounds, { padding: 50, maxZoom: 15, duration: 0 });
+      this.highlightMarker(0);
     }
 
     window.addEventListener("highlight", (event) => {
@@ -53,17 +49,19 @@ export default class extends Controller {
 
   highlightMarker(index) {
     const marker = this.markersValue[index];
+    const heightOffset = (window.innerHeight / 3) - (window.innerHeight / 2);
 
     if (!marker) return;
     this.map.flyTo({
       center: [marker.lng, marker.lat],
-      zoom: 15
+      zoom: 15,
+      offset: [0, heightOffset]
     });
     this.markerElements.forEach((el, i) => {
       if (i === index) {
-        el.classList.add("bg-yellow-500", "scale-300");
+        el.style.color = "#ea580c";
       } else {
-        el.classList.remove("bg-yellow-500", "scale-300");
+        el.style.color = "#ffffff";
       }
     });
   }

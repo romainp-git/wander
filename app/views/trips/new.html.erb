@@ -1,18 +1,19 @@
+<%= link_to trips_path do %>
+  <button class="fixed p-4 z-10" >
+    <p class="icon icon-100 drop-shadow-xl text-4xl text-white">arrow_back</p>
+  </button>
+<% end %>
+
 <div id="screen-container" class="relative h-screen overflow-hidden flex flex-col" data-controller="add-trip-animation">
   <div data-controller="stepper">
-    <button class="absolute p-4 shadow z-10" data-action="click->stepper#goBack" data-url="<%= trips_path %>" >
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="white" class="size-6">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
-      </svg>
-    </button>
 
     <div id="pulse-button" data-add-trip-animation-target="pulseButton" class="absolute transition-opacity duration-1000 animate-pulse-slow flex justify-center items-center bottom-10 w-full">
       <div class="w-16 h-16 halo animate-gradient mesh-gradient-orange rounded-full"></div>
     </div>
 
     <div id="title-part" data-add-trip-animation-target="titlePart" class="relative min-h-16 flex items-start w-full pr-10">
-      <p id="robot-icon" data-add-trip-animation-target="robotIcon" class="text-lg px-2 transition-opacity duration-1000">🤖</p>
-      <p id="typewriter-text" data-add-trip-animation-target="text" class="px-3 text-white text-xl font-semibold"></p>
+      <p id="robot-icon" data-add-trip-animation-target="robotIcon" class="icon icon-300 text-white text-xl text-right pl-4 transition-opacity duration-1000">robot_2</p>
+      <p id="typewriter-text" data-add-trip-animation-target="text" class="px-5 text-white text-lg font-semibold"></p>
     </div>
 
     <%= simple_form_for @search, url: searches_path, data: { turbo_frame: "loading-frame" } do |f| %>
@@ -39,17 +40,17 @@
 
       </div>
 
-      <div class="w-full flex justify-center mt-6 gap-5 absolute bottom-10 opacity-0 transition-opacity duration-500"
+      <div class="w-full flex justify-center mt-6 gap-2 absolute bottom-10 opacity-0 transition-opacity duration-500 px-6"
         data-add-trip-animation-target="buttons">
         <button type="button"
-                class="prev-step bg-opacity-50 text-sm font-medium text-white border px-4 py-2 active:bg-white"
+                class="prev-step py-2 px-6 rounded-md text-sm text-white border active:border-orange-600 h-12 flex flex-grow items-center justify-center"
                 data-stepper-target="prevButton"
                 data-action="click->stepper#previousStep">Précédent</button>
         <button type="button"
-                class="next-step bg-opacity-50 text-sm font-medium text-white border px-4 py-2 active:bg-white"
+                class="next-step py-2 px-6 rounded-md text-sm text-white bg-orange-600 active:bg-orange-700 h-12 flex flex-grow items-center justify-center"
                 data-action="click->stepper#nextStep"
                 data-stepper-target="nextButton">Suivant</button>
-        <%= f.submit "Générer le programme", class:"hidden bg-opacity-50 text-sm font-medium text-white border px-4 py-2 active:bg-white cursor-pointer", data: { "stepper-target" => "submitButton" } %>
+        <%= f.submit "Générer le programme", class:"hidden py-2 px-6 rounded-md text-sm text-white bg-orange-600 active:bg-orange-700 h-12 flex flex-grow items-center justify-center cursor-pointer", data: { "stepper-target" => "submitButton" } %>
       </div>
     <% end %>
   </div>

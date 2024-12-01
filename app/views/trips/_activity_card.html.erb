@@ -1,5 +1,5 @@
 <%= link_to activity_path(trip_activity.activity) do %>
-  <li class="flex items-center space-x-4 relative mb-5">
+  <li class="flex items-center space-x-4 relative">
     <!-- Timeline time -->
     <div class="text-gray-400 text-sm w-16 text-right">
       <div><%= trip_activity.start_date.strftime('%H:%M') %></div>
@@ -8,8 +8,10 @@
 
     <!-- Timeline node and line -->
     <div class="relative flex flex-col items-center">
-      <div class="w-4 h-4 bg-white rounded-full z-10"></div>
-      <div class="absolute h-28 w-0.5 bg-white -top-28 left-1/2 transform -translate-x-1/2"></div>
+      <div class="w-4 h-4 bg-white rounded-full"></div>
+      <% unless index == 0 %>
+        <div class="absolute h-32 w-0.5 bg-white -top-32 left-1/2 transform -translate-x-1/2"></div>
+      <% end %>
     </div>
 
     <!-- Timeline card -->

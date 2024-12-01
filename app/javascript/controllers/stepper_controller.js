@@ -86,9 +86,4 @@ export default class extends Controller {
       this.submitButtonTarget.classList.remove("hidden");
     }
   }
-
-  goBack(event) {
-    const url = event.currentTarget.dataset.url || "/trips";
-    window.location.href = url;
-  }
 }
