@@ -1,86 +1,95 @@
-<div data-controller="toggle" class="relative h-screen ">
-  <!-- Toggle en bas de la page -->
-  <%= render "toggle_nav" %>
+<div class="controller" data-controller="toggle">
+  <!-- Bouton Toggle -->
+  <button class="fixed bottom-4 right-4 z-50 bg-orange-500 text-white p-3 rounded-full shadow-lg icon"
+          data-action="click->toggle#toggleView"
+          data-view="map">
+    map
+  </button>
+
   <!-- Vue actuelle avec la carte et le carrousel -->
-  <div class=" map absolute top-0 left-0 right-0 bottom-0 z-0 block h-full" data-toggle-target="mapView">
-  <!-- Bouton retour -->
-    <button class="absolute top-4 left-4 btn bg-white text-gray-900 w-12 h-12 flex items-center justify-center z-10" onclick="history.back()">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-      </svg>
+  <div class="map fixed inset-0 z-50 h-screen w-screen bg-black overflow-hidden rounded-t-2xl translate-y-full transition-transform duration-500"
+    data-toggle-target="mapView">
+
+    <button class="absolute p-4 right-0 z-50" data-action="click->toggle#toggleView">
+      <p class="icon icon-100 drop-shadow-xl text-4xl text-white">close</p>
     </button>
 
+    <div id="map" class="w-screen h-screen"
+      data-controller="map"
+      data-map-api-key-value='<%= ENV["MAPBOX_API_KEY"] %>'
+      data-map-markers-value='<%= raw @markers.to_json %>'>
+    </div>
 
-  <div id="map" class="w-full h-full"
-    data-controller="map"
-    data-map-api-key-value='<%= ENV["MAPBOX_API_KEY"] %>'
-    data-map-markers-value='<%= raw @markers.to_json %>'>
+    <div class="absolute bottom-16 left-0 right-0 z-10 overflow-x-auto" data-controller="carrousel">
+      <div class="carousel carousel-center rounded-box space-x-4 p-4" data-carrousel-target="container">
+        <% @activities.each_with_index do |activity, index| %>
+          <%= render "carrousel_item", activity: activity, index: index %>
+        <% end %>
+      </div>
+    </div>
   </div>
-
-<div class="absolute bottom-16 left-0 right-0 z-10 overflow-x-auto" data-controller="carrousel">
-  <div class="carousel carousel-center rounded-box space-x-4 p-4" data-carrousel-target="container" >
-  <!--pour comportement caroussel ajouter max-w-full mais controller KO-->
-    <% @activities.each_with_index do |activity, index| %>
-
-      <%= render "carrousel_item", activity: activity, index: index %>
-    <% end %>
-  </div>
-</div>
-</div>
 
   <!-- Vue agenda -->
-<div data-toggle-target="agendaView" class="hidden h-full flex">
-  <div class="w-full text-white" data-controller="tabs">
-    <!-- Calendrier -->
-    <div class="flex-col items-center justify-between px-4 py-3 bg-gray-900">
-      <!-- Bouton retour -->
-      <div class="flex justify-between items-center">
-        <button class="btn btn-outline border-gray-500 text-gray-400 mr-4 w-12 h-12 flex items-center justify-center" onclick="history.back()">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-          </svg>
+  <div data-toggle-target="agendaView" class="h-full flex">
+    <div class="w-full text-white" data-controller="tabs">
+      <%= link_to trips_path do %>
+        <button class="fixed p-4 z-20" >
+          <p class="icon icon-100 drop-shadow-xl text-4xl text-white">arrow_back</p>
         </button>
-        <h1 class="w-100 text-center font-bold text-lg"><%= @trip.name %></h1>
-        <div class="ml-4 w-12 h-12"></div>
-      </div>
+      <% end %>
 
-      <!-- Jours dynamiques -->
-      <div class="flex items-center overflow-x-scroll no-scrollbar space-x-2 mt-4" data-tabs-target="days">
-        <% @calendar_dates.each_with_index do |date, index| %>
-          <div class="flex flex-col items-center cursor-pointer text-gray-400 px-4 py-3 <%= 'text-black bg-white rounded-lg px-4 py-3' if index == 0 %>"
+      <div class="sticky top-0 z-[15]">
+         <!-- Calendrier -->
+        <div class="flex justify-center items-center w-full py-4 bg-slate-900">
+          <h1 class="w-100 text-center font-bold text-2xl mt-1"><%= @trip.name %></h1>
+        </div>
+
+        <!-- Jours dynamiques -->
+        <div class="flex-col items-center justify-between px-4 py-3 bg-gray-900">
+          <div class="flex items-center overflow-x-scroll space-x-2" style="scrollbar-width: none;">
+            <% @calendar_dates.each_with_index do |date, index| %>
+              <div class="flex flex-col items-center cursor-pointer text-gray-400 px-4 py-3 <%= 'text-black bg-white rounded-lg' if index == 0 %>"
+                  data-action="click->tabs#changeTab"
+                  data-tabs-day="<%= index %>"
+                  data-tabs-target="day">
+                <span class="text-sm"><%= I18n.l(date, format: '%a')[0].upcase %></span>
+                <span class="text-xs font-bold"><%= date.strftime('%d') %></span>
+              </div>
+            <% end %>
+          </div>
+        </div>
+
+        <!-- Tabs pour les jours -->
+        <div role="tablist" class="bg-gray-800 tabs tabs-bordered text-white pt-2 overflow-x-scroll" style="scrollbar-width: none;">
+          <% @calendar_dates.each_with_index do |date, index| %>
+            <a class="tab w-36 pb-4 <%= index == 0 ? 'tab-active text-white !border-white' : 'text-gray-400 !border-gray-600' %>"
               data-action="click->tabs#changeTab"
               data-tabs-day="<%= index %>"
-              data-tabs-target="day">
-            <span class="text-sm"><%= I18n.l(date, format: '%a')[0].upcase %></span>
-            <span class="text-xs font-bold"><%= date.strftime('%d') %></span>
+              data-tabs-target="tab"> Jour <%= index + 1 %></a>
+          <% end %>
+          <div class="absolute bottom-0 left-0 h-1 bg-orange-500 transition-transform duration-300 ease-in-out" data-tabs-target="highlight"></div>
+        </div>
+      </div>
+
+      <!-- Timeline Section -->
+      <div class="relative " data-tabs-target="timeline">
+        <% @day_activities.each_with_index do |(date, activities), index| %>
+          <div data-tabs-day="<%= index %>" data-tabs-target="timelineDay">
+            <div class="w-full bg-slate-900 z-10 sticky top-48">
+              <p class="text-center p-4 font-bold text-lg"><%= I18n.l(date, format: "%A %d %b %Y") %></p>
+            </div>
+            <ul class="relative flex flex-col gap-2 p-4">
+              <% if activities.any? %>
+                <% activities.each_with_index do |trip_activity, activity_index| %>
+                  <%= render partial: 'activity_card', locals: { trip_activity: trip_activity, index: activity_index } %>
+                <% end %>
+              <% else %>
+                <li class="text-gray-400 text-sm">Aucune activité prévue pour ce jour.</li>
+              <% end %>
+            </ul>
           </div>
         <% end %>
       </div>
     </div>
-
-    <!-- Tabs pour les jours -->
-    <div role="tablist" class="bg-black tabs tabs-bordered text-white pt-2 mb-4 overflow-x-scroll">
-      <% @calendar_dates.each_with_index do |date, index| %>
-        <a class="tab <%= index == 0 ? 'tab-active text-white border-white w-36 pb-4' : 'text-gray-400 w-36 pb-4' %>"
-          data-action="click->tabs#changeTab"
-          data-tabs-day="<%= index %>"
-          data-tabs-target="tab"> Jour <%= index + 1 %></a>
-      <% end %>
-    </div>
-
-    <!-- Timeline Section -->
-    <% @day_activities.each_with_index do |(date, activities), index| %>
-    <div class="p-4 hidden overflow-hidden" data-tabs-target="content" data-tabs-day="<%= index %>">
-      <ul class="relative">
-        <% if activities.any? %>
-          <% activities.each do |trip_activity| %>
-            <%= render partial: 'activity_card', locals: { trip_activity: trip_activity } %>
-          <% end %>
-        <% else %>
-          <li class="text-gray-400 text-sm">Aucune activité prévue pour ce jour.</li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
   </div>
 </div>

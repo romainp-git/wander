@@ -1,9 +1,9 @@
 <%- if controller_name != 'sessions' %>
-  <%= link_to "Se connecter", new_session_path(resource_name), data: { turbo_frame: "_top" }  %><br />
+  <%= link_to "Se connecter", new_session_path(resource_name), class:"text-white underline", sdata: { turbo_frame: "_top" }  %><br />
 <% end %>
 
 <%- if devise_mapping.registerable? && controller_name != 'registrations' %>
-  <%= link_to "S'inscrire", new_registration_path(resource_name), data: { turbo_frame: "_top" }  %><br />
+  <%= link_to "S'inscrire", new_registration_path(resource_name), class:"text-white underline", data: { turbo_frame: "_top" }  %><br />
 <% end %>
 
 <%- if devise_mapping.confirmable? && controller_name != 'confirmations' %>

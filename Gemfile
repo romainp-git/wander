@@ -59,6 +59,7 @@ gem 'iso_country_codes'
 gem 'unsplash'
 gem 'sidekiq'
 gem 'rest-client'
+gem 'rails-i18n'
 
 group :development, :test do
   gem 'dotenv-rails'

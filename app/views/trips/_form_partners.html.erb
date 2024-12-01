@@ -6,16 +6,16 @@
   </div>
 
   <!-- Room and Guests Counters -->
-  <div class="bg-white bg-opacity-10 rounded-2xl p-4">
+  <div class="bg-white bg-opacity-10 rounded-2xl p-4 border border-white">
     <div class="flex flex-col gap-4">
       <!-- Adults -->
       <div class="flex justify-between items-center">
         <div class="flex items-center gap-2">
-          <span class="font-material text-white font-thin">person</span>
-          <p class="text-white">Adulte(s)</p>
+          <span class="icon text-white icon-200">person</span>
+          <p class="text-white text-sm">Adulte(s)</p>
           <small class="text-gray-300 text-sm">13 ans ou plus</small>
         </div>
-        <div class="flex items-center gap-4">
+        <div class="flex items-center justify-between gap-4 w-28">
           <button type="button" data-action="click->counter#decrement" data-counter-target="decrement" data-type="adults" class="w-8 h-8 bg-white text-black rounded-full font-material">remove</button>
           <span class="text-white" data-counter-target="value" data-type="adults">1</span>
           <button type="button" data-action="click->counter#increment" data-counter-target="increment" data-type="adults" class="w-8 h-8 bg-white text-black rounded-full font-material">add</button>
@@ -26,11 +26,11 @@
       <!-- Children -->
       <div class="flex justify-between items-center">
         <div class="flex items-center gap-2">
-          <span class="font-material text-white font-thin">child_friendly</span>
-          <p class="text-white">Enfant(s)</p>
+          <span class="icon text-white icon-200">child_friendly</span>
+          <p class="text-white text-sm">Enfant(s)</p>
           <small class="text-gray-300 text-sm">2 à 13 ans</small>
         </div>
-        <div class="flex items-center gap-4">
+        <div class="flex items-center justify-between gap-4 w-28">
           <button type="button" data-action="click->counter#decrement" data-counter-target="decrement" data-type="children" class="w-8 h-8 bg-white text-black rounded-full font-material">remove</button>
           <span class="text-white" data-counter-target="value" data-type="children">0</span>
           <button type="button" data-action="click->counter#increment" data-counter-target="increment" data-type="children" class="w-8 h-8 bg-white text-black rounded-full font-material">add</button>
@@ -41,11 +41,11 @@
       <!-- Infants -->
       <div class="flex justify-between items-center">
         <div class="flex items-center gap-2">
-          <span class="font-material text-white font-thin">baby_changing_station</span>
-          <p class="text-white">Bébé(s)</p>
+          <span class="icon text-white icon-200">baby_changing_station</span>
+          <p class="text-white text-sm">Bébé(s)</p>
           <small class="text-gray-300 text-sm">2ans et moins</small>
         </div>
-        <div class="flex items-center gap-4">
+        <div class="flex items-center justify-between gap-4 w-28">
           <button type="button" data-action="click->counter#decrement" data-counter-target="decrement" data-type="infants" class="w-8 h-8 bg-white text-black rounded-full font-material">remove</button>
           <span class="text-white" data-counter-target="value" data-type="infants">0</span>
           <button type="button" data-action="click->counter#increment" data-counter-target="increment" data-type="infants" class="w-8 h-8 bg-white text-black rounded-full font-material">add</button>

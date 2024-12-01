@@ -5,8 +5,8 @@ export default class extends Controller {
 
   connect() {
     const splashScreen = document.getElementById("splash-screen");
-
     splashScreen.style.display = "flex";
+
     setTimeout(() => {
       splashScreen.style.display = "none";
       sessionStorage.setItem("splashShown", "true");

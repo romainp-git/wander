@@ -23,5 +23,7 @@ module.exports = {
     require('@tailwindcss/typography'),
     require('@tailwindcss/container-queries'),
     require('daisyui'),
+    require('@savaryna/tailwindcss-material-symbols'),
+    require("tailwindcss-safe-area")
   ]
 }

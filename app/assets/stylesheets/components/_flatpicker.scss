@@ -2,7 +2,7 @@
   background: rgba(255, 255, 255, 0.15) !important;
   backdrop-filter: blur(10px) !important;
   border-radius: 20px !important;
-  border: none !important;
+  border: solid 1px white !important;
   width: 100% !important;
   max-width: 90%;
   min-width: 350px !important;
@@ -63,6 +63,7 @@
 .flatpickr-weekday {
   width: 14.28% !important;
   font-weight: 500 !important;
+  color: rgba(255, 255, 255, 0.8) !important;
 }
 
 .dayContainer {

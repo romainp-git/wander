@@ -57,7 +57,7 @@ export default class extends Controller {
           this.itemTargets[0].classList.replace("opacity-100", "opacity-75");
           this.itemTargets[0].dataset.clickable = "false";
         }
-      } else if (index === 0) {
+      /*}  else if (index === 0) {
         const isSecondCentered =
           this.itemTargets[1]?.getBoundingClientRect().left >= centerLeft &&
           this.itemTargets[1]?.getBoundingClientRect().right <= centerRight;
@@ -66,7 +66,7 @@ export default class extends Controller {
           this.itemTargets[0].classList.replace("scale-95", "scale-100");
           this.itemTargets[0].classList.replace("opacity-75", "opacity-100");
           this.itemTargets[0].dataset.clickable = "true";
-        }
+        } */
       } else if (index !== 0) {
         item.classList.replace("scale-100", "scale-95");
         item.classList.replace("opacity-100", "opacity-75");

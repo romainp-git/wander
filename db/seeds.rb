@@ -176,8 +176,6 @@ days.each do |day|
   end
 end
 
-puts "Seed completed successfully!"
-
 suggestions_data = [
   {
     country: "France",
@@ -203,7 +201,7 @@ suggestions_data = [
   },
 {
     country: "USA",
-    city: "New York",
+    city: "New York City",
     description: "La ville qui ne dort jamais, connue pour ses gratte-ciel emblématiques.",
     highlight: "Statue de la Liberté",
     photos: [

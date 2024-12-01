@@ -1,8 +1,10 @@
 {
   "devDependencies": {
+    "@savaryna/tailwindcss-material-symbols": "^1.0.3",
     "daisyui": "^4.12.14"
   },
   "dependencies": {
-    "mapbox-gl": "^3.8.0"
+    "mapbox-gl": "^3.8.0",
+    "tailwindcss-safe-area": "^0.6.0"
   }
 }

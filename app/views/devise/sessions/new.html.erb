@@ -8,13 +8,13 @@
                       label: false,
                       placeholder: "Email",
                       required: false,
-                      input_html: { class: "bg-gray-800 text-white w-full py-3 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500", autocomplete: "email" } %>
+                      input_html: { class: "bg-gray-800 text-white placeholder:italic placeholder:text-slate-400 block w-full border border-white rounded-md py-3 shadow-sm focus:outline-none focus:border-orange-500 focus:ring-orange-600 focus:ring-1 sm:text-sm", autocomplete: "email" } %>
           <div class="relative">
             <%= f.input :password,
                         label: false,
                         placeholder: "Password",
                         required: false,
-                        input_html: { class: "bg-gray-800 text-white w-full py-3 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500", autocomplete: "current-password" } %>
+                        input_html: { class: "bg-gray-800 text-white placeholder:italic placeholder:text-slate-400 block w-full border border-white rounded-md py-3 shadow-sm focus:outline-none focus:border-orange-500 focus:ring-orange-600 focus:ring-1 sm:text-sm", autocomplete: "current-password" } %>
             <span class="absolute right-4 top-3 cursor-pointer text-gray-500 hover:text-white">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -25,7 +25,7 @@
           <div class="flex items-center justify-between text-sm text-gray-400">
             <div class="flex items-center flex-1">
               <div class= "h-6 w-4 border-gray-300 rounded-sm">
-                <%= f.input :remember_me, as: :boolean, input_html: { class:"focus:ring-2 focus:ring-orange-500 indeterminate:bg-orange-300 default:ring-2 checked:bg-orange-500" }, label: false if devise_mapping.rememberable? %>
+                <%= f.check_box :remember_me, class: "w-4 h-4 text-orange-500 border-gray-300 rounded focus:ring-orange-500", label: false if devise_mapping.rememberable? %>
               </div>
               <span class="ml-2">Se souvenir de moi</span>
             </div>
