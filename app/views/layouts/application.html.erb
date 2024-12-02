@@ -20,14 +20,14 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body class="<%= controller_name %>-controller <%= action_name %>-action" data-search-id="<%= @search&.id %>">
+  <body class="<%= controller_name %>-controller <%= action_name %>-action" data-search-id="<%= @search&.id %>" >
 
     <!-- Mesh Gradient BG -->
     <div class="fixed inset-0 radial-gradient-dark-orange z-0"></div>
 
     <div data-controller="menu">
       <!-- Menu Burger -->
-      <button class="fixed top-3 right-4 p-1 rounded-full text-white z-20" data-action="click->menu#toggle">
+      <button class="fixed top-3 right-4 p-1 rounded-full text-white z-20 mt-safe" data-action="click->menu#toggle">
         <p class="icon icon-100 drop-shadow-xl text-4xl">menu</p>
       </button>
 
@@ -40,7 +40,7 @@
 
       <!-- Slide-In Menu -->
       <div class="fixed inset-y-0 right-0 w-64 bg-white shadow-lg z-50 transform translate-x-full transition-transform" data-menu-target="menu">
-        <div class="p-4">
+        <div class="p-4 pt-safe">
           <h2 class="text-lg font-bold text-black"><%= current_user&.username || "Guest" %></h2>
           <ul class="mt-4 space-y-2">
             <li>
