@@ -1,0 +1,28 @@
+<div
+  id="countup"
+  class="flex flex-col items-center gap-4 text-white mt-3"
+  data-controller="countup"
+  data-countup-start-date-value="<%= start %>">
+  <div class="grid auto-cols-max grid-flow-col gap-3 text-center">
+    <div class="flex flex-col items-center">
+      <span data-countup-target="years" class="text-3xl font-playfair font-bold min-w-[3ch]">0</span>
+      <span class="text-xs uppercase">années</span>
+    </div>
+    <div class="flex flex-col items-center">
+      <span data-countup-target="days" class="text-3xl font-playfair font-bold min-w-[3ch]">0</span>
+      <span class="text-xs uppercase">jours</span>
+    </div>
+    <div class="flex flex-col items-center">
+      <span data-countup-target="hours" class="text-3xl font-playfair font-bold min-w-[2ch]">00</span>
+      <span class="text-xs uppercase">heures</span>
+    </div>
+    <div class="flex flex-col items-center">
+      <span data-countup-target="minutes" class="text-3xl font-playfair font-bold min-w-[2ch]">00</span>
+      <span class="text-xs uppercase">min</span>
+    </div>
+    <div class="flex flex-col items-center">
+      <span data-countup-target="seconds" class="text-3xl font-playfair font-bold min-w-[2ch]">00</span>
+      <span class="text-xs uppercase">sec</span>
+    </div>
+  </div>
+</div>
