@@ -2,10 +2,6 @@ class OpenaiJob < ApplicationJob
   queue_as :default
 
   def perform(search_id)
-    if search_id.is_a?(String)
-      search_id = search_id.to_i  # Convertir explicitement en entier
-    end
-    
     search = Search.find(search_id)
 
     OpenaiService.new(search).generate_program
