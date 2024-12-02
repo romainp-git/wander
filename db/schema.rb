@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_12_01_203124) do
+ActiveRecord::Schema[7.1].define(version: 2024_12_02_202857) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -67,6 +67,16 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_01_203124) do
     t.float "latitude"
     t.float "longitude"
     t.string "alpha3code"
+  end
+
+  create_table "highlights", force: :cascade do |t|
+    t.string "title"
+    t.string "description"
+    t.float "key_number"
+    t.bigint "suggestion_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["suggestion_id"], name: "index_highlights_on_suggestion_id"
   end
 
   create_table "searches", force: :cascade do |t|
@@ -146,11 +156,10 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_01_203124) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "highlights", "suggestions"
   add_foreign_key "searches", "trips"
   add_foreign_key "trip_activities", "activities"
   add_foreign_key "trip_activities", "trips"
-  add_foreign_key "trip_partners", "trips"
-  add_foreign_key "trip_partners", "users"
   add_foreign_key "trips", "destinations"
   add_foreign_key "trips", "users"
 end

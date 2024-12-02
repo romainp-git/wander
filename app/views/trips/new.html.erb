@@ -7,18 +7,24 @@
 <div id="screen-container" class="relative h-screen overflow-hidden flex flex-col" data-controller="add-trip-animation">
   <div data-controller="stepper">
 
-    <div id="pulse-button" data-add-trip-animation-target="pulseButton" class="absolute transition-opacity duration-1000 animate-pulse-slow flex justify-center items-center bottom-10 w-full">
-      <div class="w-16 h-16 halo animate-gradient mesh-gradient-orange rounded-full"></div>
+    <div id="pulse-button" data-add-trip-animation-target="pulseButton" class="absolute transition-opacity duration-1000 flex justify-center items-center bottom-10 w-full">
+      <div class="w-16 h-16 halo animate-gradient mesh-gradient-orange rounded-full z-10 animate-pulse-slow"></div>
+      <div class="absolute w-16 h-16 z-0">
+        <div class="circles">
+          <div class="circle1"></div>
+          <div class="circle2"></div>
+          <div class="circle3"></div>
+        </div>
+      </div>
     </div>
 
-    <div id="title-part" data-add-trip-animation-target="titlePart" class="relative min-h-16 flex items-start w-full pr-10 mt-title">
-      <p id="robot-icon" data-add-trip-animation-target="robotIcon" class="icon icon-300 text-white text-xl text-right pl-4 transition-opacity duration-1000">robot_2</p>
-      <p id="typewriter-text" data-add-trip-animation-target="text" class="px-5 text-white text-lg font-semibold"></p>
+     <%= render 'tabs_form' %>
+
+    <div id="title-part" data-add-trip-animation-target="titlePart" class="relative min-h-16 flex items-start w-full pr-10 mt-title">      <p id="typewriter-text" data-add-trip-animation-target="text" class="px-5 text-white text-xl font-semibold"></p>
     </div>
 
     <%= simple_form_for @search, url: searches_path, data: { turbo_frame: "loading-frame" } do |f| %>
       <div id="form-part" class="form relative opacity-0 transition-opacity inset-0 flex flex-col flex-grow" data-add-trip-animation-target="formPart">
-        <%= render 'tabs_form' %>
 
         <div id="stepper-container" class="stepper relative">
           <div class="absolute step transition-transform transform translate-x-0 w-screen overflow-x-hidden" data-stepper-target="step">
