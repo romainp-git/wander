@@ -1,5 +1,4 @@
 Sidekiq.configure_server do |config|
-  Sidekiq::Logging.logger.level = Logger::DEBUG
   config.redis = {
     url: 'rediss://:REDACTED@ec2-108-128-57-24.eu-west-1.compute.amazonaws.com:22060',
     ssl: true,
