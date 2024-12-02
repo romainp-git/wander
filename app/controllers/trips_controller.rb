@@ -6,17 +6,19 @@ class TripsController < ApplicationController
     end
 
     @user = current_user
+   # Appel de la méthode
     @trips = Trip.where(user: current_user).order(end_date: :desc)
-
+    @time_not_traveled = time_not_traveled(@trips, @user)
     ## STATS
-    @destinations = self.trips.empty? ? ["FRA","FRA","GBR","NLD","AUS"] : trips
-    @travels = self.journeys.empty? ? ["FRA","FRA","GBR","NLD","AUS"] : journeys
+    @destinations = self.trips.empty? ? [] : trips
+    @travels = self.journeys.empty? ? [] : journeys
     @stats = {
       total_countries_visited: @destinations.count,
       ratio: ((@destinations.count / 249.0) * 100).round(2),
-      total_travels: @travels.count
+      total_travels: Trip.where(user: current_user).where("end_date < ? ", DateTime.now).count
     }
     @total_km = total_km(@trips)
+    @travels_times = travels_times(@trips)
 
     ## MAP
     @markers = @trips.filter_map do |trip|
@@ -54,8 +56,8 @@ class TripsController < ApplicationController
 
   def total_km(trips)
     total = 0
-    options = {units: :km}
-    trips.each do |trip|
+    options = { units: :km }
+    trips.joins(:destination).where.not(destinations: { latitude: nil, longitude: nil }).each do |trip|
       total += Geocoder::Calculations.distance_between(
         [current_user.latitude, current_user.longitude],
         [trip.destination.latitude, trip.destination.longitude],
@@ -63,6 +65,21 @@ class TripsController < ApplicationController
       )
     end
     total.round(2)
+  end
+
+  def travels_times(trips)
+    total = 0
+    trips.each do |trip|
+      total += (trip.end_date - trip.start_date).to_i
+    end
+    total
+  end
+
+  def time_not_traveled(trips, user)
+    past_trips = trips.select { |trip| trip.respond_to?(:end_date) && trip.end_date <= Date.today }
+    last_trip = past_trips.max_by(&:end_date)
+    return nil unless (last_trip && last_trip.end_date < DateTime.now)
+    return last_trip.end_date
   end
 
   private
@@ -84,4 +101,5 @@ class TripsController < ApplicationController
   def trips
     @trips.map(&:destination).map(&:alpha3code).compact.uniq
   end
+
 end

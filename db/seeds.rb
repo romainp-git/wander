@@ -90,12 +90,19 @@ Destination.destroy_all
 puts "Seeding destinations..."
 london = Destination.create!(
   address: "London, United Kingdom",
-  currency: "GBP",
+  currency: "AUD",
   papers: "Passport required for most countries.",
   food: "Fish and Chips, Afternoon Tea, Sunday Roast",
   power: "230V"
 )
 
+sydney = Destination.create!(
+  address: "Mascot NSW 2020, Australie",
+  currency:"AUD",
+  papers: "Passport required for most countries.",
+  food: "Fish and Chips, Afternoon Tea, Sunday Roast",
+  power: "230V"
+)
 puts "Destination London created!"
 
 # Seed activities
@@ -160,7 +167,13 @@ trip = Trip.create!(
   destination: london,
   user: User.first
 )
-
+trip = Trip.create!(
+  name: "Sydney Adventure",
+  start_date: "20/05/2024",
+  end_date: "15/06/2024",
+  destination: sydney,
+  user: User.first
+)
 puts "Trip created: #{trip.name}"
 
 # Assign activities to trip by day
