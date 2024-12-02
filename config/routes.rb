@@ -15,5 +15,7 @@ Rails.application.routes.draw do
   resources :suggestions, only: %i[show]
   resources :searches, only: [:new, :create, :show]
 
+  resources :trip_activities, only: [:update, :index]
+
   get "up" => "rails/health#show", as: :rails_health_check
 end
