@@ -35,6 +35,9 @@ class TripsController < ApplicationController
     @activities = @trip_activities.map(&:activity)
     @calendar_dates = (@trip.start_date..@trip.end_date).to_a
     @activities_by_day = @trip_activities.group_by { |trip_activity| trip_activity.start_date.to_date }
+    @activities_by_day.each do |date, activities|
+      @activities_by_day[date] = activities.sort_by(&:position)
+    end
     @day_activities = @calendar_dates.map { |date| [date, @activities_by_day[date] || []] }.to_h
 
     @markers = set_markers(@activities)
@@ -51,10 +54,8 @@ class TripsController < ApplicationController
 
   def total_km(trips)
     total = 0
-    options = {
-      units: :km
-    }
-    @trips.each do |trip|
+    options = {units: :km}
+    trips.each do |trip|
       total += Geocoder::Calculations.distance_between(
         [current_user.latitude, current_user.longitude],
         [trip.destination.latitude, trip.destination.longitude],
@@ -70,7 +71,8 @@ class TripsController < ApplicationController
     activities.map do |activity|
       {
         lat: activity.latitude,
-        lng: activity.longitude
+        lng: activity.longitude,
+        category: activity.category.downcase
       }
     end
   end

@@ -79,13 +79,16 @@
             <div class="w-full bg-slate-900 z-10 sticky top-48">
               <p class="text-center p-4 font-bold text-lg"><%= I18n.l(date, format: "%A %d %b %Y") %></p>
             </div>
-            <ul class="relative flex flex-col gap-2 p-4">
+            <ul class="relative flex flex-col gap-2 p-4"
+                data-controller="sortable"
+                data-sortable-group="<%= date %>"
+                data-sortable-animation-value="150"
+                data-sortable-resource-name-value="trip_activity"
+                data-sortable-handle-value=".handle">
               <% if activities.any? %>
                 <% activities.each_with_index do |trip_activity, activity_index| %>
                   <%= render partial: 'activity_card', locals: { trip_activity: trip_activity, index: activity_index } %>
                 <% end %>
-              <% else %>
-                <li class="text-gray-400 text-sm">Aucune activité prévue pour ce jour.</li>
               <% end %>
             </ul>
           </div>

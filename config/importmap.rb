@@ -9,3 +9,6 @@ pin "flatpickr" # @4.6.13
 pin_all_from "app/javascript/controllers", under: "controllers"
 pin "@stimulus-components/read-more", to: "@stimulus-components--read-more.js" # @5.0.0
 pin "@rails/actioncable", to: "@rails--actioncable.js" # @8.0.0
+pin "@rails/request.js", to: "@rails--request.js.js" # @0.0.8
+pin "@stimulus-components/sortable", to: "@stimulus-components--sortable.js" # @5.0.1
+pin "sortablejs" # @1.15.6

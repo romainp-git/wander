@@ -1,12 +1,13 @@
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
-  static targets = ["day", "timeline", "timelineDay", "tab"];
+  static targets = ["day", "timeline", "timelineDay", "tab", "tabActivity", "content"];
 
   connect() {
     console.log("Tabs controller connected");
     this.activateDay(0);
     this.isScrolling = false;
+    this.activateTab(0);
     window.addEventListener("scroll", this.onScroll.bind(this));
   }
 
@@ -42,6 +43,29 @@ export default class extends Controller {
       dayTab.classList.toggle("px-2", i === index);
       dayTab.classList.toggle("py-1", i === index);
       dayTab.classList.toggle("text-gray-400", i !== index);
+    });
+  }
+
+  switchTab(event) {
+    const tabName = event.currentTarget.dataset.tabName;
+    this.activateTabByName(tabName);
+  }
+  activateTab(index) {
+    this.tabActivityTargets.forEach((tab, i) => {
+      tab.classList.toggle("tab-active", i === index);
+    });
+    this.contentTargets.forEach((content, i) => {
+      content.classList.toggle("hidden", i !== index);
+    });
+  }
+  activateTabByName(name) {
+    this.tabActivityTargets.forEach((tab) => {
+      const isActive = tab.dataset.tabName === name;
+      tab.classList.toggle("tab-active", isActive);
+    });
+    this.contentTargets.forEach((content) => {
+      const isActive = content.dataset.tabName === name;
+      content.classList.toggle("hidden", !isActive);
     });
   }
 

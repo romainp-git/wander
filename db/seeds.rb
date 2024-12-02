@@ -114,13 +114,17 @@ activities_data = [
   { name: "Shakespeare's Globe Theatre", category: "loisirs", address: "21 New Globe Walk, London SE1 9DT, UK", description: "A reconstruction of the original Globe Theatre, offering live performances.", reviews: 4.7 }
 ]
 
+
+activity_category = ["cultural", "nature", "adventure", "sport", "relaxation", "gastronomic", "nightlife", "shopping"]
+
+
 activities = activities_data.map do |data|
   activity = Activity.create!(
     name: data[:name],
     description: data[:description],
     reviews: data[:reviews],
     address: data[:address],
-    category: data[:category],
+    category: activity_category.sample,
     website_url: Faker::Internet.url,
     wiki: Faker::Internet.url(host: "wikipedia.org")
   )
