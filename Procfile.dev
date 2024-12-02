@@ -1,2 +1,2 @@
-web: bin/rails server -p $PORT -e $RAILS_ENV
+web: bin/rails server -b 127.0.0.1 -p 3000
 css: bin/rails tailwindcss:watch
