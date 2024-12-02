@@ -10,6 +10,10 @@ class OpenaiService
     Rails.logger.debug "#-----------------------------------------------------------"
     Rails.logger.debug "#create_destination : #{destination}"
 
+    photo_url = Unsplash::Photo.search("#{destination}", 1, 1)
+    Rails.logger.debug "#-----------------------------------------------------------"
+    Rails.logger.debug "#photo_destination : #{photo_url}"
+
     trip = create_trip(@search, destination)
     Rails.logger.debug "#-----------------------------------------------------------"
     Rails.logger.debug "#create_trip : #{trip}"
