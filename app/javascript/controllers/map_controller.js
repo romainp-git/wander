@@ -3,7 +3,8 @@ import { Controller } from "@hotwired/stimulus";
 export default class extends Controller {
   static values = {
     apiKey: String,
-    markers: Array
+    markers: Array,
+    assetsPath: String
   };
 
   connect() {
@@ -24,8 +25,13 @@ export default class extends Controller {
         window.dispatchEvent(new CustomEvent("scrollToItem", { detail: { index } }));
       });
       el.className = "marker icon icon-filled icon-40";
-      el.textContent = "location_on";
-      el.style.color = "#ffffff";
+      const iconUrl = `/images/${marker.category}.png`;
+      el.style.backgroundImage = `url('${iconUrl}')`;
+      el.style.width = "60px";
+      el.style.height = "60px";
+      el.style.backgroundSize = "cover";
+      // el.textContent = "location_on";
+      // el.style.color = "#ffffff";
       el.style.cursor = "pointer";
       el.style.transform = "translate(-50%, -100%)";
       el.dataset.index = index;

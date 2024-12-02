@@ -28,3 +28,11 @@ main {
   -webkit-box-orient: vertical;
   -webkit-line-clamp: var(--read-more-line-clamp, 2);
 }
+
+.handle {
+  cursor: grab;
+  padding: 10px;
+}
+.handle:active {
+  cursor: grabbing;
+}
