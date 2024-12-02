@@ -72,7 +72,7 @@ class TripsController < ApplicationController
       {
         lat: activity.latitude,
         lng: activity.longitude,
-        category: activity.category.downcase
+        category: activity.category.nil? ? "cultural" : activity.category.downcase
       }
     end
   end
