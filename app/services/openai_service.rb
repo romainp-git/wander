@@ -4,35 +4,41 @@ class OpenaiService
     @search = search
   end
   # ---------------------------------------------------------------------------------------
-  def generate_program
-    # Création de la destination et du trip
-    destination = create_destination(@search)
-    Rails.logger.debug "#-----------------------------------------------------------"
-    Rails.logger.debug "#create_destination : #{destination}"
+  def init_destination_trip
+    Timeout.timeout(180) do
+      # Création de la destination et du trip
+      destination = create_destination(@search)
+      Rails.logger.debug "#-----------------------------------------------------------"
+      Rails.logger.debug "#create_destination : #{destination}"
 
-    trip = create_trip(@search, destination)
-    Rails.logger.debug "#-----------------------------------------------------------"
-    Rails.logger.debug "#create_trip : #{trip}"
+      trip = create_trip(@search, destination)
+      Rails.logger.debug "#-----------------------------------------------------------"
+      Rails.logger.debug "#create_trip : #{trip}"
 
-    @search.update(trip_id: trip.id)
-    Rails.logger.debug "#-----------------------------------------------------------"
-    Rails.logger.debug "#search.update : id_trip=#{trip.id} - #{@search}"
+      @search.update(trip_id: trip.id)
+      Rails.logger.debug "#-----------------------------------------------------------"
+      Rails.logger.debug "#search.update : id_trip=#{trip.id} - #{@search}"
 
-    # Récupération des activités
-    type = "CITY"
-    if type == "COUNTRY"
-      activities = get_activities_country(@search)
-    else
-      activities = get_activities_city(@search)
+      # Récupération des activités
+      type = "CITY"
+      if type == "COUNTRY"
+        activities = get_activities_country(@search)
+      else
+        activities = get_activities_city(@search)
+      end
+
+      Rails.logger.debug "#-----------------------------------------------------------"
+      Rails.logger.debug "#get_activities(#{type}) : #{activities['activities']}"
+
+      create_trip_activities(type, @search, trip, activities['activities'])
+
+      # photo_url = Unsplash::Photo.search("#{destination_ai['city']}", 1, 1)
+      # photo_url = Unsplash::Photo.search("Lille", 1, 1)
+
     end
-
-    Rails.logger.debug "#-----------------------------------------------------------"
-    Rails.logger.debug "#get_activities(#{type}) : #{activities['activities']}"
-
-    create_trip_activities(type, @search, trip, activities['activities'])
-
-    # photo_url = Unsplash::Photo.search("#{destination_ai['city']}", 1, 1)
-    # photo_url = Unsplash::Photo.search("Lille", 1, 1)
+  rescue Timeout::Error
+    Rails.logger.error "Timeout init_destination_trip"
+    raise # Informe Sidekiq de faire un retry
   end
   # ---------------------------------------------------------------------------------------
   private
@@ -79,13 +85,13 @@ class OpenaiService
   end
   # ---------------------------------------------------------------------------------------
   def create_trip(search, destination)
-    # user: current_user,
+    # user: User.find_by(username: 'PYM'),
     Trip.create!(
-    name: search.destination,
-    start_date: search.start_date,
-    end_date: search.end_date,
-    user: User.find_by(username: 'PYM'),
-    destination: destination
+      name: search.destination,
+      start_date: search.start_date,
+      end_date: search.end_date,
+      user: current_user,
+      destination: destination
     )
   end
   # ---------------------------------------------------------------------------------------
@@ -111,14 +117,10 @@ class OpenaiService
         new_activity = Activity.find_or_create_by(
           name: "#{activity_details['name']} (#{activity_details['category']})",
           description: activity_details['description'],
-          reviews: activity_details['reviews'].to_f,
-          website_url: url_alive?(activity_details['website_url']) ? activity_details['website_url'] : "Unknown",
           wiki: url_alive?(activity_details['wiki']) ? activity_details['wiki'] : "Unknown",
-          address: activity["address"],
-          latitude: activity["latitude"].to_f,
-          longitude: activity["longitude"].to_f
+          address: activity["address"], # Mettre que la ville
         )
-      else
+      else # idem que city
         new_activity = Activity.find_or_create_by(
           name: activity['name'],
           description: activity['description'],
@@ -142,7 +144,7 @@ class OpenaiService
   # ---------------------------------------------------------------------------------------
   def call_openai(prompt)
     client = OpenAI::Client.new
-    response = client.chat(parameters: {
+    parsed_response = client.chat(parameters: {
       "model": 'gpt-3.5-turbo',
       "messages": [
         { "role": 'system', "content": prompt[:system_content] },
@@ -151,17 +153,16 @@ class OpenaiService
       "temperature": 0.0
     })
 
-    data = JSON.parse(response['choices'][0]['message']['content'])
-
-    # if parsed_response['choices'] && parsed_response['choices'][0] && parsed_response['choices'][0]['message'] && parsed_response['choices'][0]['message']['content']
-    #   data = JSON.parse(parsed_response['choices'][0]['message']['content'])
-    #   Rails.logger.debug "#-----------------------------------------------------------"
-    #   Rails.logger.debug "#call_openai : #{data}"
-    #   return data
-    # else
-    #   Rails.logger.error "Invalid response format: #{parsed_response}"
-    #   return { 'content' => 'ERROR' }
-    # end
+    # data = JSON.parse(response['choices'][0]['message']['content'])
+    if parsed_response['choices'] && parsed_response['choices'][0] && parsed_response['choices'][0]['message'] && parsed_response['choices'][0]['message']['content'] && parsed_response['choices'][0]['message']['content'] != "ERROR"
+      data = JSON.parse(parsed_response['choices'][0]['message']['content'])
+      Rails.logger.debug "#-----------------------------------------------------------"
+      Rails.logger.debug "#call_openai : #{data}"
+      return data
+    else
+      Rails.logger.error "Invalid response format: #{parsed_response}"
+      return { 'content' => 'ERROR' }
+    end
   rescue RestClient::ExceptionWithResponse => e
     Rails.logger.error "API call failed: #{e.response}"
     return { 'content' => 'ERROR' }
@@ -191,7 +192,7 @@ class OpenaiService
   "- `papers` : Documents nécessaires pour entrer.\n" \
   "- `food` : Description courte de la gastronomie locale.\n" \
   "- `power` : Normes des prises électriques.\n" \
-    "Si la destination n'est pas identifiable, le champ 'content' de ta réponse au format JSON doit contenir uniquement 'ERROR'.\n"
+    "Si la destination n'est pas identifiable, le champ 'content' de ta réponse au format JSON doit contenir 'ERROR'.\n"
 
     user_content =
     "La destination de mon voyage est #{search.destination}.\n"
@@ -217,11 +218,8 @@ class OpenaiService
     "3- Tu dois fournir ta réponse sous la forme d'un fichier JSON qui sera parser en Ruby on rails et dont le format est un tableau d'activités avec pour chaque activité les clés primaire suivantes :\n" \
     "- 'start_date' qui contiendra le datetime de début de l'activité.\n" \
     "- 'end_date' qui contiendra le datetime de fin de l'activité.\n" \
-    "- 'name' qui contiendra le nom usuel de l'activité.\n" \
-    "- 'address' qui contiendra l'adresse de départ de l'activité.\n" \
-    "- 'city' qui contiendra la ville de l'activité.\n" \
-    "- `latitude` : Latitude de l'adresse.\n" \
-    "- `longitude` : Longitude de l'adresse.\n" \
+    "- 'name' qui contiendra le nom de l'activité le plus simple possible comme par exemple le nom du musée, le nom du restaurant, le nom du parc d'attraction, le nom du monument, ...\n" \
+    "- 'address' qui contiendra le nom de la ville de départ de l'activité.\n" \
     "- 'description' qui contiendra la description de l'activité.\n" \
     "Si la destination n'est pas identifiable, le champ 'content' de ta réponse au format JSON doit contenir uniquement 'ERROR'." \
     "Si la taille du fichier JSON de sortie est trop longue, tu dois retourner que des activités complètes retournes le nombre maximum d'activités que tu es capable de retourner sans tronquer les données et tu ferme le tableau JSON proprement sans mettre '...' à la fin pour dire que tu n'as pas pu tout mettre.\n"
@@ -256,10 +254,7 @@ class OpenaiService
       "- 'start_date' qui contiendra le datetime de début de l'étape.\n" \
       "- 'end_date' qui contiendra le datetime de fin de l'étape.\n" \
       "- 'name' qui contiendra le nom de l'étape.\n" \
-      "- `reviews` qui contiendra une note décimale sur 5 correspondant à l'avis des personnes ayant réalisées cette étape\n" \
       "- 'address' qui contiendra l'adresse de départ de l'étape.\n" \
-      "- `latitude` : Latitude de l'adresse de départ.\n" \
-      "- `longitude` : Longitude de l'adresse de départ.\n" \
       "- 'description' qui contiendra la description détaillée de l'étape avec ses différentes activités et leurs intérêts touristiques. Chaque activité doit être catégorisée.\n" \
       "Si la destination n'est pas identifiable, le champ 'content' de ta réponse au format JSON doit contenir uniquement 'ERROR'."
 
