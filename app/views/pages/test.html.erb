@@ -10,30 +10,30 @@
         </span>
       </div>
 
-      <h1 class="text-5xl font-bold font-playfair"><%= trip.name %></h1>
+      <h1 class="text-5xl font-bold font-playfair"><%= @trip.name %></h1>
 
       <div class="flex items-center mt-2 space-x-2 text-sm text-gray-300">
         <span class="icon">explore</span>
-        <span><%= trip.destination.address %></span>
+        <span><%= @trip.destination.address %></span>
       </div>
 
       <!-- Exploration stats -->
-      <div class="flex flex-col mt-12 text-gray-200 leading-relaxed gap-3">
+      <div class="flex flex-col mt-6 text-gray-200 leading-relaxed gap-3">
         <div class="text-sm">
           <span class="flex items-center gap-3"><span class="icon icon-20">paid</span><strong>Devise</strong></span>
-          <div class="ml-8 text-xs"><%= trip.destination.currency %></div>
+          <div class="ml-8 text-xs"><%= @trip.destination.currency %></div>
         </div>
         <div class="text-sm">
           <span class="flex items-center gap-3"><span class="icon icon-20">badge</span><strong>Documents nécessaires</strong></span>
-          <div class="ml-8 text-xs"><%= trip.destination.papers %></div>
+          <div class="ml-8 text-xs"><%= @trip.destination.papers %></div>
         </div>
         <div class="text-sm">
           <span class="flex items-center gap-3"><span class="icon icon-20">lunch_dining</span><strong>Spécialités culinaires</strong></span>
-          <div class="ml-8 text-xs"><%= trip.destination.food %></div>
+          <div class="ml-8 text-xs"><%= @trip.destination.food %></div>
         </div>
         <div class="text-sm">
           <span class="flex items-center gap-3"><span class="icon icon-20">power</span><strong>Type de prise électrique</strong></span>
-          <div class="ml-8 text-xs"><%= trip.destination.power %></div>
+          <div class="ml-8 text-xs"><%= @trip.destination.power %></div>
         </div>
       </div>
     </div>
@@ -41,5 +41,5 @@
     <span class="loading loading-ring loading-lg text-white animate-spin mt-5"></span>
   </div>
 
-  <div data-controller="loading" data-loading-search-id="<%= search.id %>"></div>
+  <div data-controller="loading" data-loading-search-id="<%= @search.id %>"></div>
 </div>
