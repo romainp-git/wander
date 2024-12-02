@@ -1,5 +1,5 @@
 <%= link_to trips_path do %>
-  <button class="fixed p-4 z-10" >
+  <button class="fixed z-10  p-safe-or-4" >
     <p class="icon icon-100 drop-shadow-xl text-4xl text-white">arrow_back</p>
   </button>
 <% end %>
@@ -11,7 +11,7 @@
       <div class="w-16 h-16 halo animate-gradient mesh-gradient-orange rounded-full"></div>
     </div>
 
-    <div id="title-part" data-add-trip-animation-target="titlePart" class="relative min-h-16 flex items-start w-full pr-10">
+    <div id="title-part" data-add-trip-animation-target="titlePart" class="relative min-h-16 flex items-start w-full pr-10 mt-title">
       <p id="robot-icon" data-add-trip-animation-target="robotIcon" class="icon icon-300 text-white text-xl text-right pl-4 transition-opacity duration-1000">robot_2</p>
       <p id="typewriter-text" data-add-trip-animation-target="text" class="px-5 text-white text-lg font-semibold"></p>
     </div>

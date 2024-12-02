@@ -1,0 +1,10 @@
+<div class="fixed inset-0 flex flex-col items-center justify-center z-50 h-screen w-screen radial-gradient-dark-orange">
+  <span class="loading loading-ring loading-lg text-white"></span>
+    <p class="px-4 text-center text-white mt-4">Votre destination :</p>
+    <p class="text-white text-4xl font-bold font-playfair"><%= trip.name %></p>
+    <p class="px-4 text-center text-white mt-4"><%= trip.destination.currency %></p>
+    <p class="px-4 text-center text-white mt-4"><%= trip.destination.papers %></p>
+    <p class="px-4 text-center text-white mt-4"><%= trip.destination.food %></p>
+    <p class="px-4 text-center text-white mt-4"><%= trip.destination.power %></p>
+  <div data-controller="loading" data-loading-search-id="<%= search.id %>"></div>
+</div>

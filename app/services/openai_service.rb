@@ -18,6 +18,17 @@ class OpenaiService
     Rails.logger.debug "#-----------------------------------------------------------"
     Rails.logger.debug "#search.update : id_trip=#{trip.id} - #{@search}"
 
+    ActionCable.server.broadcast(
+      "loading_#{@search.id}",
+      {
+        turbo_frame: "modal-frame",
+        html: ApplicationController.render(
+          partial: "trips/search_result",
+          locals: { trip: trip,  search: @search }
+        )
+      }
+    )
+
     # Récupération des activités
     type = "CITY"
     if type == "COUNTRY"

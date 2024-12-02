@@ -12,7 +12,6 @@
     <!-- Timeline node and line -->
     <div class="relative flex flex-col items-center">
       <div class="w-4 h-4 bg-white rounded-full"></div>
-        <div class="absolute h-24 w-0.5 bg-white -top-24 left-1/2 transform -translate-x-1/2"></div>
     </div>
 
     <!-- Timeline card -->
@@ -23,6 +22,6 @@
         <p class="text-sm"><%= trip_activity.activity.description.truncate(50) %></p>
       </div>
       <% end%>
-       <%= image_tag 'handle.png', class: "handle size-10" %>
+       <p class="icon handle p-3 cursor-grab active:cursor-grabbing">drag_indicator</p>
     </div>
   </li>
