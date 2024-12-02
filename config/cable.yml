@@ -12,4 +12,4 @@ production:
   channel_prefix: wander_production
   ssl_params:
     verify_mode: 'none'
-    
+
