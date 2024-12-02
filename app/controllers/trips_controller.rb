@@ -54,10 +54,8 @@ class TripsController < ApplicationController
 
   def total_km(trips)
     total = 0
-    options = {
-      units: :km
-    }
-    @trips.each do |trip|
+    options = {units: :km}
+    trips.each do |trip|
       total += Geocoder::Calculations.distance_between(
         [current_user.latitude, current_user.longitude],
         [trip.destination.latitude, trip.destination.longitude],
@@ -73,7 +71,8 @@ class TripsController < ApplicationController
     activities.map do |activity|
       {
         lat: activity.latitude,
-        lng: activity.longitude
+        lng: activity.longitude,
+        category: activity.category.downcase
       }
     end
   end
