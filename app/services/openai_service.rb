@@ -7,16 +7,17 @@ class OpenaiService
   def init_destination_trip
     # Création de la destination et du trip
     destination = create_destination(@search)
-    Sidekiq.logger.debug "#-----------------------------------------------------------"
-    Sidekiq.logger.debug "#create_destination : #{destination}"
+    
+    # Sidekiq.logger.debug "#-----------------------------------------------------------"
+    # Sidekiq.logger.debug "#create_destination : #{destination}"
 
     trip = create_trip(@search, destination)
-    Sidekiq.logger.debug "#-----------------------------------------------------------"
-    Sidekiq.logger.debug "#create_trip : #{trip}"
+    # Sidekiq.logger.debug "#-----------------------------------------------------------"
+    # Sidekiq.logger.debug "#create_trip : #{trip}"
 
     @search.update(trip_id: trip.id)
-    Sidekiq.logger.debug "#-----------------------------------------------------------"
-    Sidekiq.logger.debug "#search.update : id_trip=#{trip.id} - #{@search}"
+    # Sidekiq.logger.debug "#-----------------------------------------------------------"
+    # Sidekiq.logger.debug "#search.update : id_trip=#{trip.id} - #{@search}"
 
     ActionCable.server.broadcast(
       "loading_#{@search.id}",
@@ -28,7 +29,6 @@ class OpenaiService
         )
       }
     )
-
     init_activities_trip(@search, destination, trip)
   end
   # ---------------------------------------------------------------------------------------
@@ -38,33 +38,68 @@ class OpenaiService
     else
       activities = get_activities_city(search)
     end
+  end
+  # ---------------------------------------------------------------------------------------
+  def create_trip_activity(type, search, trip, activity)
 
-    Sidekiq.logger.debug "#-----------------------------------------------------------"
-    Sidekiq.logger.debug "#get_activities(#{destination.destination_type}) : #{activities['activities']}"
-
-    activities['activities'].each do |activity|
-      # end_date = activity["end_date"] ? Date.parse(activity["end_date"]) : nil
-      next if activity["end_date"].nil? || activity["end_date"] > trip.end_date.to_datetime.iso8601
-      create_trip_activity(destination.destination_type, search, trip, activity)
+    if !activity['category'] 
+      mycategory = "cultural" 
+      else if Constants::CATEGORIES_UK.include?(activity['category'])
+        mycategory = activity['category']
+        else if Constants::CATEGORIES_FR.include?(activity['category'])
+          mycategory = Constants::CATEGORIES_UK[Constants::CATEGORIES_FR.index(activity['category'])]
+        else
+          mycategory = "cultural"
+        end
+      end
     end
+
+    if type == "CITY"
+      activity_details = get_activity_details(search, activity)
+
+      new_activity = Activity.find_or_create_by(
+        address: activity["address"], 
+        name: activity['name'],
+        title: activity['title'],
+        description: activity['description'],
+        category: mycategory,
+        wiki: url_alive?(activity_details['wiki']) ? activity_details['wiki'] : "Unknown",
+        website_url: "Unknown"
+      )
+    else # CAS COUNTRY
+      new_activity = Activity.find_or_create_by(
+        address: activity["address"],
+        name: activity['name'],
+        title: activity['title'],
+        description: activity['description'],
+        category: "cultural",
+        wiki: "Unknown",
+        website_url: "Unknown"
+      )
+    end
+    
+    GooglePlaceJob.perform_later({ activity: new_activity, destination: search })
+    
+    trip_activity = TripActivity.create!(
+      activity: new_activity,
+      trip: trip,
+      start_date: DateTime.parse(activity["start_date"]),
+      end_date: DateTime.parse(activity["end_date"])
+    )
   end
   # ---------------------------------------------------------------------------------------
   private
   # ---------------------------------------------------------------------------------------
   def url_alive?(url)
     begin
-      # Parse l'URL
       uri = URI.parse(url)
 
-      # Effectue une requête HEAD pour vérifier l'accessibilité sans charger tout le contenu
       response = Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == 'https') do |http|
         http.head(uri.path.empty? ? "/" : uri.path)
       end
 
-      # Si le code HTTP est 2xx ou 3xx, l'URL est valide
       response.is_a?(Net::HTTPSuccess) || response.is_a?(Net::HTTPRedirection)
     rescue StandardError
-      # En cas d'erreur (mauvaise URL, serveur inaccessible, etc.)
       false
     end
   end
@@ -77,7 +112,6 @@ class OpenaiService
       return nil
     else
       destination = Destination.create!(
-        # A voir si on met l'adresse trouvé par OAI ou l'expression de départ
         address: search.destination.capitalize,
         destination_type: result['type'],
         currency: result['currency'],
@@ -86,8 +120,6 @@ class OpenaiService
         power: result['power'],
         alpha3code: result['alpha3code']
         )
-      # photo_url = Unsplash::Photo.search("#{destination_ai['city']}", 1, 1)
-      # photo_url = Unsplash::Photo.search("Lille", 1, 1)
     end
 
     return destination
@@ -107,7 +139,8 @@ class OpenaiService
   def get_activities_country(search)
     prompt_activities = get_prompt_activities_country(search)
     call_openai(prompt_activities)
-  end  # ---------------------------------------------------------------------------------------
+  end  
+  # ---------------------------------------------------------------------------------------
   def get_activities_city(search)
     prompt_activities = get_prompt_activities_city(search)
     call_openai(prompt_activities)
@@ -118,37 +151,7 @@ class OpenaiService
     call_openai(prompt_activity)
   end
   # ---------------------------------------------------------------------------------------
-  def create_trip_activity(type, search, trip, activity)
-    if type == "CITY"
-      activity_details = get_activity_details(search, activity)
 
-      new_activity = Activity.find_or_create_by(
-        name: "#{activity_details['name']} (#{activity_details['category']})",
-        description: activity_details['description'],
-        wiki: url_alive?(activity_details['wiki']) ? activity_details['wiki'] : "Unknown",
-        address: activity["address"],
-      )
-    else # idem que city
-      new_activity = Activity.find_or_create_by(
-        name: activity['name'],
-        description: activity['description'],
-        # reviews: activity['reviews'],
-        # website_url: "Unknown",
-        wiki: "Unknown",
-        address: activity["address"],
-        # latitude: activity["latitude"].to_f,
-        # longitude: activity["longitude"].to_f
-      )
-    end
-
-    trip_activity = TripActivity.create!(
-      activity: new_activity,
-      trip: trip,
-      start_date: DateTime.parse(activity["start_date"]),
-      end_date: DateTime.parse(activity["end_date"])
-    )
-  end
-  # ---------------------------------------------------------------------------------------
   def call_openai(prompt)
     client = OpenAI::Client.new
     parsed_response = client.chat(parameters: {
@@ -160,11 +163,10 @@ class OpenaiService
       "temperature": 0.0
     })
 
-    # data = JSON.parse(response['choices'][0]['message']['content'])
     if parsed_response['choices'] && parsed_response['choices'][0] && parsed_response['choices'][0]['message'] && parsed_response['choices'][0]['message']['content'] && parsed_response['choices'][0]['message']['content'] != "ERROR"
       data = JSON.parse(parsed_response['choices'][0]['message']['content'])
-      Sidekiq.logger.debug "#-----------------------------------------------------------"
-      Sidekiq.logger.debug "#call_openai : #{data}"
+      # Sidekiq.logger.debug "#-----------------------------------------------------------"
+      # Sidekiq.logger.debug "#call_openai : #{data}"
       return data
     else
       Sidekiq.logger.error "Invalid response format: #{parsed_response}"
@@ -183,9 +185,8 @@ class OpenaiService
     "Tu es un expert de l'organisation d'activités et de découverte d'une destination de voyage.\n" \
     "L'utilisateur va fournir une destination de voyage.\n" \
     "1- tu dois rechercher une adresse (address dans le JSON) caractérisant cette destination comme la capitale pour un pays, le centre ville pour une ville, le chef lieu pour une région, ou tout simplement l'adresse exacte si elle existe.\n" \
-    "2- tu dois fournir la latitude de l'adresse (latitude dans le JSON) que tu fourniras.\n" \
-    "3- tu dois fournir la longitude de l'adresse (longitude dans le JSON) que tu fourniras.\n" \
-    "4- tu dois fournir le type de destination (type dans le JSON) que tu fourniras.\n" \
+    "2- tu dois fournir le type de destination (type dans le JSON) que tu fourniras.\n" \
+    "3- tu dois rechercher le code ALPHA3 du pays (alpha3code dans le JSON) de cette destination.\n" \
     "4- tu dois rechercher la monnaie (currency dans le JSON) couramment utilisée pour cette destination.\n" \
     "5- tu dois fournir sous la forme d'une phrase les documents administratifs (papers dans le JSON) nécessaires pour se rendre à cette destination comme par exemple un passeport, une carte d'identitié, un visa, un esta, un pass d'entrée dans un parc, ....\n" \
     "6- tu dois rédiger une description courte de la gastronomie locale (food dans le JSON).\n" \
@@ -193,7 +194,7 @@ class OpenaiService
     "8- Tu dois fournir ta réponse sous la forme d'un fichier JSON qui sera parser en Ruby on rails et dont le format pour chaque activité correspond aux clés primaire suivantes :\n" \
   "- `address` : Adresse complète.\n" \
   "- `type` : Mettre 'COUNTRY' si la destination est un pays sinon mettre 'CITY'.\n" \
-  "- `alpha3code` : Code ALPHA3 du pays de la destination.\n" \
+  "- `alpha3code` : Code ALPHA3 du pays du champ JSON address.\n" \
   "- `currency` : Monnaie locale.\n" \
   "- `papers` : Documents nécessaires pour entrer.\n" \
   "- `food` : Description courte de la gastronomie locale.\n" \
@@ -209,8 +210,10 @@ class OpenaiService
   def get_prompt_activities_city(search)
     system_content =
     "Tu es un expert de l'organisation d'activités et de découverte d'une destination de voyage.\n" \
-    "L'utilisateur va fournir une destination de voyage, une date de début et une date de fin.\n" \
-    "Ton objectif va être de rechercher des occupations pour chaque journée du voyage, de la date de début au lendemain de la date de fin pour la destination indiquée, comprenant : \n" \
+    "L'utilisateur va fournir une destination de voyage, une date de début et une date de fin incluses.\n" \
+    "Ton objectif va être de rechercher des occupations, pour chaque journée du voyage, du matin de la date de début au soir compris de la date de fin pour la destination indiquée.\n" \
+    "Si l'utilisateur précise des catégories d'activités souhaitées, tu dois rechercher uniquement des activités parmis ces catégories à l'exception des restaurants qui n'entrent pas dans une catégorie d'activité.\n" \
+    "Tu dois rechercher des occupations comme par exemples :\n" \
     "- des activités prenant un certain temps comme la visite d'un musée, une ballade dans un parc, une randonnée, un vol en montgolfière, ...\n" \
     "- des points d'intérêt correspondant à quelque chose à voir juste en passant devant comme un batiment historique, un monument type statue ou street art dans une ville, une vue sur un paysage, une rue typique à faire, un magasin vendant des spécialités culinaires typiques (comme une patisserie, un glacier, un plat à emporter, ...) dont la renommée est importante, une route touristique à faire en voiture, ...\n" \
     "- des lieux de restauration réputés par leur rating consommateurs trés bien notés pour le midi et le soir.\n" \
@@ -224,6 +227,7 @@ class OpenaiService
     "3- Tu dois fournir ta réponse sous la forme d'un fichier JSON qui sera parser en Ruby on rails et dont le format est un tableau d'activités avec pour chaque activité les clés primaire suivantes :\n" \
     "- 'name' qui contiendra le nom de l'activité le plus simple possible comme par exemple le nom du musée, le nom du restaurant, le nom du parc d'attraction, le nom du monument, ...\n" \
     "- 'title' qui contiendra le libellé complet de l'activité.\n" \
+    "- 'category' qui contiendra la catégorie de l'activité retenue parmis la liste fournies par l'utilisateur sinon si l'utilisateur n'a rien précisé, tu dois renseigner la catégorie de l'activité que tu as trouvé en utilisant une de nos catégories typées parmis la liste suivante : #{Constants::CATEGORIES_UK}.\n" \
     "- 'start_date' qui contiendra le datetime de début de l'activité.\n" \
     "- 'end_date' qui contiendra le datetime de fin de l'activité.\n" \
     "- 'address' qui contiendra le nom de la ville de départ de l'activité.\n" \
@@ -233,7 +237,7 @@ class OpenaiService
 
 
     user_content =
-    "La destination de mon voyage est #{search.destination} du #{search.start_date} au #{search.end_date}."
+    "La destination de mon voyage est #{search.destination} du #{search.start_date} matin au #{Date.parse(search.end_date.to_s)+1}."
     if search.categories.length > 0
       user_content = user_content + "Les catagories d'activités attendues sont celles-ci : #{search.categories}."
     end
@@ -253,7 +257,7 @@ class OpenaiService
   def get_prompt_activities_country(search)
     system_content =
       "Tu es un expert de l'organisation d'activités et de découverte d'une destination de voyage.\n" \
-      "L'utilisateur va fournir une destination de voyage, une date de début et une date de fin.\n" \
+      "L'utilisateur va fournir une destination de voyage, une date de début et une date de fin inclus.\n" \
       "1- tu dois calculer le nombre de jours de voyage.\n" \
       "2- tu dois proposer un itinéraire de voyage sous la forme d'étapes pour découvrir cette destination.\n" \
       "7- Tu dois optimiser les déplacements.\n" \
@@ -267,7 +271,7 @@ class OpenaiService
       "Si la destination n'est pas identifiable, le champ 'content' de ta réponse au format JSON doit contenir uniquement 'ERROR'."
 
     user_content =
-    "La destination de mon voyage est #{search.destination} du #{search.start_date} au lendemain du #{search.end_date}"
+    "La destination de mon voyage est #{search.destination} du #{search.start_date} matin au #{Date.parse(search.end_date.to_s)+1}."
 
     return { "system_content": system_content, "user_content": user_content }
   end

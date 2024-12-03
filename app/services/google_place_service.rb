@@ -24,13 +24,12 @@ class GooglePlaceService
 
     geocode = place["location"]
     address = place["formattedAddress"]
-    google_maps_directions = place["googleMapsLinks"]["directionsUri"]
+    google_maps_directions = place["googleMapsLinks"]&.fetch("directionsUri", nil)
     website = place["websiteUri"]
-    opening_hours = place["regularOpeningHours"]["weekdayDescriptions"]
+    opening_hours = place["regularOpeningHours"]&.fetch("weekdayDescriptions", nil)
     rating = place["rating"]
     user_rating_count = place["userRatingCount"]
-    photo = place["photos"].first["name"]
-
+    photos = place["photos"]&.map { |photo| photo.fetch("name", nil) }&.compact&.first(5)
 
     reviews = place["reviews"]&.map do |review|
       @activity.reviews.build(
@@ -41,17 +40,19 @@ class GooglePlaceService
     end || []
 
     @activity.latitude = geocode["latitude"]
-    @activity.address = address
     @activity.longitude = geocode["longitude"]
-    @activity.direction = google_maps_directions
-    @activity.website_url = website
-    @activity.opening = opening_hours
-    @activity.global_rating = rating
-    @activity.count = user_rating_count
-    if photo_url = fetch_photo(photo)
-      attach_photo(photo_url)
+    @activity.address = address if address
+    @activity.direction = google_maps_directions if google_maps_directions
+    @activity.website_url = website if website
+    @activity.opening = opening_hours if opening_hours
+    @activity.global_rating = rating if rating
+    @activity.count = user_rating_count if user_rating_count
+    photos&.each do |photo_name|
+      photo_url = fetch_photo(photo_name)
+      attach_photo(photo_url) if photo_url
     end
-    @activity.save
+
+    @activity.save if @activity.changed?
 
   end
 
@@ -61,7 +62,7 @@ class GooglePlaceService
     response = HTTParty.get(
       "https://places.googleapis.com/v1/#{photo_id}/media",
       query: {
-        maxHeightPx: 1000,
+        maxHeightPx: 600,
         skipHttpRedirect: true
       },
       headers: {
