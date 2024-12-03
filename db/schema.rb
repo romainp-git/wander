@@ -11,6 +11,7 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema[7.1].define(version: 2024_12_03_012524) do
+
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -54,6 +55,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_03_012524) do
     t.float "latitude"
     t.float "longitude"
     t.string "category"
+    t.string "title"
     t.string "direction"
     t.integer "count"
     t.text "opening", default: [], array: true
@@ -70,6 +72,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_03_012524) do
     t.float "latitude"
     t.float "longitude"
     t.string "alpha3code"
+    t.string "destination_type"
   end
 
   create_table "highlights", force: :cascade do |t|

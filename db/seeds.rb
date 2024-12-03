@@ -123,15 +123,13 @@ activities_data = [
 ]
 
 
-activity_category = ["cultural", "nature", "adventure", "sport", "relaxation", "gastronomic", "nightlife", "shopping"]
-
 activities = activities_data.map do |data|
   activity = Activity.create!(
     name: data[:name],
     description: data[:description],
     global_rating: data[:reviews],
     address: data[:address],
-    category: activity_category.sample,
+    category: constants::CATEGORIES_UK.sample,
     website_url: Faker::Internet.url,
     wiki: Faker::Internet.url(host: "wikipedia.org")
   )
