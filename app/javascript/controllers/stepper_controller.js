@@ -1,22 +1,29 @@
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
-  static targets = ["step", "prevButton", "nextButton", "submitButton"];
+  static targets = ["step", "prevButton", "nextButton", "submitButton", "input"];
   currentStepIndex = 0;
 
   connect() {
     this.updateBtnVisibility();
     this.updateTabs(this.currentStepIndex + 1);
     this.element.addEventListener("keydown", this.handleKeyDown.bind(this));
+    this.validateInputs();
+    this.inputTargets.forEach((input) => {
+      input.addEventListener("input", this.validateInputs.bind(this));
+    });
   }
 
   disconnect() {
     this.element.removeEventListener("keydown", this.handleKeyDown.bind(this));
+    this.inputTargets.forEach((input) => {
+      input.removeEventListener("input", this.validateInputs.bind(this));
+    });
   }
 
   handleKeyDown(event) {
     if (event.key === "Enter") {
-      if (this.currentStepIndex < this.stepTargets.length - 1){
+      if (this.currentStepIndex < this.stepTargets.length - 1) {
         event.preventDefault();
         this.nextStep();
       }
@@ -28,6 +35,7 @@ export default class extends Controller {
       this.animateSteps(this.currentStepIndex, this.currentStepIndex + 1);
       this.currentStepIndex++;
       this.updateBtnVisibility();
+      this.validateInputs();
     }
   }
 
@@ -36,6 +44,7 @@ export default class extends Controller {
       this.animateSteps(this.currentStepIndex, this.currentStepIndex - 1);
       this.currentStepIndex--;
       this.updateBtnVisibility();
+      this.validateInputs();
     }
   }
 
@@ -84,6 +93,23 @@ export default class extends Controller {
     } else {
       this.nextButtonTarget.classList.add("hidden");
       this.submitButtonTarget.classList.remove("hidden");
+    }
+  }
+
+  validateInputs() {
+    const currentStep = this.stepTargets[this.currentStepIndex];
+    const requiredInputs = currentStep.querySelectorAll("input[required], input[type='hidden']");
+
+    // Vérifie que tous les champs requis ont une valeur non vide
+    const allValid = Array.from(requiredInputs).every((input) => input.value.trim() !== "");
+
+    // Active ou désactive le bouton "next" en conséquence
+    if (allValid) {
+      this.nextButtonTarget.disabled = false;
+      this.nextButtonTarget.classList.remove("opacity-50", "cursor-not-allowed");
+    } else {
+      this.nextButtonTarget.disabled = true;
+      this.nextButtonTarget.classList.add("opacity-50", "cursor-not-allowed");
     }
   }
 }
