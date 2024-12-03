@@ -12,6 +12,10 @@ export default class extends Controller {
           if (data.redirect_url) {
             window.location.href = data.redirect_url;
           }
+          else {
+            const frame = document.getElementById(data.turbo_frame);
+            frame.innerHTML = data.html;
+          }
         },
       }
     );

@@ -9,13 +9,24 @@
       text-white"><%=@stats[:ratio]%>% du monde visité</p>
       <p class="border border-orange-500 rounded-lg text-center p-4 text-sm leading-4
       text-white"><%=@total_km%> km parcourus</p>
+      <p class="border border-orange-500 rounded-lg text-center p-4 text-sm leading-4
+      text-white"><%=@travels_times%> jours voyagés</p>
+
     </div>
+
 
     <div id="static-map" data-controller="static-map"
       data-static-map-api-key-value="<%= ENV['MAPBOX_API_KEY'] %>"
       data-static-map-iso-codes-value= "<%= @destinations %>"
       data-static-map-target="static-map"
       class="w-full h-64 rounded-b-lg">
+    </div>
+    <div>
+      <% if @time_not_traveled.nil?  %>
+        <%= "Vivement votre prochain voyage avec nous !" %>
+      <% else %>
+        <%= render "countup", start: @time_not_traveled %>
+      <% end %>
     </div>
   </div>
   <form method="dialog" class="modal-backdrop">
