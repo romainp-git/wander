@@ -13,6 +13,7 @@ require "open-uri"
 # Clear existing data
 Search.destroy_all
 Trip.destroy_all
+Review.destroy_all
 Activity.destroy_all
 TripActivity.destroy_all
 Destination.destroy_all
@@ -128,7 +129,7 @@ activities = activities_data.map do |data|
   activity = Activity.create!(
     name: data[:name],
     description: data[:description],
-    reviews: data[:reviews],
+    global_rating: data[:reviews],
     address: data[:address],
     category: activity_category.sample,
     website_url: Faker::Internet.url,
