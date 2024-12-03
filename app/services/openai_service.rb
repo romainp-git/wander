@@ -30,7 +30,7 @@ class OpenaiService
     )
 
     init_activities_trip(@search, destination, trip)
-  
+
   end
   # ---------------------------------------------------------------------------------------
   def init_activities_trip(search, destination, trip)
@@ -123,7 +123,7 @@ class OpenaiService
       activity_details = get_activity_details(search, activity)
 
       new_activity = Activity.find_or_create_by(
-        address: activity["address"], 
+        address: activity["address"],
         name: activity['name'],
         title: activity['title'],
         description: activity['description'],
@@ -131,6 +131,7 @@ class OpenaiService
         wiki: url_alive?(activity_details['wiki']) ? activity_details['wiki'] : "Unknown",
         website_url: "Unknown"
       )
+      GooglePlaceJob.perform_later({ activity: new_activity, destination: search })
     else # CAS COUNTRY
       new_activity = Activity.find_or_create_by(
         address: activity["address"],
@@ -141,6 +142,7 @@ class OpenaiService
         wiki: "Unknown",
         website_url: "Unknown"
       )
+      GooglePlaceJob.perform_later({ activity: new_activity, destination: search })
     end
 
     trip_activity = TripActivity.create!(
