@@ -7,16 +7,16 @@ class OpenaiService
   def init_destination_trip
     # Création de la destination et du trip
     destination = create_destination(@search)
-    Sidekiq.logger.debug "#-----------------------------------------------------------"
-    Sidekiq.logger.debug "#create_destination : #{destination}"
+    # Sidekiq.logger.debug "#-----------------------------------------------------------"
+    # Sidekiq.logger.debug "#create_destination : #{destination}"
 
     trip = create_trip(@search, destination)
-    Sidekiq.logger.debug "#-----------------------------------------------------------"
-    Sidekiq.logger.debug "#create_trip : #{trip}"
+    # Sidekiq.logger.debug "#-----------------------------------------------------------"
+    # Sidekiq.logger.debug "#create_trip : #{trip}"
 
     @search.update(trip_id: trip.id)
-    Sidekiq.logger.debug "#-----------------------------------------------------------"
-    Sidekiq.logger.debug "#search.update : id_trip=#{trip.id} - #{@search}"
+    # Sidekiq.logger.debug "#-----------------------------------------------------------"
+    # Sidekiq.logger.debug "#search.update : id_trip=#{trip.id} - #{@search}"
 
     ActionCable.server.broadcast(
       "loading_#{@search.id}",
@@ -28,9 +28,7 @@ class OpenaiService
         )
       }
     )
-
     init_activities_trip(@search, destination, trip)
-  
   end
   # ---------------------------------------------------------------------------------------
   def init_activities_trip(search, destination, trip)
@@ -39,32 +37,65 @@ class OpenaiService
     else
       activities = get_activities_city(search)
     end
+  end
+  # ---------------------------------------------------------------------------------------
+  def create_trip_activity(type, search, trip, activity)
+    if type == "CITY"
+      activity_details = get_activity_details(search, activity)
 
-    Sidekiq.logger.debug "#-----------------------------------------------------------"
-    Sidekiq.logger.debug "#get_activities(#{destination.destination_type}) : #{activities['activities']}"
+      if !activity['category'] 
+        mycategory = "cultural" 
+        else if Constants::CATEGORIES_UK.include?(activity['category'])
+          mycategory = activity['category']
+          else if Constants::CATEGORIES_FR.include?(activity['category'])
+            mycategory = Constants::CATEGORIES_UK[Constants::CATEGORIES_FR.index(activity['category'])]
+          else
+            mycategory = "cultural"
+          end
+        end
+      end
 
-    activities['activities'].each do |activity|
-      next if activity["end_date"].nil? || activity["end_date"] > (trip.end_date + 1).to_datetime.iso8601
-      create_trip_activity(destination.destination_type, search, trip, activity)
+      new_activity = Activity.find_or_create_by(
+        address: activity["address"], 
+        name: activity['name'],
+        title: activity['title'],
+        description: activity['description'],
+        category: mycategory,
+        wiki: url_alive?(activity_details['wiki']) ? activity_details['wiki'] : "Unknown",
+        website_url: "Unknown"
+      )
+    else # CAS COUNTRY
+      new_activity = Activity.find_or_create_by(
+        address: activity["address"],
+        name: activity['name'],
+        title: activity['title'],
+        description: activity['description'],
+        category: "cultural",
+        wiki: "Unknown",
+        website_url: "Unknown"
+      )
     end
+
+    trip_activity = TripActivity.create!(
+      activity: new_activity,
+      trip: trip,
+      start_date: DateTime.parse(activity["start_date"]),
+      end_date: DateTime.parse(activity["end_date"])
+    )
   end
   # ---------------------------------------------------------------------------------------
   private
   # ---------------------------------------------------------------------------------------
   def url_alive?(url)
     begin
-      # Parse l'URL
       uri = URI.parse(url)
 
-      # Effectue une requête HEAD pour vérifier l'accessibilité sans charger tout le contenu
       response = Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == 'https') do |http|
         http.head(uri.path.empty? ? "/" : uri.path)
       end
 
-      # Si le code HTTP est 2xx ou 3xx, l'URL est valide
       response.is_a?(Net::HTTPSuccess) || response.is_a?(Net::HTTPRedirection)
     rescue StandardError
-      # En cas d'erreur (mauvaise URL, serveur inaccessible, etc.)
       false
     end
   end
@@ -77,7 +108,6 @@ class OpenaiService
       return nil
     else
       destination = Destination.create!(
-        # A voir si on met l'adresse trouvé par OAI ou l'expression de départ
         address: search.destination.capitalize,
         destination_type: result['type'],
         currency: result['currency'],
@@ -86,8 +116,6 @@ class OpenaiService
         power: result['power'],
         alpha3code: result['alpha3code']
         )
-      # photo_url = Unsplash::Photo.search("#{destination_ai['city']}", 1, 1)
-      # photo_url = Unsplash::Photo.search("Lille", 1, 1)
     end
 
     return destination
@@ -107,7 +135,8 @@ class OpenaiService
   def get_activities_country(search)
     prompt_activities = get_prompt_activities_country(search)
     call_openai(prompt_activities)
-  end  # ---------------------------------------------------------------------------------------
+  end  
+  # ---------------------------------------------------------------------------------------
   def get_activities_city(search)
     prompt_activities = get_prompt_activities_city(search)
     call_openai(prompt_activities)
@@ -116,39 +145,6 @@ class OpenaiService
   def get_activity_details(search, activity)
     prompt_activity = get_prompt_activity(search, activity)
     call_openai(prompt_activity)
-  end
-  # ---------------------------------------------------------------------------------------
-  def create_trip_activity(type, search, trip, activity)
-    if type == "CITY"
-      activity_details = get_activity_details(search, activity)
-
-      new_activity = Activity.find_or_create_by(
-        address: activity["address"], 
-        name: activity['name'],
-        title: activity['title'],
-        description: activity['description'],
-        category: activity['category'],
-        wiki: url_alive?(activity_details['wiki']) ? activity_details['wiki'] : "Unknown",
-        website_url: "Unknown"
-      )
-    else # CAS COUNTRY
-      new_activity = Activity.find_or_create_by(
-        address: activity["address"],
-        name: activity['name'],
-        title: activity['title'],
-        description: activity['description'],
-        category: "Unknown",
-        wiki: "Unknown",
-        website_url: "Unknown"
-      )
-    end
-
-    trip_activity = TripActivity.create!(
-      activity: new_activity,
-      trip: trip,
-      start_date: DateTime.parse(activity["start_date"]),
-      end_date: DateTime.parse(activity["end_date"])
-    )
   end
   # ---------------------------------------------------------------------------------------
   def call_openai(prompt)
@@ -162,11 +158,10 @@ class OpenaiService
       "temperature": 0.0
     })
 
-    # data = JSON.parse(response['choices'][0]['message']['content'])
     if parsed_response['choices'] && parsed_response['choices'][0] && parsed_response['choices'][0]['message'] && parsed_response['choices'][0]['message']['content'] && parsed_response['choices'][0]['message']['content'] != "ERROR"
       data = JSON.parse(parsed_response['choices'][0]['message']['content'])
-      Sidekiq.logger.debug "#-----------------------------------------------------------"
-      Sidekiq.logger.debug "#call_openai : #{data}"
+      # Sidekiq.logger.debug "#-----------------------------------------------------------"
+      # Sidekiq.logger.debug "#call_openai : #{data}"
       return data
     else
       Sidekiq.logger.error "Invalid response format: #{parsed_response}"
