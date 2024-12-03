@@ -54,10 +54,10 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_03_084420) do
     t.float "latitude"
     t.float "longitude"
     t.string "category"
-    t.string "title"
     t.string "direction"
     t.integer "count"
     t.text "opening", default: [], array: true
+    t.string "title"
     t.string "subtitle"
   end
 
