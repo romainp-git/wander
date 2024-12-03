@@ -40,20 +40,21 @@ class OpenaiService
   end
   # ---------------------------------------------------------------------------------------
   def create_trip_activity(type, search, trip, activity)
-    if type == "CITY"
-      activity_details = get_activity_details(search, activity)
 
-      if !activity['category'] 
-        mycategory = "cultural" 
-        else if Constants::CATEGORIES_UK.include?(activity['category'])
-          mycategory = activity['category']
-          else if Constants::CATEGORIES_FR.include?(activity['category'])
-            mycategory = Constants::CATEGORIES_UK[Constants::CATEGORIES_FR.index(activity['category'])]
-          else
-            mycategory = "cultural"
-          end
+    if !activity['category'] 
+      mycategory = "cultural" 
+      else if Constants::CATEGORIES_UK.include?(activity['category'])
+        mycategory = activity['category']
+        else if Constants::CATEGORIES_FR.include?(activity['category'])
+          mycategory = Constants::CATEGORIES_UK[Constants::CATEGORIES_FR.index(activity['category'])]
+        else
+          mycategory = "cultural"
         end
       end
+    end
+
+    if type == "CITY"
+      activity_details = get_activity_details(search, activity)
 
       new_activity = Activity.find_or_create_by(
         address: activity["address"], 
@@ -75,7 +76,9 @@ class OpenaiService
         website_url: "Unknown"
       )
     end
-
+    
+    GooglePlaceJob.perform_later({ activity: new_activity, destination: search })
+    
     trip_activity = TripActivity.create!(
       activity: new_activity,
       trip: trip,
