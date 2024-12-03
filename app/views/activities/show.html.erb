@@ -78,14 +78,14 @@
   </div>
 
   <!-- Section détails -->
-  <div class="flex flex-col flex-1 bg-white rounded-t-2xl shadow-lg -mt-10 z-10">
+  <div class="flex flex-col flex-1 bg-gray-800 text-white rounded-t-2xl shadow-lg -mt-10 z-10">
     <!-- Titre et adresse -->
     <div class="px-6 pt-6">
-      <h1 class="text-2xl font-bold text-gray-800"><%= @activity.name %></h1>
-      <p class="text-sm text-gray-500 flex items-center mt-1">
+      <h1 class="text-2xl font-bold"><%= @activity.title %></h1>
+      <p class="text-sm text-gray-100 flex items-center mt-1">
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          class="h-4 w-4 mr-1 text-gray-500"
+          class="h-4 w-4 mr-1 text-gray-100"
           fill="currentColor"
           viewBox="0 0 24 24"
         >
@@ -129,27 +129,27 @@
         </svg>
       </div>
       <!-- Note -->
-      <p class="text-sm text-gray-500">(143 avis)</p>
+      <p class="text-sm text-gray-200">(<%= @activity.count %>)</p>
     </div>
 
     <!-- Navigation tabs -->
     <div class="mt-6" data-controller="tabs">
       <!-- Navigation des onglets -->
       <div role="tablist" class="tabs tabs-bordered px-6">
-        <a class="tab tab-active" data-action="click->tabs#switchTab" data-tabs-target="tabActivity" data-tab-name="description">Description</a>
-        <a class="tab" data-action="click->tabs#switchTab" data-tabs-target="tabActivity" data-tab-name="horaires">Horaires</a>
-        <a class="tab" data-action="click->tabs#switchTab" data-tabs-target="tabActivity" data-tab-name="wiki">Wiki</a>
-        <a class="tab" data-action="click->tabs#switchTab" data-tabs-target="tabActivity" data-tab-name="video">Vidéo</a>
+        <a class="tab  text-gray-400 text-white tab-active !border-white" data-action="click->tabs#switchTab" data-tabs-target="tabActivity" data-tab-name="description">Description</a>
+        <a class="tab text-gray-400" data-action="click->tabs#switchTab" data-tabs-target="tabActivity" data-tab-name="horaires">Horaires</a>
+        <a class="tab text-gray-400" data-action="click->tabs#switchTab" data-tabs-target="tabActivity" data-tab-name="wiki">Wiki</a>
+        <a class="tab text-gray-400" data-action="click->tabs#switchTab" data-tabs-target="tabActivity" data-tab-name="avis">Avis</a>
       </div>
 
       <!-- Contenu des onglets -->
-      <div class="px-6 mt-6">
+      <div class="px-6 mt-6 ">
         <!-- Contenu de l'onglet Description -->
-    <div data-tabs-target="content" data-tab-name="description" >
-      <h3 class="text-lg font-semibold text-gray-800">Description</h3>
+    <div data-tabs-target="content" data-tab-name="description"  >
+      <h3 class="text-lg font-semibold text-gray-100">Description</h3>
 
       <div data-controller="read-more" data-read-more-more-text-value="Voir plus" data-read-more-less-text-value="Voir moins">
-        <p class="my-content mt-2 text-sm text-gray-600" data-read-more-target="content">
+        <p class="my-content mt-2 text-sm text-gray-400" data-read-more-target="content">
           <%= @activity.description%>
         </p>
         <button class="text-gray-500 text-sm font-bold" data-action="read-more#toggle">Voir plus</button>
@@ -157,37 +157,47 @@
     </div>
 
         <!-- Contenu de l'onglet Horaires -->
-        <div data-tabs-target="content" data-tab-name="horaires" class="hidden">
-          <h3 class="text-lg font-semibold text-gray-800">Horaires</h3>
-          <p class="text-sm text-gray-600 mt-2">Lun 8:00-12:00/14:00-18:00</p>
-          <p class="text-sm text-gray-600 mt-2">Mar 8:00-12:00/14:00-18:00</p>
-          <p class="text-sm text-gray-600 mt-2">Mer 8:00-12:00/14:00-18:00</p>
-          <p class="text-sm text-gray-600 mt-2">Jeu 8:00-12:00/14:00-18:00</p>
-          <p class="text-sm text-gray-600 mt-2">Ven 8:00-12:00/14:00-18:00</p>
-          <p class="text-sm text-gray-600 mt-2">Sam -</p>
-          <p class="text-sm text-gray-600 mt-2">Dim -</p>
+        <div data-tabs-target="content" data-tab-name="horaires" class="hidden ">
+          <h3 class="text-lg font-semibold text-gray-200">Horaires</h3>
+          <%@activity.opening.each do |slot| %>
+            <p class="text-sm text-gray-400 mt-2"><%= slot %></p>
+          <% end %>
         </div>
-
         <!-- Contenu de l'onglet Wiki -->
         <div data-tabs-target="content" data-tab-name="wiki" class="hidden">
-          <h3 class="text-lg font-semibold text-gray-800">Wiki</h3>
-          <p class="text-sm text-gray-600 mt-2">
-            wiki
+          <h3 class="text-lg font-semibold text-gray-200">Wiki</h3>
+          <p class="text-sm text-gray-400 mt-2">
+            <%= @activity.wiki %>
           </p>
         </div>
 
-        <!-- Contenu de l'onglet Vidéo -->
-        <div data-tabs-target="content" data-tab-name="video" class="hidden">
-          <h3 class="text-lg font-semibold text-gray-800">Vidéo</h3>
-          <p class="text-sm text-gray-600 mt-2">
-            <em>Aucune vidéo disponible.</em>
-          </p>
+        <!-- Contenu de l'onglet Avis -->
+        <div data-tabs-target="content" data-tab-name="avis" class="hidden">
+          <h3 class="text-lg font-semibold text-gray-200">Avis</h3>
+          <%@activity.reviews.each do |review| %>
+            <div>
+              <p class=" mt-2">
+                <div class=" text-gray-100" ><%= review.rating %> /5</div>
+                <em class="text-sm text-gray-400"> <%= review.text %></em>
+              </p>
+            </div>
+          <% end %>
         </div>
+      <div class="flex w-full px-4  space-x-4 fixed bottom-4 left-0">
+          <a class="flex-1" href="<%= @activity.website_url %>" target="_blank">
+            <button class=" h-14 w-full bg-orange-600 text-white py-2 px-6 rounded-md text-sm active:bg-orange-700 h-12  flex items-center justify-center">
+              Site internet
+            </button>
+          </a>
+          <a href="<%= @activity.direction %>" target="_blank">
+            <button class=" w-full h-14 w-14 bg-white text-orange-600 py-2 px-6 rounded-md text-sm active:bg-orange-700 h-12 flex   items-center justify-center">
+              <div class="icon">near_me</div>
+            </button>
+          </a>
+      </div>
 
-      <button class=" w-full mt-8 bg-black text-white py-3 rounded-lg shadow-md">
-        Itinéraire
-      </button>
+      </div>
+      </div>
+      </div>
 
-      </div>
-      </div>
-      </div>
+1
