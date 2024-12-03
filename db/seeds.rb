@@ -129,7 +129,7 @@ activities = activities_data.map do |data|
     description: data[:description],
     global_rating: data[:reviews],
     address: data[:address],
-    category: constants::CATEGORIES_UK.sample,
+    category: Constants::CATEGORIES_UK.sample,
     website_url: Faker::Internet.url,
     wiki: Faker::Internet.url(host: "wikipedia.org")
   )
