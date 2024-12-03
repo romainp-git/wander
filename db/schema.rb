@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_12_03_012524) do
+ActiveRecord::Schema[7.1].define(version: 2024_12_03_084420) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -54,10 +54,10 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_03_012524) do
     t.float "latitude"
     t.float "longitude"
     t.string "category"
-    t.string "title"
     t.string "direction"
     t.integer "count"
     t.text "opening", default: [], array: true
+    t.string "title"
     t.string "subtitle"
   end
 
@@ -168,8 +168,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_03_012524) do
   add_foreign_key "searches", "trips"
   add_foreign_key "trip_activities", "activities"
   add_foreign_key "trip_activities", "trips"
-  add_foreign_key "trip_partners", "trips"
-  add_foreign_key "trip_partners", "users"
   add_foreign_key "trips", "destinations"
   add_foreign_key "trips", "users"
 end
