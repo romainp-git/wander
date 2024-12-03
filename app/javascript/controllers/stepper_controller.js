@@ -11,6 +11,7 @@ export default class extends Controller {
     this.validateInputs();
     this.inputTargets.forEach((input) => {
       input.addEventListener("input", this.validateInputs.bind(this));
+      input.addEventListener("change", this.validateInputs.bind(this));
     });
   }
 
@@ -18,11 +19,12 @@ export default class extends Controller {
     this.element.removeEventListener("keydown", this.handleKeyDown.bind(this));
     this.inputTargets.forEach((input) => {
       input.removeEventListener("input", this.validateInputs.bind(this));
+      input.removeEventListener("change", this.validateInputs.bind(this));
     });
   }
 
   handleKeyDown(event) {
-    if (event.key === "Enter") {
+    if (event.key === "Enter" && this.validateInputs()) {
       if (this.currentStepIndex < this.stepTargets.length - 1) {
         event.preventDefault();
         this.nextStep();
@@ -98,12 +100,9 @@ export default class extends Controller {
 
   validateInputs() {
     const currentStep = this.stepTargets[this.currentStepIndex];
-    const requiredInputs = currentStep.querySelectorAll("input[required], input[type='hidden']");
-
-    // Vérifie que tous les champs requis ont une valeur non vide
+    const requiredInputs = currentStep.querySelectorAll("input[required]");
     const allValid = Array.from(requiredInputs).every((input) => input.value.trim() !== "");
 
-    // Active ou désactive le bouton "next" en conséquence
     if (allValid) {
       this.nextButtonTarget.disabled = false;
       this.nextButtonTarget.classList.remove("opacity-50", "cursor-not-allowed");
@@ -111,5 +110,7 @@ export default class extends Controller {
       this.nextButtonTarget.disabled = true;
       this.nextButtonTarget.classList.add("opacity-50", "cursor-not-allowed");
     }
+
+    return allValid;
   }
 }

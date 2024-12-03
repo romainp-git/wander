@@ -9,7 +9,7 @@ class OpenaiService
     destination = create_destination(@search)
     Sidekiq.logger.debug "#-----------------------------------------------------------"
     Sidekiq.logger.debug "#create_destination : #{destination}"
-raise
+
     trip = create_trip(@search, destination)
     Sidekiq.logger.debug "#-----------------------------------------------------------"
     Sidekiq.logger.debug "#create_trip : #{trip}"
@@ -126,7 +126,7 @@ raise
         name: "#{activity_details['name']} (#{activity_details['category']})",
         description: activity_details['description'],
         wiki: url_alive?(activity_details['wiki']) ? activity_details['wiki'] : "Unknown",
-        address: activity["address"], 
+        address: activity["address"],
       )
     else # idem que city
       new_activity = Activity.find_or_create_by(
