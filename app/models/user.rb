@@ -31,4 +31,8 @@ class User < ApplicationRecord
   def total_countries
     trips.distinct.pluck(:destination_id).count
   end
+
+  def currently_traveling?
+    trips.any? { |trip| Date.today.between?(trip.start_date, trip.end_date) }
+  end
 end

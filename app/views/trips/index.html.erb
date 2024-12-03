@@ -48,7 +48,7 @@
             <%= render "countdown", start: @trips[0].start_date.nil? ? "" : @trips[0].start_date %>
 
             <div class="relative bottom-0 left-0 right-0 p-4 text-white">
-              <h1 class="text-2xl font-bold"><%= @trips[0].name.capitalize() %></h1>
+              <h1 class="text-3xl font-bold font-playfair"><%= @trips[0].name.capitalize() %></h1>
               <div class="flex justify-between mt-2">
                 <div class="flex flex-col items-center">
                   <span class="text-sm font-semibold"><%= I18n.l(@trips[0].start_date, format: "%Y")  if !@trips[0].start_date.nil? %></span>

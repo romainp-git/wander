@@ -1,4 +1,9 @@
 <div class="relative h-screen flex flex-col" data-controller="gallery">
+  <!-- Bouton de retour -->
+  <button class="fixed p-safe-or-4 z-30" onclick="history.back()" >
+    <p class="icon icon-200 drop-shadow-xl text-4xl text-white">arrow_back</p>
+  </button>
+
   <!-- Section image avec retour -->
   <div class="relative w-full h-1/2 bg-gray-200">
     <!-- Image principale -->
@@ -9,21 +14,11 @@
         <%= image_tag 'no_picture.jpg', class: "w-full h-full object-cover", alt: "No picture available", data: { gallery_target: "mainImage" } %>
       <% end %>
 
-      <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent"></div>
+      <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
     </div>
 
-    <!-- Bouton de retour -->
-    <button
-      class="absolute top-4 left-4 btn bg-white text-gray-900 w-12 h-12 flex items-center justify-center z-10"
-      onclick="history.back()"
-    >
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-      </svg>
-    </button>
-
     <!-- Miniatures -->
-    <div class="absolute bottom-16 left-0 right-0 mx-4 flex justify-between space-x-2 h-[7.5rem] overflow-x-scroll scrollbar-hide carousel">
+    <div class="absolute bottom-16 left-0 right-0 px-4 flex justify-between space-x-2 h-[7.5rem] overflow-x-scroll scrollbar-hide carousel">
     <% if @activity.photos.first.present? %>
       <% @activity.photos.each_with_index do |photo, index| %>
         <div
@@ -136,7 +131,7 @@
     <div class="mt-6" data-controller="tabs">
       <!-- Navigation des onglets -->
       <div role="tablist" class="tabs tabs-bordered px-6">
-        <a class="tab  text-gray-400 text-white tab-active !border-white" data-action="click->tabs#switchTab" data-tabs-target="tabActivity" data-tab-name="description">Description</a>
+        <a class="tab text-white tab-active !border-white" data-action="click->tabs#switchTab" data-tabs-target="tabActivity" data-tab-name="description">Description</a>
         <a class="tab text-gray-400" data-action="click->tabs#switchTab" data-tabs-target="tabActivity" data-tab-name="horaires">Horaires</a>
         <a class="tab text-gray-400" data-action="click->tabs#switchTab" data-tabs-target="tabActivity" data-tab-name="wiki">Wiki</a>
         <a class="tab text-gray-400" data-action="click->tabs#switchTab" data-tabs-target="tabActivity" data-tab-name="avis">Avis</a>
@@ -185,12 +180,12 @@
         </div>
       <div class="flex w-full px-4  space-x-4 fixed bottom-4 left-0">
           <a class="flex-1" href="<%= @activity.website_url %>" target="_blank">
-            <button class=" h-14 w-full bg-orange-600 text-white py-2 px-6 rounded-md text-sm active:bg-orange-700 h-12  flex items-center justify-center">
+            <button class="w-full bg-orange-600 text-white py-2 px-6 rounded-md text-sm active:bg-orange-700 h-12  flex items-center justify-center">
               Site internet
             </button>
           </a>
           <a href="<%= @activity.direction %>" target="_blank">
-            <button class=" w-full h-14 w-14 bg-white text-orange-600 py-2 px-6 rounded-md text-sm active:bg-orange-700 h-12 flex   items-center justify-center">
+            <button class=" w-full bg-white text-orange-600 py-2 px-6 rounded-md text-sm active:bg-orange-700 h-12 flex items-center justify-center">
               <div class="icon">near_me</div>
             </button>
           </a>
@@ -199,5 +194,3 @@
       </div>
       </div>
       </div>
-
-1

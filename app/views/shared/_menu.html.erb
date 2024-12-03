@@ -11,10 +11,13 @@
       </div>
     </div>
     <div class="mt-4">
-      <h1 class="text-3xl font-bold font-playfair">Paris</h1>
+      <h1 class="text-3xl font-bold font-playfair">Lille</h1>
       <p class="text-sm flex items-center space-x-2">
-        <span class="w-2 h-2 rounded-full bg-red-500"></span>
-        <span>Voyage actuellement</span>
+        <% if current_user.currently_traveling? %>
+          <span class="w-2 h-2 rounded-full bg-red-500"></span><span>Voyage actuellement</span>
+        <% else %>
+          <span class="w-2 h-2 rounded-full bg-green-600"><span>Pas en voyage</span>
+        <% end %>
       </p>
     </div>
   </div>
@@ -49,7 +52,7 @@
       <li class="flex items-center justify-between px-6 py-4">
         <div class="flex items-center space-x-4">
           <span class="icon">add_circle</span>
-          <p>Créer un voyage</p>
+          <%= link_to "Créer un voyage", new_trip_path %>
         </div>
       </li>
       <li class="flex items-center justify-between px-6 py-4">
