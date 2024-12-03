@@ -1,33 +1,35 @@
 <div class="px-4">
-  <div class="flex items-start gap-5 mb-2">
+  <div class="flex items-start gap-5 mb-2 mt-3">
     <div class="flex flex-col flex-1">
-      <p class="text-xl font-extralight text-white mb-4 ">Choisissez des genres d'activités :</p>
+      <p class="text-xl font-extralight text-white mb-2">Choisissez des genres d'activités :</p>
     </div>
   </div>
 
   <!-- Options -->
-  <div class="grid grid-cols-2 gap-2 bg-white bg-opacity-10 rounded-2xl py-4 px-7 border border-white">
+  <div class="flex flex-wrap bg-white bg-opacity-10 rounded-2xl py-4 px-7 border border-white gap-2">
     <% ["Culturel", "Nature", "Aventure", "Loisirs", "Détente", "Gastronomie", "Shopping", "Vie Nocturne", "Sportif"].each do |activity| %>
       <div>
-        <label class="flex items-center gap-3 text-white cursor-pointer">
+        <label>
           <%= f.check_box :categories, { multiple: true, class: "hidden peer" }, activity %>
           <!-- Icône remplaçant la checkbox -->
-          <div class="w-4 h-4 flex items-center justify-center peer-checked:text-orange-500 peer-checked:icon-filled">
-            <span class="icon icon-300 text-sm">
-              <%= case activity
-                  when "Culturel" then "museum"
-                  when "Nature" then "park"
-                  when "Aventure" then "hiking"
-                  when "Loisirs" then "sports_soccer"
-                  when "Détente" then "spa"
-                  when "Gastronomie" then "restaurant"
-                  when "Shopping" then "shopping_bag"
-                  when "Vie Nocturne" then "nightlife"
-                  when "Sportif" then "fitness_center"
-                  end %>
-            </span>
+          <div class="inline-flex items-center rounded-md peer-checked:bg-orange-600 bg-gray-50 bg-opacity-50 px-2 py-1 text-white peer-checked:icon-filled">
+            <div class="w-4 h-4 flex items-center justify-center">
+              <span class="icon icon-300 text-sm">
+                <%= case activity
+                    when "Culturel" then "museum"
+                    when "Nature" then "park"
+                    when "Aventure" then "hiking"
+                    when "Loisirs" then "sports_soccer"
+                    when "Détente" then "spa"
+                    when "Gastronomie" then "restaurant"
+                    when "Shopping" then "shopping_bag"
+                    when "Vie Nocturne" then "nightlife"
+                    when "Sportif" then "fitness_center"
+                    end %>
+              </span>
+            </div>
+            <span class="text-sm"><%= activity %></span>
           </div>
-          <span class="text-sm"><%= activity %></span>
         </label>
       </div>
     <% end %>

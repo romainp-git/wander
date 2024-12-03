@@ -1,13 +1,13 @@
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
-  static targets = ["day", "timeline", "timelineDay", "tab", "tabActivity", "content"];
+  static targets = ["day", "timeline", "timelineDay", "tab", "tabActivity", "content", "tabsContainer", "daysContainer"];
 
   connect() {
     console.log("Tabs controller connected");
     this.activateDay(0);
     this.isScrolling = false;
-    this.activateTab(0);
+
     window.addEventListener("scroll", this.onScroll.bind(this));
   }
 
@@ -46,10 +46,29 @@ export default class extends Controller {
     });
   }
 
+  scrollToTab(index) {
+    const targetTab = this.tabTargets[index];
+    if (targetTab) {
+      this.tabsContainerTarget.scrollTo({
+        left: targetTab.offsetLeft,
+        behavior: "smooth",
+      });
+    }
+
+    const targetDay = this.dayTargets[index];
+    if (targetDay) {
+      this.daysContainerTarget.scrollTo({
+        left: targetDay.offsetLeft,
+        behavior: "smooth",
+      });
+    }
+  }
+
   switchTab(event) {
     const tabName = event.currentTarget.dataset.tabName;
     this.activateTabByName(tabName);
   }
+
   activateTab(index) {
     this.tabActivityTargets.forEach((tab, i) => {
       tab.classList.toggle("tab-active", i === index);
@@ -58,6 +77,7 @@ export default class extends Controller {
       content.classList.toggle("hidden", i !== index);
     });
   }
+
   activateTabByName(name) {
     this.tabActivityTargets.forEach((tab) => {
       const isActive = tab.dataset.tabName === name;
@@ -87,19 +107,26 @@ export default class extends Controller {
     if (this.isScrolling) return;
 
     const scrollPosition = window.scrollY;
+    const bottomPosition = document.documentElement.scrollHeight - window.innerHeight;
+
     let activeIndex = 0;
 
-    this.timelineDayTargets.forEach((day, index) => {
-      const dayOffset = day.offsetTop;
-      const nextDayOffset = index + 1 < this.timelineDayTargets.length
-        ? this.timelineDayTargets[index + 1].offsetTop
-        : Infinity;
+    if (scrollPosition >= bottomPosition - 1) {
+      activeIndex = this.timelineDayTargets.length - 1;
+    } else {
+      this.timelineDayTargets.forEach((day, index) => {
+        const dayOffset = day.offsetTop;
+        const nextDayOffset = index + 1 < this.timelineDayTargets.length
+          ? this.timelineDayTargets[index + 1].offsetTop
+          : Infinity;
 
-      if (scrollPosition >= dayOffset - 50 && scrollPosition < nextDayOffset - 50) {
-        activeIndex = index;
-      }
-    });
+        if (scrollPosition >= dayOffset - 50 && scrollPosition < nextDayOffset - 50) {
+          activeIndex = index;
+        }
+      });
+    }
 
     this.activateDay(activeIndex);
+    this.scrollToTab(activeIndex);
   }
 }

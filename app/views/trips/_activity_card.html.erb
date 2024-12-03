@@ -4,7 +4,7 @@
       data-id="<%= trip_activity.id %>">
     <!-- Timeline time -->
 
-    <div class="text-gray-400 text-sm w-16 text-right">
+    <div class="text-gray-400 w-8 text-right shrink-0 text-xs">
       <div><%= trip_activity.start_date.strftime('%H:%M') %></div>
       <div><%= trip_activity.end_date.strftime('%H:%M') %></div>
     </div>
@@ -22,6 +22,6 @@
         <p class="text-sm"><%= trip_activity.activity.description.truncate(50) %></p>
       </div>
       <% end%>
-       <p class="icon handle p-3 cursor-grab active:cursor-grabbing">drag_indicator</p>
+       <p class="icon handle cursor-grab active:cursor-grabbing">drag_indicator</p>
     </div>
   </li>

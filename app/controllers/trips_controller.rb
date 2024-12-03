@@ -78,6 +78,7 @@ class TripsController < ApplicationController
   def time_not_traveled(trips, user)
     past_trips = trips.select { |trip| trip.respond_to?(:end_date) && trip.end_date <= Date.today }
     last_trip = past_trips.max_by(&:end_date)
+
     return nil unless (last_trip && last_trip.end_date < DateTime.now)
     return last_trip.end_date
   end
