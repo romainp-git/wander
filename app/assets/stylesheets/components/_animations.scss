@@ -22,7 +22,6 @@
   }
 }
 
-
 .animate-fade-in-slow {
   animation: fade-in 2s ease-in-out;
 }
@@ -35,5 +34,44 @@
   100% {
     transform: translateY(0);
     opacity: 1;
+  }
+}
+
+.circles {
+  height: 200vmin;
+  position: relative;
+  width: 200vmin;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  filter: blur(0.3rem);
+  opacity: 0.5;
+
+  > div {
+    animation: growAndFade 4s infinite ease-out;
+    background-color: #19396a;
+    border-radius: 50%;
+    height: 100%;
+    opacity: 0;
+    position: absolute;
+    width: 100%;
+  }
+
+  .circle2 {
+    animation-delay: .5s;
+  }
+  .circle3 {
+    animation-delay: 1.5s;
+  }
+}
+
+@keyframes growAndFade {
+  0% {
+    opacity: .25;
+    transform: scale(0);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1);
   }
 }
