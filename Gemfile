@@ -62,6 +62,7 @@ gem 'rest-client'
 gem 'rails-i18n'
 gem 'acts_as_list'
 gem 'httparty'
+gem 'pry-rails'
 
 group :development, :test do
   gem 'dotenv-rails'
