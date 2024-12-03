@@ -6,9 +6,9 @@ class TripsController < ApplicationController
     end
 
     @user = current_user
-   # Appel de la méthode
     @trips = Trip.where(user: current_user).order(end_date: :desc)
     @time_not_traveled = time_not_traveled(@trips, @user)
+
     ## STATS
     @destinations = self.trips.empty? ? [] : trips
     @travels = self.journeys.empty? ? [] : journeys

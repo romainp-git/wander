@@ -1,64 +1,58 @@
 <% if @trips.present? %>
-  <ul class="stack-cards px-4 z-20 relative">
-
+  <ul class="stack-cards relative z-10 mb-24 px-4">
     <% @trips.each do |trip| %>
-      <% if trip.id != @trips[0].id%>
-        <%= render "timeline_card", trip: trip %>
-      <% end %>
+      <%= render "timeline_card", trip: trip %>
     <% end %>
-    <% @trips.each do |trip| %>
-      <% if trip.id != @trips[0].id%>
-        <%= render "timeline_card", trip: trip %>
-      <% end %>
-    <% end %>
-    <% @trips.each do |trip| %>
-      <% if trip.id != @trips[0].id%>
-        <%= render "timeline_card", trip: trip %>
-      <% end %>
-    <% end %>
-    <% @trips.each do |trip| %>
-      <% if trip.id != @trips[0].id%>
-        <%= render "timeline_card", trip: trip %>
-      <% end %>
-    <% end %>
-    <% @trips.each do |trip| %>
-      <% if trip.id != @trips[0].id%>
-        <%= render "timeline_card", trip: trip %>
-      <% end %>
-    <% end %>
-
   </ul>
 <% end %>
 
 <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const stackCards = document.querySelectorAll(".stack-cards__item");
-    const baseTop = 180;
-    const increment = 20;
+  const stackCards = document.querySelectorAll(".stack-cards__item");
+  const baseTop = 230;
+  const increment = 20;
 
+  stackCards.forEach((card, index) => {
+    const dynamicTop = baseTop + index * increment;
+    card.style.top = `calc(env(safe-area-inset-top) + ${dynamicTop}px)`;
+  });
+
+  /*
+  const getBaseTop = () => {
+    const safeInsetTop = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('env(safe-area-inset-top)')) || 0;
+    return safeInsetTop + 180;
+  };
+
+  let baseTop = getBaseTop();
+
+  stackCards.forEach((card, index) => {
+    console.log(baseTop)
+    const dynamicTop = baseTop + index * increment;
+    card.style.top = `${dynamicTop}px`;
+  });
+
+  const clamp = (x, min, max) => Math.max(min, Math.min(x, max));
+  const stackContainer = document.querySelector(".stack-cards");
+  const cards = Array.from(stackCards);
+
+  window.addEventListener("resize", () => {
+    baseTop = getBaseTop();
     stackCards.forEach((card, index) => {
       const dynamicTop = baseTop + index * increment;
       card.style.top = `${dynamicTop}px`;
     });
-
-    const clamp = (x, min, max) => Math.max(min, Math.min(x, max));
-    const stackContainer = document.querySelector(".stack-cards");
-
-    const cards = Array.from(document.querySelectorAll(".stack-cards__item"));
-
-    window.addEventListener("scroll", () => {
-      const containerRect = stackContainer.getBoundingClientRect();
-      cards.forEach((card, i) => {
-        const cardRect = card.getBoundingClientRect();
-        const offset = cardRect.top - (baseTop + increment * i );
-
-        let scale = 1;
-        if (offset <= 100 && offset >= 0) {
-          scale = 0.9 + (offset / 100) * 0.1;
-        }
-        card.style.transform = `scale(${scale})`;
-      });
-    });
-
   });
+
+  window.addEventListener("scroll", () => {
+    const containerRect = stackContainer.getBoundingClientRect();
+    cards.forEach((card, i) => {
+      const cardRect = card.getBoundingClientRect();
+      const offset = cardRect.top - (baseTop + increment * i);
+
+      let scale = 1;
+      if (offset <= 100 && offset >= 0) {
+        scale = 0.9 + (offset / 100) * 0.1;
+      }
+      card.style.transform = `scale(${scale})`;
+    });
+  }); */
 </script>

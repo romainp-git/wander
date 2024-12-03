@@ -1,14 +1,4 @@
-# This file should ensure the existence of records required to run the application in every environment (production,
-# development, test). The code here should be idempotent so that it can be executed at any point in every environment.
-# The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
-#
-# Example:
-#
-#   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
-#     MovieGenre.find_or_create_by!(name: genre_name)
-#   end
-require "faker"
-require "open-uri"
+puts "Cleaning database..."
 
 # Clear existing data
 Search.destroy_all
@@ -18,6 +8,7 @@ Activity.destroy_all
 TripActivity.destroy_all
 Destination.destroy_all
 User.destroy_all
+Highlight.destroy_all
 Suggestion.destroy_all
 
 # Chemin de la photo par défaut
@@ -81,11 +72,6 @@ users.each_with_index do |user, index|
     puts "Failed to create user #{user[:email]}: #{e.message}"
   end
 end
-
-puts "Cleaning database..."
-TripActivity.destroy_all
-Activity.destroy_all
-Destination.destroy_all
 
 # Seed destinations
 puts "Seeding destinations..."
@@ -196,75 +182,162 @@ suggestions_data = [
     country: "France",
     city: "Paris",
     description: "La Ville Lumière, célèbre pour ses musées, sa gastronomie et sa culture.",
-    highlight: "Tour Eiffel",
-    photos: [
-      "https://plus.unsplash.com/premium_photo-1719581957038-0121108b9455?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8cGFyaXN8ZW58MHx8MHx8fDA%3D",
-      "https://images.unsplash.com/photo-1454386608169-1c3b4edc1df8?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fHBhcmlzfGVufDB8fDB8fHww",
-      "https://images.unsplash.com/photo-1581683705068-ca8f49fc7f45?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fHBhcmlzfGVufDB8fDB8fHww"
-    ]
-  },
-{
-    country: "Italy",
-    city: "Rome",
-    description: "La ville éternelle, chargée d'histoire et de monuments antiques.",
-    highlight: "Colisée",
-    photos: [
-      "https://images.unsplash.com/photo-1491566102020-21838225c3c8?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cm9tZXxlbnwwfHwwfHx8MA%3D%3D",
-      "https://images.unsplash.com/photo-1603199766980-fdd4ac568a11?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fHJvbWV8ZW58MHx8MHx8fDA%3D",
-      "https://images.unsplash.com/photo-1598258500419-5d7895465a20?q=80&w=3087&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-    ]
-  },
-{
-    country: "USA",
-    city: "New York City",
-    description: "La ville qui ne dort jamais, connue pour ses gratte-ciel emblématiques.",
-    highlight: "Statue de la Liberté",
-    photos: [
-      "https://images.unsplash.com/photo-1541336032412-2048a678540d?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bmV3JTIweW9ya3xlbnwwfHwwfHx8MA%3D%3D",
-      "https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8bmV3JTIweW9ya3xlbnwwfHwwfHx8MA%3D%3D",
-      "https://images.unsplash.com/photo-1476837754190-8036496cea40?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fG5ldyUyMHlvcmt8ZW58MHx8MHx8fDA%3D"
-    ]
-  },
-
-{
-    country: "Japan",
-    city: "Tokyo",
-    description: "La métropole futuriste mêlant tradition et modernité.",
-    highlight: "Tour de Tokyo",
-    photos: [
-      "https://images.unsplash.com/photo-1548783307-f63adc3f200b?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8VG9reW98ZW58MHx8MHx8fDA%3D",
-      "https://images.unsplash.com/photo-1559245718-212fba2d22e2?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjB8fFRva3lvfGVufDB8fDB8fHww",
-      "https://images.unsplash.com/photo-1516205651411-aef33a44f7c2?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjR8fFRva3lvfGVufDB8fDB8fHww"
+    highlights: [
+      {
+        name: "Tour Eiffel",
+        photo: "https://images.unsplash.com/photo-1541663625919-69012d49aa6a?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTZ8fHRvdXIlMjBlZmZlaWx8ZW58MHx8MHx8fDA%3D",
+        description: "L'icône de Paris, la Tour Eiffel attire des millions de visiteurs chaque année.",
+        key_number: "Une dame de fer aux 7 300 tonnes d'acier"
+      },
+      {
+        title: "Musée du Louvre",
+        photo: "https://images.unsplash.com/photo-1555929940-b435de81524e?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8TXVzJUMzJUE5ZSUyMGR1JTIwTG91dnJlfGVufDB8fDB8fHww",
+        description: "Le musée d'art le plus célèbre au monde, abritant des trésors tels que la Joconde.",
+        key_number: "Il faudrait 100 jours pour le visiter dans sa totalité"
+      },
+      {
+        title: "Cathédrale Notre-Dame",
+        photo: "https://images.unsplash.com/photo-1613822363091-668dd8f5c016?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fE5vdHJlJTIwRGFtZSUyMGRlJTIwcGFyaXN8ZW58MHx8MHx8fDA%3D",
+        description: "Chef-d'œuvre gothique, connu pour ses vitraux et sa façade impressionnante.",
+        key_number: "836 millions collectés pour sa reconstruction"
+      }
     ]
   },
   {
-    country: "Australia",
-    city: "Sydney",
-    description: "Célèbre pour son opéra iconique et ses plages magnifiques.",
-    highlight: "Opéra de Sydney",
-    photos: [
-      "https://images.unsplash.com/photo-1524562865630-b991c6c2f261?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8U3lkbmV5fGVufDB8fDB8fHww",
-      "https://images.unsplash.com/photo-1549180030-48bf079fb38a?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8U3lkbmV5fGVufDB8fDB8fHww",
-      "https://images.unsplash.com/photo-1554629907-479bff71f153?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTR8fFN5ZG5leXxlbnwwfHwwfHx8MA%3D%3D"
+    country: "Royaume-Uni",
+    city: "Londres",
+    description: "Une ville emblématique, riche d'histoire et de culture moderne.",
+    highlights: [
+      {
+        title: "Tower Bridge",
+        photo: "https://images.unsplash.com/photo-1599035388972-af961124a25a?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8VG93ZXIlMjBCcmlkZ2V8ZW58MHx8MHx8fDA%3D",
+        description: "Un pont suspendu emblématique traversant la Tamise.",
+        key_number: "1894, première levée du pont"
+      },
+      {
+        title: "Big Ben",
+        photo: "https://images.unsplash.com/photo-1658862760356-fed292343d33?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8QmlnJTIwQmVufGVufDB8fDB8fHww",
+        description: "L'horloge la plus célèbre du monde et symbole de Londres.",
+        key_number: "Une cloche de 13,7 tonnes"
+      },
+      {
+        title: "British Museum",
+        photo: "https://images.unsplash.com/photo-1650831491251-a23db18af520?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fEJyaXRpc2glMjBNdXNldW18ZW58MHx8MHx8fDA%3D",
+        description: "Un musée mondialement connu abritant des trésors historiques.",
+        key_number: "+ de 5 millions de visiteurs par an"
+      }
+    ]
+  },
+  {
+    country: "USA",
+    city: "Manhattan",
+    description: "Le cœur battant de New York, célèbre pour ses gratte-ciels et sa vie trépidante.",
+    highlights: [
+      {
+        title: "Statue de la Liberté",
+        photo: "https://images.unsplash.com/photo-1492217072584-7ff26c10eb75?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8U3RhdHVlJTIwZGUlMjBsYSUyMExpYmVydCVDMyVBOXxlbnwwfHwwfHx8MA%3D%3D",
+        description: "Un symbole de liberté et d'espoir, offert par la France aux États-Unis.",
+        key_number: "364 marches sont nécessaires pour atteindre la couronne"
+      },
+      {
+        title: "Central Park",
+        photo: "https://images.unsplash.com/photo-1553542792-6b507805b65e?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjZ8fENlbnRyYWwlMjBQYXJrfGVufDB8fDB8fHww",
+        description: "Un immense parc au cœur de Manhattan, un havre de paix dans une ville animée.",
+        key_number: "341 hectares de verdure au coeur de la ville"
+      },
+      {
+        title: "Empire State Building",
+        photo: "https://images.unsplash.com/photo-1555109307-f7d9da25c244?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fGwnRW1waXJlJTIwU3RhdGUlMjBCdWlsZGluZ3xlbnwwfHwwfHx8MA%3D%3D",
+        description: "Gratte-ciel emblématique offrant des vues imprenables sur Manhattan.",
+        key_number: "L'Empire State Building possède un zip code unique : 10118"
+      }
+    ]
+  },
+  {
+    country: "Turquie",
+    city: "Istanbul",
+    description: "La ville où l'Orient rencontre l'Occident, riche en culture et en histoire.",
+    highlights: [
+      {
+        title: "Hagia Sophia",
+        photo: "https://images.unsplash.com/photo-1651468326479-b781ee4a4931?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTR8fEhhZ2lhJTIwU29waGlhfGVufDB8fDB8fHww",
+        description: "Une ancienne basilique et mosquée, aujourd'hui musée emblématique.",
+        key_number: "Une construction en 5 ans et 10 mois, incroyable pour l’époque! "
+      },
+      {
+        title: "Mosquée bleue",
+        photo: "https://images.unsplash.com/photo-1568684053299-c9cbf513a899?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjN8fE1vc3F1JUMzJUE5ZSUyMGJsZXVlfGVufDB8fDB8fHww",
+        description: "Un chef-d'œuvre d'architecture ottomane célèbre pour ses mosaïques bleues.",
+        key_number: " 21 043 carreaux de faïence d'Iznik"
+      },
+      {
+        title: "Grand Bazar",
+        photo: "https://images.unsplash.com/photo-1662633272401-9703bff75f3b?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8R3JhbmQlMjBCYXphciUyMGlzdGFuYnVsfGVufDB8fDB8fHww",
+        description: "L'un des plus anciens marchés couverts au monde.",
+        key_number: "45.000 mètres carrés,  3.600 boutiques et  25.000 marchands"
+      }
+    ]
+  },
+  {
+    country: "Thailande",
+    city: "Bangkok",
+    description: "La capitale vibrante de la Thaïlande, connue pour ses temples et sa cuisine de rue.",
+    highlights: [
+      {
+        title: "Grand Palais",
+        photo: "https://images.unsplash.com/photo-1678915545553-4f06f36791de?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fEdyYW5kJTIwUGFsYWlzJTIwYmFuZ2tva3xlbnwwfHwwfHx8MA%3D%3D",
+        description: "Résidence royale historique et site de cérémonies.",
+        key_number: "3ème palais le plus visité du monde"
+      },
+      {
+        title: "Wat Arun",
+        photo: "https://images.unsplash.com/photo-1676268792676-c119e38af132?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8V2F0JTIwQXJ1biUyMGJhbmdrb2t8ZW58MHx8MHx8fDA%3D",
+        description: "Le temple de l'aube, un monument emblématique le long de la rivière Chao Phraya.",
+        key_number: "Abrite environ 120 statues de Bouddha"
+      },
+      {
+        title: "Marché flottant de Damnoen Saduak",
+        photo: "https://images.unsplash.com/photo-1512310458711-e7a49ecdc40f?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8TWFyY2glQzMlQTklMjBmbG90dGFudCUyMGRlJTIwRGFtbm9lbiUyMFNhZHVha3xlbnwwfHwwfHx8MA%3D%3D",
+        description: "Un marché traditionnel sur l'eau, parfait pour une expérience culturelle unique.",
+        key_number: "50 ans : C’est l’âge moyen des marchandes qui rament sur leurs bateaux au marché"
+      }
     ]
   }
 ]
 
-# Crée les suggestions avec les photos
+# Crée les suggestions avec les highlights et les photos
 suggestions_data.each do |data|
+  # Créer la suggestion
   suggestion = Suggestion.create!(
     country: data[:country],
     city: data[:city],
-    description: data[:description],
-    highlight: data[:highlight]
+    description: data[:description]
   )
 
-  data[:photos].each do |photo_url|
-    file = URI.open(photo_url)
-    suggestion.photos.attach(io: file, filename: File.basename(photo_url), content_type: "image/jpeg")
+  puts "Created suggestion for #{suggestion.city}"
+
+  # Parcourir les highlights associés à cette suggestion
+  data[:highlights].each_with_index do |highlight_data, index|
+    begin
+      # Créer le highlight
+      highlight = Highlight.create!(
+        title: highlight_data[:title],
+        description: highlight_data[:description],
+        key_number: highlight_data[:key_number],
+        suggestion: suggestion
+      )
+      puts "Added highlight #{index + 1} for #{suggestion.city}"
+
+      # Attacher la photo au highlight
+      file = URI.open(highlight_data[:photo])
+      highlight.photo.attach(io: file, filename: File.basename(highlight_data[:photo]), content_type: "image/jpeg")
+      puts "Photo uploaded for highlight: #{highlight.title}"
+    rescue => e
+      puts "Failed to upload photo for highlight #{index + 1} in #{suggestion.city}: #{e.message}. Skipping."
+    end
   end
 end
 
-puts "6 suggestions with photos created successfully!"
+puts "All suggestions and highlights with photos created successfully!"
 
 puts "Seeding completed successfully!"

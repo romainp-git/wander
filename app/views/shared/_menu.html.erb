@@ -3,7 +3,9 @@
   <div class="p-6">
     <div class="flex items-center space-x-3">
       <!-- Avatar -->
-      <img src="https://via.placeholder.com/40" alt="Avatar" class="w-10 h-10 rounded-full border border-gray-700" />
+      <% if current_user&.photo %>
+        <%= cl_image_tag current_user.photo.key, alt: "Avatar", class: "w-10 h-10 rounded-full border border-gray-700" %>
+      <% end %>
       <div>
         <p class="text-sm font-medium"><%= current_user&.username || "Guest" %></p>
       </div>
@@ -20,7 +22,7 @@
   <!-- Statistiques -->
   <div class="grid grid-cols-3 gap-4 bg-gradient-to-r from-orange-500 to-orange-700 text-center p-6">
     <div>
-      <p class="text-2xl font-bold">0</p>
+      <p class="text-2xl font-bold"><%= current_user&.total_kilometers || "0" %></p>
       <p class="text-xs uppercase tracking-wide">kms</p>
     </div>
     <div>
@@ -28,7 +30,7 @@
       <p class="text-xs uppercase tracking-wide">jours</p>
     </div>
     <div>
-      <p class="text-2xl font-bold">0</p>
+      <p class="text-2xl font-bold"><%= current_user&.total_countries || "0" %></p>
       <p class="text-xs uppercase tracking-wide">pays</p>
     </div>
   </div>
