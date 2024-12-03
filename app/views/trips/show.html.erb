@@ -45,8 +45,8 @@
         </div>
 
         <!-- Jours dynamiques -->
-        <div class="flex-col items-center justify-between px-4 py-3 bg-gray-900">
-          <div class="flex items-center overflow-x-scroll space-x-2" style="scrollbar-width: none;">
+        <div class="flex-col items-center justify-between py-3 bg-gray-900">
+          <div class="flex items-center overflow-x-scroll space-x-2" data-tabs-target="daysContainer" style="scrollbar-width: none;">
             <% @calendar_dates.each_with_index do |date, index| %>
               <div class="flex flex-col items-center cursor-pointer text-gray-400 px-4 py-3 <%= 'text-black bg-white rounded-lg' if index == 0 %>"
                   data-action="click->tabs#changeTab"

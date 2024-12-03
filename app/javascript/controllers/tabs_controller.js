@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
-  static targets = ["day", "timeline", "timelineDay", "tab", "tabActivity", "content", "tabsContainer"];
+  static targets = ["day", "timeline", "timelineDay", "tab", "tabActivity", "content", "tabsContainer", "daysContainer"];
 
   connect() {
     console.log("Tabs controller connected");
@@ -51,6 +51,14 @@ export default class extends Controller {
     if (targetTab) {
       this.tabsContainerTarget.scrollTo({
         left: targetTab.offsetLeft,
+        behavior: "smooth",
+      });
+    }
+
+    const targetDay = this.dayTargets[index];
+    if (targetDay) {
+      this.daysContainerTarget.scrollTo({
+        left: targetDay.offsetLeft,
         behavior: "smooth",
       });
     }
