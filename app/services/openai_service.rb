@@ -7,6 +7,7 @@ class OpenaiService
   def init_destination_trip
     # Création de la destination et du trip
     destination = create_destination(@search)
+    
     # Sidekiq.logger.debug "#-----------------------------------------------------------"
     # Sidekiq.logger.debug "#create_destination : #{destination}"
 
@@ -150,6 +151,7 @@ class OpenaiService
     call_openai(prompt_activity)
   end
   # ---------------------------------------------------------------------------------------
+
   def call_openai(prompt)
     client = OpenAI::Client.new
     parsed_response = client.chat(parameters: {

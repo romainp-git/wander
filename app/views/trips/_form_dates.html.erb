@@ -16,6 +16,6 @@
   </div>
 
   <div id="calendar" data-datepicker-target="calendar" class="w-full"></div>
-  <%= f.hidden_field :start_date, value: "",data: { "datepicker-target": "startInput" } %>
-  <%= f.hidden_field :end_date, value: "", data: { "datepicker-target": "endInput" } %>
+  <%= f.hidden_field :start_date, required: true, value: "",data: { "datepicker-target": "startInput", "stepper-target": "input" } %>
+  <%= f.hidden_field :end_date, required: true, value: "", data: { "datepicker-target": "endInput", "stepper-target": "input" } %>
 </div>

@@ -18,7 +18,8 @@ export default class extends Controller {
       style: 'mapbox://styles/mapbox/satellite-v9',
       attributionControl: false,
       projection: 'globe',
-      zoom: 1.5
+      zoom: 1.5,
+      logoPosition: 'bottom-right'
     });
 
     this.map.on('style.load', () => { this.map.setFog({}); });
