@@ -9,7 +9,7 @@ class GetActivityDetailsJob < ApplicationJob
   def perform(type, search, trip, activity)
 
     if search
-
+raise
         OpenaiService.new(search).create_trip_activity(type, search, trip, activity)
 
     else
