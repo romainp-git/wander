@@ -22,7 +22,7 @@ export default class extends Controller {
       setTimeout(() => this.typeWriter(), 30);
     } else {
       setTimeout(() => {
-        this.titlePartTarget.classList.replace("mt-title", "mt-6");
+        this.titlePartTarget.classList.replace("mt-title", "mt-10");
         this.pulseButtonTarget.classList.add("opacity-0");
         this.tabsTarget.classList.replace("opacity-0", "opacity-100");
 
