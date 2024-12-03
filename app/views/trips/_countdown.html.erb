@@ -4,21 +4,33 @@
   data-controller="countdown"
   data-countdown-start-date-value="<%= start %>">
   <div class="grid auto-cols-max grid-flow-col gap-3 text-center">
-    <div class="flex flex-col items-center">
-      <span data-countdown-target="days" class="text-3xl font-playfair font-bold min-w-[3ch]">0</span>
-      <span class="text-xs uppercase">jours</span>
+
+    <div class="bg-neutral rounded-box text-neutral-content flex flex-col p-2">
+      <span class=" font-mono text-5xl text-white">
+        <span data-countdown-target="days"></span>
+      </span>
+      jours
     </div>
-    <div class="flex flex-col items-center">
-      <span data-countdown-target="hours" class="text-3xl font-playfair font-bold min-w-[2ch]">00</span>
-      <span class="text-xs uppercase">heures</span>
+
+    <div class="bg-neutral rounded-box text-neutral-content flex flex-col p-2">
+      <span class=" font-mono text-5xl text-white">
+        <span data-countdown-target="hours"></span>
+      </span>
+      heures
     </div>
-    <div class="flex flex-col items-center">
-      <span data-countdown-target="minutes" class="text-3xl font-playfair font-bold min-w-[2ch]">00</span>
-      <span class="text-xs uppercase">min</span>
+
+    <div class="bg-neutral rounded-box text-neutral-content flex flex-col p-2">
+      <span class=" font-mono text-5xl text-white">
+        <span data-countdown-target="minutes"></span>
+      </span>
+      min
     </div>
-    <div class="flex flex-col items-center">
-      <span data-countdown-target="seconds" class="text-3xl font-playfair font-bold min-w-[2ch]">00</span>
-      <span class="text-xs uppercase">sec</span>
+
+    <div class="bg-neutral rounded-box text-neutral-content flex flex-col p-2">
+      <span class=" font-mono text-5xl text-white">
+        <span data-countdown-target="seconds"></span>
+      </span>
+      sec
     </div>
   </div>
 </div>

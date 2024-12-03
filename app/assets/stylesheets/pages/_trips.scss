@@ -19,3 +19,14 @@
 .mt-title{
   margin-top: calc(100vh - 270px - env(safe-area-inset-top));
 }
+
+.next-trip-container{
+  top: -1px;
+  padding-top: calc(1em + 1px);
+}
+
+.stack-cards__item {
+  position: sticky;
+  top: -1px;
+  transform-origin: center top;
+}
