@@ -17,5 +17,6 @@ Rails.application.routes.draw do
 
   resources :trip_activities, only: [:update, :index]
 
+  get "/test", to: "pages#test"
   get "up" => "rails/health#show", as: :rails_health_check
 end

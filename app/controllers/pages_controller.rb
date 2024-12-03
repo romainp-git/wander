@@ -17,4 +17,9 @@ class PagesController < ApplicationController
   def trips
     @trips.map(&:destination).map(&:alpha3code).compact.uniq
   end
+
+  def test
+    @trip = Trip.last
+    @search = Search.last
+  end
 end

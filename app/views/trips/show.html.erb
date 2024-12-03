@@ -1,18 +1,17 @@
-<div class="pt-safe" data-controller="toggle">
-
+<div class="h-screen" data-controller="toggle">
   <!-- Bouton Toggle -->
-  <button class="fixed bottom-4 right-4 z-50 bg-orange-500 text-white p-3 rounded-full shadow-lg icon"
+  <button class="fixed bottom-4 right-4 z-30 bg-orange-500 text-white p-3 rounded-full shadow-lg icon"
           data-action="click->toggle#toggleView"
           data-view="map">
     map
   </button>
 
   <!-- Vue actuelle avec la carte et le carrousel -->
-  <div class="map fixed inset-0 z-50 h-screen w-screen bg-black overflow-hidden rounded-t-2xl translate-y-full transition-transform duration-500"
+  <div class="map fixed inset-0 z-[25] h-screen w-screen bg-black overflow-hidden rounded-t-2xl translate-y-full transition-transform duration-500"
     data-toggle-target="mapView">
 
-    <button class="absolute p-4 right-0 z-50" data-action="click->toggle#toggleView">
-      <p class="icon icon-100 drop-shadow-xl text-4xl text-white">close</p>
+    <button class="absolute p-4 right-0 z-[25]" data-action="click->toggle#toggleView">
+      <p class="icon icon-200 drop-shadow-xl text-4xl text-black">close</p>
     </button>
 
     <div id="map" class="w-screen h-screen"
@@ -31,18 +30,18 @@
   </div>
 
   <!-- Vue agenda -->
-  <div data-toggle-target="agendaView" class="h-full flex">
+  <div data-toggle-target="agendaView">
     <div class="w-full text-white" data-controller="tabs">
       <%= link_to trips_path do %>
-        <button class="fixed p-4 z-20" >
-          <p class="icon icon-100 drop-shadow-xl text-4xl text-white">arrow_back</p>
+        <button class="fixed z-20 p-safe-or-4" >
+          <p class="icon icon-200 drop-shadow-xl text-4xl text-white">arrow_back</p>
         </button>
       <% end %>
 
       <div class="sticky top-0 z-[15]">
-         <!-- Calendrier -->
-        <div class="flex justify-center items-center w-full py-4 bg-slate-900">
-          <h1 class="w-100 text-center font-bold text-2xl mt-1"><%= @trip.name %></h1>
+        <!-- Calendrier -->
+        <div class="flex justify-center items-center w-screen pb-4 bg-slate-900 pt-safe-or-4">
+          <h1 class="font-bold text-2xl mt-1"><%= @trip.name %></h1>
         </div>
 
         <!-- Jours dynamiques -->
@@ -61,7 +60,7 @@
         </div>
 
         <!-- Tabs pour les jours -->
-        <div role="tablist" class="bg-gray-800 tabs tabs-bordered text-white pt-2 overflow-x-scroll" style="scrollbar-width: none;">
+        <div role="tablist" data-tabs-target="tabsContainer" class="bg-gray-800 tabs tabs-bordered text-white pt-2 overflow-x-scroll" style="scrollbar-width: none;">
           <% @calendar_dates.each_with_index do |date, index| %>
             <a class="tab w-36 pb-4 <%= index == 0 ? 'tab-active text-white !border-white' : 'text-gray-400 !border-gray-600' %>"
               data-action="click->tabs#changeTab"
@@ -76,7 +75,7 @@
       <div class="relative " data-tabs-target="timeline">
         <% @day_activities.each_with_index do |(date, activities), index| %>
           <div data-tabs-day="<%= index %>" data-tabs-target="timelineDay">
-            <div class="w-full bg-slate-900 backdrop-blur bg-opacity-50 z-10 sticky top-48">
+            <div class="w-full bg-slate-900 backdrop-blur bg-opacity-50 z-10 sticky top-safe-offset-44 pt-safe-4">
               <p class="text-center p-4 font-bold text-lg"><%= I18n.l(date, format: "%A %d %b %Y") %></p>
             </div>
             <ul class="relative flex flex-col gap-2 p-4"
@@ -85,6 +84,7 @@
                 data-sortable-animation-value="150"
                 data-sortable-resource-name-value="trip_activity"
                 data-sortable-handle-value=".handle">
+              <div class="absolute top-16 bottom-16 left-[72px] w-px bg-white"></div>
               <% if activities.any? %>
                 <% activities.each_with_index do |trip_activity, activity_index| %>
                   <%= render partial: 'activity_card', locals: { trip_activity: trip_activity, index: activity_index } %>

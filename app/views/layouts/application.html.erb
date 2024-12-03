@@ -28,7 +28,7 @@
     <div data-controller="menu">
       <!-- Menu Burger -->
       <button class="fixed right-4 p-1 rounded-full text-white z-20 pt-safe-or-4" data-action="click->menu#toggle">
-        <p class="icon icon-100 drop-shadow-xl text-4xl">menu</p>
+        <p class="icon icon-200 drop-shadow-xl text-4xl">menu</p>
       </button>
 
       <!-- Overlay (voile noir) -->
@@ -40,13 +40,8 @@
 
       <!-- Slide-In Menu -->
       <div class="fixed inset-y-0 right-0 w-64 bg-white shadow-lg z-50 transform translate-x-full transition-transform" data-menu-target="menu">
-        <div class="p-4 pt-safe">
-          <h2 class="text-lg font-bold text-black"><%= current_user&.username || "Guest" %></h2>
-          <ul class="mt-4 space-y-2">
-            <li>
-              <%= link_to "Se déconnecter", destroy_user_session_path, data: {turbo_method: :delete} %>
-            </li>
-          </ul>
+        <div class="pt-safe">
+          <%= render 'shared/menu' %>
         </div>
       </div>
     </div>
