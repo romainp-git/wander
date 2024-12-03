@@ -19,7 +19,7 @@
     </div>
     <p class="text-white text-xs mt-2"><%= truncate(activity.description, length: 80, omission: "...") %></p>
     <div class="flex items-center space-x-1 text-orange-400  mt-2">
-      <% activity.reviews.to_i.times do %>
+      <% activity.global_rating.to_i.times do %>
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-3" fill="currentColor" viewBox="0 0 24 24">
           <path d="M12 .587l3.668 7.429L24 9.753l-6 5.837 1.417 8.26L12 18.897l-7.417 4.953L6 15.59l-6-5.837 8.332-1.737z" />
         </svg>

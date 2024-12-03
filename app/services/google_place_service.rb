@@ -8,6 +8,7 @@ class GooglePlaceService
   end
 
   def search_place
+    query = "#{@activity.name}, #{@destination}"
     response = HTTParty.post(
       "https://places.googleapis.com/v1/places:searchText?fields=*",
       headers: {
@@ -15,12 +16,10 @@ class GooglePlaceService
         "Accept-Language" => "fr-FR",
         "Content-Type" => "application/json"
       },
-
-      body: { textQuery: @activity.name"," @destination  }.to_json
+      body: { textQuery: query }.to_json
     )
 
     response_data = response.parsed_response
-    p response_data
     place = response_data["places"]&.first
 
     geocode = place["location"]
@@ -31,7 +30,6 @@ class GooglePlaceService
     rating = place["rating"]
     user_rating_count = place["userRatingCount"]
     photo = place["photos"].first["name"]
-    p photo
 
 
     reviews = place["reviews"]&.map do |review|
@@ -51,9 +49,9 @@ class GooglePlaceService
     @activity.global_rating = rating
     @activity.count = user_rating_count
     if photo_url = fetch_photo(photo)
-      p photo_url
       attach_photo(photo_url)
     end
+    @activity.save
 
   end
 
