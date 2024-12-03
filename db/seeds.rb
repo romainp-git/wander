@@ -124,7 +124,6 @@ activities_data = [
 
 activity_category = ["cultural", "nature", "adventure", "sport", "relaxation", "gastronomic", "nightlife", "shopping"]
 
-
 activities = activities_data.map do |data|
   activity = Activity.create!(
     name: data[:name],

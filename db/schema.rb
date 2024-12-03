@@ -72,6 +72,15 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_03_012524) do
     t.string "alpha3code"
   end
 
+  create_table "highlights", force: :cascade do |t|
+    t.string "title"
+    t.string "description"
+    t.float "key_number"
+    t.bigint "suggestion_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["suggestion_id"], name: "index_highlights_on_suggestion_id"
+  end
 
   create_table "reviews", force: :cascade do |t|
     t.date "publish"
@@ -81,15 +90,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_03_012524) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["activity_id"], name: "index_reviews_on_activity_id"
-
-  create_table "highlights", force: :cascade do |t|
-    t.string "title"
-    t.string "description"
-    t.float "key_number"
-    t.bigint "suggestion_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["suggestion_id"], name: "index_highlights_on_suggestion_id"
   end
 
   create_table "searches", force: :cascade do |t|
@@ -128,6 +128,15 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_03_012524) do
     t.index ["trip_id"], name: "index_trip_activities_on_trip_id"
   end
 
+  create_table "trip_partners", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "trip_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["trip_id"], name: "index_trip_partners_on_trip_id"
+    t.index ["user_id"], name: "index_trip_partners_on_user_id"
+  end
+
   create_table "trips", force: :cascade do |t|
     t.string "name"
     t.date "start_date"
@@ -160,8 +169,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_03_012524) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
-  add_foreign_key "reviews", "activities"
   add_foreign_key "highlights", "suggestions"
+  add_foreign_key "reviews", "activities"
   add_foreign_key "searches", "trips"
   add_foreign_key "trip_activities", "activities"
   add_foreign_key "trip_activities", "trips"

@@ -20,7 +20,8 @@
 
      <%= render 'tabs_form' %>
 
-    <div id="title-part" data-add-trip-animation-target="titlePart" class="relative min-h-16 flex items-start w-full pr-10 mt-title">      <p id="typewriter-text" data-add-trip-animation-target="text" class="px-5 text-white text-xl font-semibold"></p>
+    <div id="title-part" data-add-trip-animation-target="titlePart" class="relative min-h-16 flex items-start w-full pr-10 mt-title">
+      <p id="typewriter-text" data-add-trip-animation-target="text" class="px-5 text-white text-xl font-semibold"></p>
     </div>
 
     <%= simple_form_for @search, url: searches_path, data: { turbo_frame: "loading-frame" } do |f| %>
