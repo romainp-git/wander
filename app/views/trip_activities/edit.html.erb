@@ -1,4 +1,23 @@
-<div>
+<div class="form-login">
   <h1 class="font-bold text-4xl">TripActivities#edit</h1>
   <p>Find me in app/views/trip_activities/edit.html.erb</p>
+  <%= simple_form_for() do |f| %>
+
+    <div class="form-inputs space-y-4">
+      <%= f.input :description,
+                  required: true,
+                  autofocus: true,
+                  input_html: { class: "bg-gray-800 text-white placeholder:italic placeholder:text-slate-400 block w-full border border-white rounded-md py-3 shadow-sm focus:outline-none focus:border-orange-500 focus:ring-orange-600 focus:ring-1 sm:text-sm", autocomplete: "description" } %>
+      <%= f.input :subtitle,
+                  required: true,
+                  autofocus: true,
+                  input_html: { class: "bg-gray-800 text-white placeholder:italic placeholder:text-slate-400 block w-full border border-white rounded-md py-3 shadow-sm focus:outline-none focus:border-orange-500 focus:ring-orange-600 focus:ring-1 sm:text-sm", autocomplete: "subtitle" } %>
+      <%= f.input :photos, as: :file, label: "Sélectionnez vos photos", input_html: { multiple: true } %>
+    </div>
+
+    <div class="form-actions mt-11 flex justify-center">
+      <%= f.button :submit, "Send me reset password instructions", class: "bg-blue-500 text-white text-sm font-medium py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" %>
+    </div>
+  <% end %>
+
 </div>
