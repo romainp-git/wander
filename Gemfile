@@ -61,6 +61,7 @@ gem 'sidekiq'
 gem 'rest-client'
 gem 'rails-i18n'
 gem 'acts_as_list'
+gem 'httparty'
 
 group :development, :test do
   gem 'dotenv-rails'

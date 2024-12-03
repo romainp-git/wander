@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_12_02_202857) do
+ActiveRecord::Schema[7.1].define(version: 2024_12_03_012524) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -45,7 +45,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_02_202857) do
   create_table "activities", force: :cascade do |t|
     t.string "name"
     t.string "description"
-    t.float "reviews"
+    t.float "global_rating"
     t.string "address"
     t.string "website_url"
     t.string "wiki"
@@ -54,6 +54,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_02_202857) do
     t.float "latitude"
     t.float "longitude"
     t.string "category"
+    t.string "direction"
+    t.integer "count"
+    t.text "opening", default: [], array: true
   end
 
   create_table "destinations", force: :cascade do |t|
@@ -68,6 +71,16 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_02_202857) do
     t.float "longitude"
     t.string "alpha3code"
   end
+
+
+  create_table "reviews", force: :cascade do |t|
+    t.date "publish"
+    t.string "text"
+    t.integer "rating"
+    t.bigint "activity_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["activity_id"], name: "index_reviews_on_activity_id"
 
   create_table "highlights", force: :cascade do |t|
     t.string "title"
@@ -115,15 +128,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_02_202857) do
     t.index ["trip_id"], name: "index_trip_activities_on_trip_id"
   end
 
-  create_table "trip_partners", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.bigint "trip_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["trip_id"], name: "index_trip_partners_on_trip_id"
-    t.index ["user_id"], name: "index_trip_partners_on_user_id"
-  end
-
   create_table "trips", force: :cascade do |t|
     t.string "name"
     t.date "start_date"
@@ -156,6 +160,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_02_202857) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "reviews", "activities"
   add_foreign_key "highlights", "suggestions"
   add_foreign_key "searches", "trips"
   add_foreign_key "trip_activities", "activities"

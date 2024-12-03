@@ -418,6 +418,7 @@ DEPENDENCIES
   dotenv-rails
   faker (~> 3.2)
   geocoder
+  httparty
   importmap-rails
   iso_country_codes
   jbuilder
