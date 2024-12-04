@@ -42,7 +42,7 @@
 
         <% if !@trips.empty? %>
           <div class="next-trip-container sticky z-10 w-full transition-all duration-200 bg-cover bg-center overflow-hidden pb-5">
-            <%= image_tag 'rome', class: "absolute inset-0 h-full w-full object-cover" %>
+            <%= image_tag 'rome.jpg', class: "absolute inset-0 h-full w-full object-cover" %>
             <div class="absolute inset-0 bg-gradient-to-t from-black/100 via-black/20 to-black/0"></div>
 
             <%= render "countdown", start: @trips[0]&.start_date || "" %>

@@ -1,0 +1,29 @@
+<dialog id="new_activity_modal" class="modal">
+  <div class="modal-box">
+    <h3>Créer une activitée</h3>
+    <%= simple_form_for([@trip, @trip_activity], url: trip_trip_activities_path(@trip), method: :post) do |f| %>
+    <div class="form-inputs space-y-4">
+      <!-- Champs pour Activity -->
+      <%= f.fields_for :activity do |activity_fields| %>
+        <%= activity_fields.input :name, label: "Activity Name" %>
+        <%= activity_fields.input :address, label: "Address" %>
+        <%= activity_fields.input :photos, as: :file, label: "Sélectionnez vos photos", input_html: { multiple: true } %>
+      <% end %>
+    </div>
+
+    <div class="form-dates space-y-4" data-controller="datepicker">
+      <!-- Champs pour TripActivity -->
+      <%= f.input :start_date, as: :string, label: "Date", input_html: { data: { datepicker_target: "startInput" } } %>
+      <%= f.input :end_date, as: :hidden, input_html: { data: { target: "datepicker.endInput" } } %>
+    </div>
+
+    <div class="form-actions mt-11 flex justify-center">
+      <%= f.button :submit, "Add Activity", class: "bg-blue-500 text-white text-sm font-medium py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" %>
+    </div>
+  <% end %>
+
+  </div>
+  <form method="dialog" class="modal-backdrop">
+    <button>close</button>
+  </form>
+</dialog>

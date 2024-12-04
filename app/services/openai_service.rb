@@ -1,23 +1,18 @@
 class OpenaiService
   # ---------------------------------------------------------------------------------------
-  def initialize(search)
+  def initialize(search, user)
     @search = search
+    @current_user = user
   end
   # ---------------------------------------------------------------------------------------
   def init_destination_trip
-    # Création de la destination et du trip
     destination = create_destination(@search)
 
     # Sidekiq.logger.debug "#-----------------------------------------------------------"
     # Sidekiq.logger.debug "#create_destination : #{destination}"
 
     trip = create_trip(@search, destination)
-    # Sidekiq.logger.debug "#-----------------------------------------------------------"
-    # Sidekiq.logger.debug "#create_trip : #{trip}"
-
     @search.update(trip_id: trip.id)
-    # Sidekiq.logger.debug "#-----------------------------------------------------------"
-    # Sidekiq.logger.debug "#search.update : id_trip=#{trip.id} - #{@search}"
 
     ActionCable.server.broadcast(
       "loading_#{@search.id}",
@@ -38,6 +33,10 @@ class OpenaiService
     else
       activities = get_activities_city(search)
     end
+
+    Rails.logger.debug "INIT_ACTIVITIES_TRIP MEM =>\nTRIP : #{trip}\nACTIVITIES : #{activities}"
+
+    return activities
   end
   # ---------------------------------------------------------------------------------------
   def create_trip_activity(type, search, trip, activity)
@@ -54,14 +53,18 @@ class OpenaiService
       end
     end
 
+    Rails.logger.debug "CREATE_TRIP_ACTIVITY (BEFORE GET DETAILS) =>\nTYPE : #{type}\nACTIVITY NAME : #{activity['name']}\nACTIVITY DESC : #{activity['description']}\n#{activity}"
+
     if type == "CITY"
       activity_details = get_activity_details(search, activity)
+      
+      Rails.logger.debug "CREATE_TRIP_ACTIVITY (AFTER GET DETAILS) =>\nNAME : #{activity_details['name']}\nDESC : #{activity_details['description']}\n#{activity_details}"
 
       new_activity = Activity.find_or_create_by(
-        address: activity["address"],
-        name: activity['name'],
-        title: activity['title'],
-        description: activity['description'],
+        address: activity["address"], 
+        name: activity_details['name'] || activity['name'],
+        title: activity_details['title'] || activity['title'],
+        description: activity_details['description'] || activity['description'],
         category: mycategory,
         wiki: url_alive?(activity_details['wiki']) ? activity_details['wiki'] : "Unknown",
         website_url: "Unknown"
@@ -126,12 +129,13 @@ class OpenaiService
   end
   # ---------------------------------------------------------------------------------------
   def create_trip(search, destination)
-    # user: current_user,
+    # user: User.find_by(username: 'PYM'),
+    
     Trip.create!(
       name: search.destination,
       start_date: search.start_date,
       end_date: search.end_date,
-      user: User.find_by(username: 'PYM'),
+      user: @current_user,
       destination: destination
     )
   end
@@ -165,18 +169,18 @@ class OpenaiService
 
     if parsed_response['choices'] && parsed_response['choices'][0] && parsed_response['choices'][0]['message'] && parsed_response['choices'][0]['message']['content'] && parsed_response['choices'][0]['message']['content'] != "ERROR"
       data = JSON.parse(parsed_response['choices'][0]['message']['content'])
-      # Sidekiq.logger.debug "#-----------------------------------------------------------"
-      # Sidekiq.logger.debug "#call_openai : #{data}"
+      # Rails.logger.debug "#-----------------------------------------------------------"
+      # Rails.logger.debug "#call_openai : #{data}"
       return data
     else
-      Sidekiq.logger.error "Invalid response format: #{parsed_response}"
+      Rails.logger.error "Invalid response format: #{parsed_response}"
       return { 'content' => 'ERROR' }
     end
   rescue RestClient::ExceptionWithResponse => e
-    Sidekiq.logger.error "API call failed: #{e.response}"
+    Rails.logger.error "API call failed: #{e.response}"
     return { 'content' => 'ERROR' }
   rescue JSON::ParserError => e
-    Sidekiq.logger.error "JSON parsing failed: #{e.message}"
+    Rails.logger.error "JSON parsing failed: #{e.message}"
     return { 'content' => 'ERROR' }
   end
   # ---------------------------------------------------------------------------------------
@@ -184,7 +188,7 @@ class OpenaiService
     system_content =
     "Tu es un expert de l'organisation d'activités et de découverte d'une destination de voyage.\n" \
     "L'utilisateur va fournir une destination de voyage.\n" \
-    "1- tu dois rechercher une adresse (address dans le JSON) caractérisant cette destination comme la capitale pour un pays, le centre ville pour une ville, le chef lieu pour une région, ou tout simplement l'adresse exacte si elle existe.\n" \
+    "1- tu dois identifier une adresse (address dans le JSON) caractérisant cette destination comme la capitale pour un pays, le centre ville pour une ville, le chef lieu pour une région, ou tout simplement l'adresse exacte si elle existe.\n" \
     "2- tu dois fournir le type de destination (type dans le JSON) que tu fourniras.\n" \
     "3- tu dois rechercher le code ALPHA3 du pays (alpha3code dans le JSON) de cette destination.\n" \
     "4- tu dois rechercher la monnaie (currency dans le JSON) couramment utilisée pour cette destination.\n" \

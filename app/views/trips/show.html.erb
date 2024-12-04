@@ -1,15 +1,17 @@
 <div class="h-screen" data-controller="toggle">
   <!-- Bouton Toggle -->
+
   <button class="fixed bottom-4 right-4 z-30 bg-orange-500 text-white p-3 rounded-full shadow-lg icon"
           data-action="click->toggle#toggleView"
           data-view="map">
     map
   </button>
+  <button onclick="new_activity_modal.showModal()" class="fixed bottom-20 right-4 z-30 bg-orange-500 text-white p-3 rounded-full shadow-lg icon" > Add</button>
+  <%= render "activities/new_activity_modal"%>
 
   <!-- Vue actuelle avec la carte et le carrousel -->
   <div class="map fixed inset-0 z-[25] h-screen w-screen bg-black overflow-hidden rounded-t-2xl translate-y-full transition-transform duration-500"
     data-toggle-target="mapView">
-
     <button class="absolute p-4 right-0 z-[25]" data-action="click->toggle#toggleView">
       <p class="icon icon-200 drop-shadow-xl text-4xl text-black">close</p>
     </button>

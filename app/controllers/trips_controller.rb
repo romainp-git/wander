@@ -1,9 +1,6 @@
 class TripsController < ApplicationController
-
   def index
-    unless current_user
-      redirect_to new_user_session_path and return
-    end
+    redirect_to new_user_session_path and return unless current_user
 
     @trips = Trip.where(user: current_user).order(end_date: :desc)
 
@@ -18,6 +15,8 @@ class TripsController < ApplicationController
   end
 
   def show
+    @trip_activity = TripActivity.new # Squelette Trip_activity pour la modal
+    @activity = Activity.new # Squelette Activity pour la modal
     @trip = Trip.find(params[:id])
     @trip_activities = TripActivity.where(trip_id: @trip.id).includes(:activity)
     @activities = @trip_activities.map(&:activity)
@@ -32,13 +31,11 @@ class TripsController < ApplicationController
   end
 
   def new
-    @search = Search.new()
+    @search = Search.new
     @suggestions = Suggestion.all
   end
 
-  def edit
-
-  end
+  def edit; end
 
   private
 
@@ -47,7 +44,7 @@ class TripsController < ApplicationController
       {
         lat: activity.latitude,
         lng: activity.longitude,
-        category: activity.category.nil? ? "cultural" : activity.category.downcase
+        category: activity.category.nil? ? 'cultural' : activity.category.downcase
       }
     end
   end
@@ -59,5 +56,4 @@ class TripsController < ApplicationController
   def trips
     @trips.map(&:destination).map(&:alpha3code).compact.uniq
   end
-
 end
