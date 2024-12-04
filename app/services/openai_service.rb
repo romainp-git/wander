@@ -161,7 +161,7 @@ class OpenaiService
         { "role": 'user', "content": prompt[:user_content] }
       ],
       "temperature": 0.0
-    })
+      })
 
     if parsed_response['choices'] && parsed_response['choices'][0] && parsed_response['choices'][0]['message'] && parsed_response['choices'][0]['message']['content'] && parsed_response['choices'][0]['message']['content'] != "ERROR"
       data = JSON.parse(parsed_response['choices'][0]['message']['content'])
