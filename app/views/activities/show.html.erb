@@ -1,41 +1,24 @@
-
-<div class="relative h-screen flex flex-col" data-controller="gallery" data-controller="tabs">
+<div class="relative h-screen flex flex-col" data-controller="gallery">
   <!-- Bouton de retour -->
   <button class="fixed p-safe-or-4 z-30" onclick="history.back()" >
     <p class="icon icon-200 drop-shadow-xl text-4xl text-white">arrow_back</p>
   </button>
-  
+
   <!-- Section image avec retour -->
   <div class="relative w-full h-1/2 bg-gray-200">
     <!-- Image principale -->
-
     <div class="relative w-full h-full">
       <% if @activity.photos.first.present? %>
         <%= cl_image_tag @activity.photos.first.key, class: "w-full h-full object-cover", data: { gallery_target: "mainImage" } %>
       <% else %>
         <%= image_tag 'no_picture.jpg', class: "w-full h-full object-cover", alt: "No picture available", data: { gallery_target: "mainImage" } %>
       <% end %>
-      <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent"></div>
-      <button onclick="add_picture_modal.showModal()" class="btn absolute bottom-14 z-50 right-5" >Add photos</button>
+
+      <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
     </div>
 
-    <% console %>
-    <%= render "add_picture_modal" %>
-
-    <!-- Bouton de retour -->
-    <button
-      class="absolute top-4 left-4 btn bg-white text-gray-900 w-12 h-12 flex items-center justify-center z-10"
-      onclick="history.back()"
-    >
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-      </svg>
-    </button>
-
-    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div></div>
-
     <!-- Miniatures -->
-    <div class="absolute bottom-16 left-0 right-0 px-4 flex justify-between space-x-2 h-[7.5rem] overflow-x-scroll scrollbar-hide carousel">
+    <div class="absolute bottom-16 left-0 right-0  px-4 flex justify-between space-x-2 h-[7.5rem] overflow-x-scroll scrollbar-hide carousel">
     <% if @activity.photos.first.present? %>
       <% @activity.photos.each_with_index do |photo, index| %>
         <div
@@ -145,7 +128,7 @@
     </div>
 
     <!-- Navigation tabs -->
-    <div class="mt-6">
+    <div class="mt-6" data-controller="tabs">
       <!-- Navigation des onglets -->
       <div role="tablist" class="tabs tabs-bordered px-6">
         <a class="tab text-white tab-active !border-white" data-action="click->tabs#switchTab" data-tabs-target="tabActivity" data-tab-name="description">Description</a>
@@ -154,15 +137,14 @@
         <a class="tab text-gray-400" data-action="click->tabs#switchTab" data-tabs-target="tabActivity" data-tab-name="avis">Avis</a>
       </div>
 
-      <!-- Contenu des onglets -->
-      <div data-controller="edit-form" class="px-6 mt-6">
+    <div data-controller="edit-form" class="px-6 mt-6">
         <!-- Contenu de l'onglet Description -->
     <div data-tabs-target="content" data-tab-name="description" >
       <div data-edit-target="form">
-        <h3 class="text-lg font-semibold text-gray-800 old-value">Description <p class="icon" data-action="click->edit-form#display">Edit</p></h3>
+        <h3 class="text-lg font-semibold text-gray-100 old-value">Description <p class="icon" data-action="click->edit-form#display">Edit</p></h3>
         <div class="hidden new-value">
           <%= simple_form_for(@activity, url: :activity, method: :patch) do |f| %>
-            <%= f.input :description, label: false %>
+            <%= f.input :description, label: false, input_html:{class:"text-black"} %>
             <%= f.submit class:"btn"%>
           <% end %>
         </div>
@@ -174,6 +156,7 @@
         <button class="text-gray-500 text-sm font-bold" data-action="read-more#toggle">Voir plus</button>
       </div>
     </div>
+
 
         <!-- Contenu de l'onglet Horaires -->
         <div data-tabs-target="content" data-tab-name="horaires" class="hidden ">
@@ -215,6 +198,6 @@
           </a>
       </div>
 
-    </div>
-  </div>
-</div>
+      </div>
+      </div>
+      </div>
