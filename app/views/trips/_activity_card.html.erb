@@ -1,27 +1,51 @@
+<li
+  class="flex items-center space-x-4 relative"
+  data-controller="swipe-card"
+  data-sortable-update-url="<%= trip_activity_path(trip_activity) %>"
+  data-id="<%= trip_activity.id %>"
+>
+  <%# <%= (trip_activity.start_date - trip_activity.end_date).strftime('%H:%M') %>
+  <%# <%= .strftime('%H:%M') %>
 
-  <li class="flex items-center space-x-4 relative"
-      data-sortable-update-url="<%= trip_activity_path(trip_activity) %>"
-      data-id="<%= trip_activity.id %>">
-    <!-- Timeline time -->
+  <!-- Timeline node and line -->
+  <div class="relative flex flex-col items-center">
+    <div class="w-4 h-4 bg-white rounded-full"></div>
+  </div>
 
-    <div class="text-gray-400 w-8 text-right shrink-0 text-xs">
-      <div><%= trip_activity.start_date.strftime('%H:%M') %></div>
-      <div><%= trip_activity.end_date.strftime('%H:%M') %></div>
-    </div>
+  <!-- Bouton "Supprimer" -->
+  <div
+    class="absolute right-0 top-0 bottom-0 z-0 flex text-center bg-red-500 w-1/4 rounded-lg items-center justify-center"
+    data-swipe-card-target="deleteButton"
+  >
+    <button class="text-white font-bold py-12 px-4 shrink-0" data-action="click->swipe-card#delete">
+      <div class=" icon">delete</div>
+    </button>
+  </div>
 
-    <!-- Timeline node and line -->
-    <div class="relative flex flex-col items-center">
-      <div class="w-4 h-4 bg-white rounded-full"></div>
-    </div>
-
-    <!-- Timeline card -->
-    <div class="bg-gray-800 text-white rounded-lg shadow-md p-4 w-full flex justify-between items-center">
-     <%= link_to activity_path(trip_activity.activity) do%>
+  <!-- Timeline card -->
+  <div
+    class="bg-gray-800 text-white rounded-lg shadow-md p-4 w-full flex justify-between items-center transition-transform duration-300 relative z-1"
+    data-swipe-card-target="card"
+    data-action="touchstart->swipe-card#touchstart touchmove->swipe-card#touchmove touchend->swipe-card#touchend"
+  >
+    <%= link_to activity_path(trip_activity.activity) do %>
       <div class="flex-col">
+        <div class="flex items-center mb-2 justify-between">
+          <div class="flex items-center">
+            <%= image_tag "small_#{trip_activity.activity.category}.png", class: "w-6 h-6 mr-2", alt: "No picture available" %>
+            <p class="text-xs"><%= translate_category(trip_activity.activity.category) %></p>
+          </div>
+          <span class="badge">
+            <%= duration_in_seconds = trip_activity.end_date - trip_activity.start_date
+                hours = (duration_in_seconds / 3600).to_i
+                minutes = ((duration_in_seconds % 3600) / 60).to_i
+                "#{hours}h#{format('%02d', minutes)}"%>
+          </span>
+        </div>
         <h3 class="font-bold"><%= trip_activity.activity.name %></h3>
         <p class="text-sm"><%= trip_activity.activity.description.truncate(50) if trip_activity.activity.description.present? %></p>
       </div>
-      <% end%>
-       <p class="icon handle cursor-grab active:cursor-grabbing">drag_indicator</p>
-    </div>
-  </li>
+    <% end %>
+    <p class="icon handle cursor-grab active:cursor-grabbing">drag_indicator</p>
+  </div>
+</li>

@@ -1,6 +1,6 @@
 class TripActivitiesController < ApplicationController
-  skip_before_action :verify_authenticity_token, only: [:update]
-  before_action :set_trip_activity, only: [:update]
+  skip_before_action :verify_authenticity_token, only: [:update, :destroy]
+  before_action :set_trip_activity, only: [:update, :destroy]
 
   def update
     update_position_and_group if trip_activity_params[:start_date] || trip_activity_params[:position]
@@ -23,6 +23,16 @@ class TripActivitiesController < ApplicationController
       redirect_to trip_path(@trip), notice: 'Activity added to your trip successfully!'
     else
       redirect_to trip_path(@trip), alert: 'Failed to add activity to your trip.'
+    end
+  end
+
+  def destroy
+    @trip_activity = TripActivity.find(params[:id])
+
+    if @trip_activity.destroy
+      render json: { success: true }, status: :ok
+    else
+      render json: { success: false, errors: @trip_activity.errors.full_messages }, status: :unprocessable_entity
     end
   end
 
