@@ -13,10 +13,10 @@
       <% else %>
         <%= image_tag 'no_picture.jpg', class: "w-full h-full object-cover", alt: "No picture available", data: { gallery_target: "mainImage" } %>
       <% end %>
-
+        <button onclick="add_picture_modal.showModal()" class="btn absolute bottom-14 z-50 right-5" >Add photos</button>
       <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
     </div>
-
+    <%= render "add_picture_modal" %>
     <!-- Miniatures -->
     <div class="absolute bottom-16 left-0 right-0  px-4 flex justify-between space-x-2 h-[7.5rem] overflow-x-scroll scrollbar-hide carousel">
     <% if @activity.photos.first.present? %>
@@ -33,7 +33,7 @@
     <% end %>
     </div>
   </div>
-
+ <%# comment  %>
   <!-- Modal -->
   <div
     class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center hidden z-50"

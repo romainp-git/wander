@@ -28,6 +28,18 @@ users = [
   }
 ]
 
+addresses = [
+  "129 Bayswater Rd, Bayswater, London W2 4RJ",
+  "200 Westminster Bridge Rd, Bishop's, London SE1 7UT",
+  "Royal Victoria Dock, One Eastern Gateway, London E16 1FR",
+  "51 Belgrave Rd, Lillington and Longmoore Gardens, London SW1V 2BB",
+  "8-18 Inverness Terrace, Bayswater, London W2 3HU",
+  "1 Shortlands Hammersmith International Centre, Hammersmith, London W6 8DR",
+  "Aldwych, West End, London WC2B 4DD",
+  "25 Gloucester St, Pimlico, London SW1V 2DB",
+  "19-21 Penywern Rd, Earl's Court, London SW5 9TT",
+  "30 John Islip St, Westminster, London SW1P 4DD"
+]
 
 users.each_with_index do |user, index|
   begin
@@ -58,6 +70,110 @@ users.each_with_index do |user, index|
 
   rescue => e
     puts "Failed to create user #{user[:email]}: #{e.message}"
+  end
+end
+
+# Seed destinations
+puts "Seeding destinations..."
+london = Destination.create!(
+  address: "London, United Kingdom",
+  currency: "AUD",
+  papers: "Passport required for most countries.",
+  food: "Fish and Chips, Afternoon Tea, Sunday Roast",
+  power: "230V"
+)
+
+sydney = Destination.create!(
+  address: "Mascot NSW 2020, Australie",
+  currency:"AUD",
+  papers: "Passport required for most countries.",
+  food: "Fish and Chips, Afternoon Tea, Sunday Roast",
+  power: "230V"
+)
+puts "Destination London created!"
+
+# Seed activities
+puts "Seeding activities..."
+
+activities_data = [
+  { name: "Tower of London", category: "découverte", address: "Tower Hill, London EC3N 4AB, UK", description: "A historic castle and UNESCO World Heritage Site, home to the Crown Jewels.", reviews: 4.7 },
+  { name: "British Museum", category: "musée", address: "Great Russell St, London WC1B 3DG, UK", description: "A world-famous museum showcasing global history and culture.", reviews: 4.8 },
+  { name: "Borough Market", category: "gastronomie", address: "8 Southwark St, London SE1 1TL, UK", description: "A bustling food market offering a wide range of gourmet and street food.", reviews: 4.6 },
+  { name: "The Shard - Aqua Shard", category: "boissons", address: "32 London Bridge St, London SE1 9SG, UK", description: "A chic bar and restaurant offering panoramic views of London.", reviews: 4.5 },
+  { name: "Hyde Park", category: "loisirs", address: "Hyde Park, London W2 2UH, UK", description: "A vast park perfect for picnics, paddle boating, and relaxing walks.", reviews: 4.7 },
+  { name: "Thames River Cruise", category: "aventure", address: "Westminster Pier, London SW1A 2JH, UK", description: "A scenic cruise along the River Thames, exploring iconic landmarks.", reviews: 4.6 },
+  { name: "Oxford Street", category: "shopping", address: "Oxford St, London W1D 1BS, UK", description: "A shopping destination with over 300 shops and designer outlets.", reviews: 4.3 },
+  { name: "Natural History Museum", category: "musée", address: "Cromwell Rd, London SW7 5BD, UK", description: "A renowned museum with exhibits on natural history, including dinosaur skeletons.", reviews: 4.8 },
+  { name: "Covent Garden", category: "découverte", address: "Covent Garden, London WC2E 9DD, UK", description: "A vibrant area known for its shopping, dining, and street performances.", reviews: 4.5 },
+  { name: "Shakespeare's Globe Theatre", category: "loisirs", address: "21 New Globe Walk, London SE1 9DT, UK", description: "A reconstruction of the original Globe Theatre, offering live performances.", reviews: 4.7 }
+]
+
+
+activities = activities_data.map do |data|
+  activity = Activity.create!(
+    name: data[:name],
+    description: data[:description],
+    global_rating: data[:reviews],
+    address: data[:address],
+    category: Constants::CATEGORIES_UK.sample,
+    website_url: Faker::Internet.url,
+    wiki: Faker::Internet.url(host: "wikipedia.org")
+  )
+
+  # Attach photos via Cloudinary
+  puts "Uploading photos for activity: #{activity.name}"
+  3.times do
+    begin
+      result = Cloudinary::Uploader.upload(
+        Faker::LoremFlickr.image(search_terms: ['london', data[:category]]),
+        folder: "activities/#{activity.id}"
+      )
+      activity.photos.attach(
+        io: URI.open(result['secure_url']),
+        filename: "#{activity.name.downcase.tr(' ', '_')}_#{rand(1000)}.jpg",
+        content_type: 'image/jpeg'
+      )
+      puts "Photo uploaded for activity: #{activity.name}"
+    rescue => e
+      puts "Failed to upload photo for activity #{activity.name}: #{e.message}. Skipping."
+    end
+  end
+
+  activity
+end
+
+# Seed trips
+puts "Seeding trips..."
+trip = Trip.create!(
+  name: "London Adventure",
+  start_date: Date.today + 1,
+  end_date: Date.today + 5,
+  destination: london,
+  user: User.first
+)
+trip = Trip.create!(
+  name: "Sydney Adventure",
+  start_date: "20/05/2024",
+  end_date: "15/06/2024",
+  destination: sydney,
+  user: User.first
+)
+puts "Trip created: #{trip.name}"
+
+# Assign activities to trip by day
+puts "Assigning activities to trip..."
+
+days = (0..4).to_a
+days.each do |day|
+  day_activities = activities.sample(2)
+  day_activities.each do |activity|
+    TripActivity.create!(
+      trip: trip,
+      activity: activity,
+      start_date: trip.start_date + day,
+      end_date: trip.start_date + day
+    )
+    puts "Assigned activity #{activity.name} to Day #{day + 1}"
   end
 end
 
