@@ -10,10 +10,12 @@
 .next-trip-container{
   top: -1px;
   padding-top: calc(1em + 1px);
+  border-radius: 1rem;
 }
 
 .next-trip-container.sticked {
   padding-top: calc(env(safe-area-inset-top) + 1rem);
+  border-radius: 0;
 }
 
 .mt-title{
