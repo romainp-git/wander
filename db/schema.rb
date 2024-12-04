@@ -57,8 +57,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_03_212551) do
     t.string "direction"
     t.integer "count"
     t.text "opening", default: [], array: true
-    t.string "subtitle"
     t.string "title"
+    t.string "subtitle"
   end
 
   create_table "destinations", force: :cascade do |t|
@@ -167,8 +167,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_03_212551) do
   add_foreign_key "searches", "trips"
   add_foreign_key "trip_activities", "activities"
   add_foreign_key "trip_activities", "trips"
-  add_foreign_key "trip_partners", "trips"
-  add_foreign_key "trip_partners", "users"
   add_foreign_key "trips", "destinations"
   add_foreign_key "trips", "users"
 end
