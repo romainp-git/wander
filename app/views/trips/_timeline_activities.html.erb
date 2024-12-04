@@ -1,7 +1,7 @@
 <div class="relative " data-tabs-target="timeline">
   <% day_activities.each_with_index do |(date, activities), index| %>
     <div data-tabs-day="<%= index %>" data-tabs-target="timelineDay">
-      <div class="w-full bg-slate-900 backdrop-blur bg-opacity-50 z-10 sticky top-safe-offset-48 pt-safe-4">
+      <div class="w-full bg-slate-900 backdrop-blur bg-opacity-50 z-10 sticky top-safe-offset-44">
         <p class="text-center p-4 font-bold text-lg"><%= I18n.l(date, format: "%A %d %b %Y") %></p>
       </div>
       <ul class="relative flex flex-col gap-2 p-4"

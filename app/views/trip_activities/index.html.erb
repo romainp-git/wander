@@ -1,0 +1,9 @@
+<div id="trip-activities" class="text-white">
+  <div class="flex flex-col gap-3">
+    <% @trip_activities.each do |trip_activity| %>
+      <turbo-frame id="<%= dom_id(trip_activity) %>">
+        <%= render partial: "trip_activities/trip_activity", locals: { trip_activity: trip_activity } %>
+      </turbo-frame>
+    <% end %>
+  </div>
+</div>

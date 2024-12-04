@@ -7,6 +7,10 @@ class OpenaiService
   # ---------------------------------------------------------------------------------------
   def init_destination_trip
     destination = create_destination(@search)
+
+    # Sidekiq.logger.debug "#-----------------------------------------------------------"
+    # Sidekiq.logger.debug "#create_destination : #{destination}"
+
     trip = create_trip(@search, destination)
     @search.update(trip_id: trip.id)
 
@@ -77,14 +81,14 @@ class OpenaiService
       )
     end
 
-    GooglePlaceJob.perform_later({ activity: new_activity, destination: search })
-
     trip_activity = TripActivity.create!(
       activity: new_activity,
       trip: trip,
       start_date: DateTime.parse(activity["start_date"]),
       end_date: DateTime.parse(activity["end_date"])
     )
+
+    GooglePlaceJob.perform_later({ activity: new_activity, destination: search, trip_activity: trip_activity})
   end
   # ---------------------------------------------------------------------------------------
   private
