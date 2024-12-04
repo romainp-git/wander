@@ -1,0 +1,22 @@
+<dialog id="new_activity_modal" class="modal">
+  <div class="modal-box">
+    <h3>Créer une activitée</h3>
+    <%= simple_form_for(@activity, url: :activity, method: :post) do |f| %>
+      <div class="form-inputs space-y-4">
+        <%= f.input :name, label: "Activity Name" %>
+        <%= f.input :address, label: "Address" %>
+        <%= f.input :photos, as: :file, label: "Sélectionnez vos photos", input_html: { multiple: true } %>
+      </div>
+      <div class="form-dates">
+        <%= f.input :start_date, as: :date_picker, label: "Start Date" %>
+        <%= f.input :end_date, as: :date_picker, label: "End Date" %>
+      </div>
+      <div class="form-actions mt-11 flex justify-center">
+        <%= f.button :submit, "Add Activity", class: "bg-blue-500 text-white text-sm font-medium py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" %>
+      </div>
+    <% end %>
+  </div>
+  <form method="dialog" class="modal-backdrop">
+    <button>close</button>
+</form>
+</dialog>
