@@ -8,8 +8,6 @@ class SearchesController < ApplicationController
 
     if @search.save
       render turbo_stream: turbo_stream.replace( "modal-frame", partial: "searches/loading", locals: { search: @search } )
-
-      # OpenaiJob.perform_later(@search.id)
       CreateTripJob.perform_later(@search.id, current_user)
     else
       render :new

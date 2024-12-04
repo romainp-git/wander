@@ -25,8 +25,6 @@ class CreateTripJob < ApplicationJob
 
   # Callback pour quand le job a réussi
   after_perform do |job|
-    # Rails.logger.debug "AFTER PERFORM GetActivityDetailsJob searchId = #{job.arguments.first}"
-
     search = Search.find_by(id: job.arguments.first)
     user = User.find_by(id: job.arguments.second)
     trip = Trip.find_by(id: search.trip_id)
@@ -40,10 +38,7 @@ class CreateTripJob < ApplicationJob
     Rails.logger.debug "AFTER PERFORM activities = #{activities["activities"]}"
 
     activities["activities"].each do |activity|
-      Rails.logger.debug "BEFORE GOOGLE = \nNAME : #{activity["name"]}\nDESC : #{activity["description"]}"
       GetActivityDetailsJob.perform_later(type, search, trip, activity, user)
     end
-
-    # Rails.logger.debug "APRES EACH GetActivityDetailsJob(type, search, trip, activity, user)"
   end
 end

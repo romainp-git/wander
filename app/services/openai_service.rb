@@ -6,19 +6,9 @@ class OpenaiService
   end
   # ---------------------------------------------------------------------------------------
   def init_destination_trip
-    # Création de la destination et du trip
     destination = create_destination(@search)
-    
-    # Rails.logger.debug "#-----------------------------------------------------------"
-    # Rails.logger.debug "#create_destination : #{destination}"
-
     trip = create_trip(@search, destination)
-    # Rails.logger.debug "#-----------------------------------------------------------"
-    # Rails.logger.debug "#create_trip : #{trip}"
-
     @search.update(trip_id: trip.id)
-    # Rails.logger.debug "#-----------------------------------------------------------"
-    # Rails.logger.debug "#search.update : id_trip=#{trip.id} - #{@search}"
 
     ActionCable.server.broadcast(
       "loading_#{@search.id}",
@@ -40,7 +30,7 @@ class OpenaiService
       activities = get_activities_city(search)
     end
 
-    Rails.logger.debug "ACTIVITIES MEM = \nTRIP : #{trip}\nACTIVITIES1 : #{activities}"
+    Rails.logger.debug "INIT_ACTIVITIES_TRIP MEM =>\nTRIP : #{trip}\nACTIVITIES : #{activities}"
 
     return activities
   end
@@ -59,16 +49,18 @@ class OpenaiService
       end
     end
 
-    Rails.logger.debug "ACT_DETAILS BEFGET = \nNAME : #{activity.name}\nDESC : #{activity.description}\n#{activity}"
+    Rails.logger.debug "CREATE_TRIP_ACTIVITY (BEFORE GET DETAILS) =>\nTYPE : #{type}\nACTIVITY NAME : #{activity['name']}\nACTIVITY DESC : #{activity['description']}\n#{activity}"
+
     if type == "CITY"
       activity_details = get_activity_details(search, activity)
-      Rails.logger.debug "ACT_DETAILS BEFNEW = \nNAME : #{activity_details.name}\nDESC : #{activity_details.description}\n#{activity_details}"
+      
+      Rails.logger.debug "CREATE_TRIP_ACTIVITY (AFTER GET DETAILS) =>\nNAME : #{activity_details['name']}\nDESC : #{activity_details['description']}\n#{activity_details}"
 
       new_activity = Activity.find_or_create_by(
         address: activity["address"], 
-        name: activity['name'],
-        title: activity['title'],
-        description: activity_details['description'],
+        name: activity_details['name'] || activity['name'],
+        title: activity_details['title'] || activity['title'],
+        description: activity_details['description'] || activity['description'],
         category: mycategory,
         wiki: url_alive?(activity_details['wiki']) ? activity_details['wiki'] : "Unknown",
         website_url: "Unknown"
@@ -85,7 +77,6 @@ class OpenaiService
       )
     end
     
-    Rails.logger.debug "ACT_DETAILS BEFORE GB = \nNAME : #{new_activity.name}\nDESC : #{new_activity.description}\n#{new_activity}"
     GooglePlaceJob.perform_later({ activity: new_activity, destination: search })
 
     trip_activity = TripActivity.create!(
@@ -193,7 +184,7 @@ class OpenaiService
     system_content =
     "Tu es un expert de l'organisation d'activités et de découverte d'une destination de voyage.\n" \
     "L'utilisateur va fournir une destination de voyage.\n" \
-    "1- tu dois rechercher une adresse (address dans le JSON) caractérisant cette destination comme la capitale pour un pays, le centre ville pour une ville, le chef lieu pour une région, ou tout simplement l'adresse exacte si elle existe.\n" \
+    "1- tu dois identifier une adresse (address dans le JSON) caractérisant cette destination comme la capitale pour un pays, le centre ville pour une ville, le chef lieu pour une région, ou tout simplement l'adresse exacte si elle existe.\n" \
     "2- tu dois fournir le type de destination (type dans le JSON) que tu fourniras.\n" \
     "3- tu dois rechercher le code ALPHA3 du pays (alpha3code dans le JSON) de cette destination.\n" \
     "4- tu dois rechercher la monnaie (currency dans le JSON) couramment utilisée pour cette destination.\n" \
@@ -290,16 +281,13 @@ class OpenaiService
       "Tu es un expert de l'organisation d'activités et de découverte d'une destination de voyage.\n" \
       "L'utilisateur va fournir une activité qui lui a été recommandée avec un nom et une adresse.\n" \
       "1- tu dois analyser l'activité et toutes les informations fournies pour identifier précisément l'activité.\n" \
-      "2- tu dois rédiger une description de l'activité (description dans le JSON) en 3 paragraphes non numérotés de 3 phrases chacun expliquant successivement (pas de tableau dans la réponse JSON mais une grande string): \n" \
-      "- en quoi consiste l'activité,\n" \
-      "- l'histoire de cette activité.\n" \
-      "- pourquoi les gens aiment faire cette activité,\n" \
+      "2- tu dois rédiger une description de l'activité (description dans le JSON) en 3 paragraphes non numérotés expliquant successivement en quoi elle consiste, son intérêt intrinsèque et enfin pourquoi il ne faut pas la rater selon les experts.\n" \
       "3- tu dois rédiger un titre (title dans le JSON) donnant envie de faire l'activité.\n" \
       "4- Si il existe, tu dois fournir l'url wikipédia de cette activité (wiki dans le JSON).\n" \
       "5- Tu dois fournir ta réponse sous la forme d'un fichier JSON qui sera parser en Ruby on rails et dont le format est pour chaque activité les clés primaire suivantes :\n" \
       "- 'title'.\n" \
       "- 'wiki' qui contiendra url wikipédia si trouvée.\n" \
-      "- 'description' qui contiendra les 3 paragraphes détaillés demandés.\n" \
+      "- 'description' qui contiendra les 3 paragraphes demandés.\n" \
       "Si la destination n'est pas identifiable, le champ 'content' de ta réponse au format JSON doit contenir uniquement 'ERROR'."
 
     user_content =
