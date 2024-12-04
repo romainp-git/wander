@@ -15,33 +15,55 @@ Suggestion.destroy_all
 default_photo_path = Rails.root.join('app', 'assets', 'images', 'no_picture.jpg')
 default_user_photo_path = Rails.root.join('app', 'assets', 'images', 'no_profile.png')
 
+# Liste d'adresses utilisables pour les utilisateurs
+addresses = [
+  "123 Rue de la République, 59000 Lille, France",
+  "456 Avenue des Champs-Élysées, 59000 Lille, France",
+  "789 Boulevard Saint-Germain, 59000 Lille, France",
+  "101 Rue de Rivoli, 59000 Lille, France",
+  "202 Rue de la Liberté, 59000 Lille, France",
+  "303 Rue de la Gare, 59110 La Madeleine, France",
+  "404 Rue de la Mairie, 59260 Lezennes, France",
+  "505 Rue de la République, 59320 Haubourdin, France",
+  "159 Boulevard Voltaire, 75011 Paris, France",
+  "707 Rue de la Gare, 59120 Loos, France"
+]
+
 # Seed users
 puts "Seeding users..."
+
 users = [
   {
     email: "pym@gmail.com",
     password: "password",
     first_name: "Pierre-Yves",
     last_name: "MEVEL",
-    username: "PYM",
-    address: "2 avenue des saules, 59800 LILLE"
+    username: "PYM"
+  },
+  {
+    email: "sam@gmail.com",
+    password: "password",
+    first_name: "Samuel",
+    last_name: "WILLEM",
+    username: "SAM"
+  },
+  {
+    email: "rom@gmail.com",
+    password: "password",
+    first_name: "Romain",
+    last_name: "PORTIER",
+    username: "ROM"
+  },
+  {
+    email: "abe@gmail.com",
+    password: "password",
+    first_name: "Aurélien",
+    last_name: "BERNARD",
+    username: "ABE"
   }
 ]
 
-addresses = [
-  "129 Bayswater Rd, Bayswater, London W2 4RJ",
-  "200 Westminster Bridge Rd, Bishop's, London SE1 7UT",
-  "Royal Victoria Dock, One Eastern Gateway, London E16 1FR",
-  "51 Belgrave Rd, Lillington and Longmoore Gardens, London SW1V 2BB",
-  "8-18 Inverness Terrace, Bayswater, London W2 3HU",
-  "1 Shortlands Hammersmith International Centre, Hammersmith, London W6 8DR",
-  "Aldwych, West End, London WC2B 4DD",
-  "25 Gloucester St, Pimlico, London SW1V 2DB",
-  "19-21 Penywern Rd, Earl's Court, London SW5 9TT",
-  "30 John Islip St, Westminster, London SW1P 4DD"
-]
-
-users.each_with_index do |user, index|
+  users.each_with_index do |user, index|
   begin
     current_user = User.create!(
       email: user[:email],
@@ -50,28 +72,32 @@ users.each_with_index do |user, index|
       first_name: user[:first_name],
       last_name: user[:last_name],
       username: user[:username],
-      address: user[:address]
+      address: addresses[index] 
     )
     puts "Created user: #{current_user.email}"
 
-    # Générer une photo avec Faker ou utiliser une image par défaut
-    profile_photo_url = Faker::LoremFlickr.image(size: "300x300", search_terms: ['person'])
+    # Chemin de la photo de l'utilisateur
+    username_photo_path = Rails.root.join('app', 'assets', 'images', "#{current_user.username}.png")
+    default_photo_path = Rails.root.join('app', 'assets', 'images', 'no_profile.png')    # Upload de la photo sur Cloudinary
 
-    begin
-      # Charger la photo depuis l'URL générée
-      result = Cloudinary::Uploader.upload(profile_photo_url)
+    # Vérifier si la photo de l'utilisateur existe
+    if File.exist?(username_photo_path)
+      result = Cloudinary::Uploader.upload(username_photo_path)
       current_user.photo.attach(io: URI.open(result['secure_url']), filename: result['original_filename'])
       puts "Uploaded photo for: #{current_user.username}"
-    rescue => e
-      puts "Failed to upload photo for #{current_user.username}. Using default photo. Error: #{e.message}"
-      result = Cloudinary::Uploader.upload(default_user_photo_path)
-      current_user.photo.attach(io: URI.open(result['secure_url']), filename: "default_photo.jpg")
+    else
+      # Si la photo n'existe pas, utiliser la photo par défaut
+      result = Cloudinary::Uploader.upload(default_photo_path)
+      current_user.photo.attach(io: URI.open(result['secure_url']), filename: result['original_filename'])
+      puts "No photo found for: #{current_user.username}. Default photo uploaded."
     end
-
+    # puts "URL photo: #{result}"
   rescue => e
     puts "Failed to create user #{user[:email]}: #{e.message}"
   end
 end
+
+
 
 # Seed destinations
 puts "Seeding destinations..."
