@@ -126,12 +126,12 @@ class OpenaiService
   end
   # ---------------------------------------------------------------------------------------
   def create_trip(search, destination)
-    # user: current_user,
+    # user: User.find_by(username: 'PYM'),
     Trip.create!(
       name: search.destination,
       start_date: search.start_date,
       end_date: search.end_date,
-      user: User.find_by(username: 'PYM'),
+      user: current_user,
       destination: destination
     )
   end
