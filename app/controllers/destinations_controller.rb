@@ -73,7 +73,7 @@ def show
 
     # Ecriture en base des données
     result = create_destination_trip_activities(type, name, user_trip, destination_ai, activities_ai, params[:start_date], params[:end_date])
-    
+
     if result
       redirect_to destination_path(result.destination_id)
       return
@@ -86,7 +86,7 @@ def show
 # ---------------------------------------------------------------------------------------
   def create_destination_trip_activities(type, trip_name, user, destination_data, activities_data,  start_date, end_date)
     return unless activities_data.is_a?(Array) && activities_data.any?
-  
+
     destination = Destination.create!(
       address: "#{trip_name.capitalize} - #{destination_data['alpha3code']}",
       currency: destination_data['currency'],
@@ -96,6 +96,12 @@ def show
       latitude: destination_data['latitude'].to_f,
       longitude: destination_data['longitude'].to_f
     )
+    Rails.logger.debug "search.destination"
+    photo = Unsplash::Photo.search(destination_data['city'])[0]
+    Rails.logger.debug photo
+    file = URI.open(photo['urls']['regular'])
+    destination.photo.attach(io: file, filename: "#{destination_data['city']}_search_#{rand(1000)}.jpg", content_type: "image/jpeg")
+
     Rails.logger.debug "#-----------------------------------------------------------"
     Rails.logger.debug "#create_destination_trip_activities_DESTINATION\n#{destination} - #{type}"
 
@@ -108,7 +114,7 @@ def show
     )
     Rails.logger.debug "#-----------------------------------------------------------"
     Rails.logger.debug "#create_destination_trip_activities_TRIP\n#{trip}"
-    
+
     Rails.logger.debug "#-----------------------------------------------------------"
     Rails.logger.debug "#create_destination_trip_activities_ACTIVITIES COUNT\n#{activities_data.count}"
     activities_data.each_with_index do |activity_data, index|
@@ -150,14 +156,14 @@ def show
         end_date: activity_data['end_date']
       )
     end
-  
+
     return trip
   end
 # ---------------------------------------------------------------------------------------
   private
 # ---------------------------------------------------------------------------------------
   def fetch_destination_info_by_name(destination)
-    system_content = 
+    system_content =
       "Tu es un expert de l'organisation d'activités et de découverte d'une destination de voyage.\n" \
       "L'utilisateur va fournir une destination de voyage.\n" \
       "1- tu dois rechercher une adresse (address dans le JSON) caractérisant cette destination comme la capitale pour un pays, le centre ville pour une ville, le chef lieu pour une région, ou tout simplement l'adresse exacte si elle existe.\n" \
@@ -179,7 +185,7 @@ def show
 	  "- `power` : Normes des prises électriques.\n" \
       "Si la destination n'est pas identifiable, le champ 'content' de ta réponse au format JSON doit contenir uniquement 'ERROR'.\n"
 
-    user_content = 
+    user_content =
     "La destination de mon voyage est #{destination}"
 
     client = OpenAI::Client.new
@@ -200,7 +206,7 @@ def show
   end
 # ---------------------------------------------------------------------------------------
   def fetch_activities_city(trip_name, start_date, end_date)
-    system_content = 
+    system_content =
       "Tu es un expert de l'organisation d'activités et de découverte d'une destination de voyage.\n" \
       "L'utilisateur va fournir une destination de voyage, une date de début et une date de fin.\n" \
       "Ton objectif va être de rechercher des occupations pour chaque journée du voyage de la date de début à la date de fin incluses pour la destination indiquée comprenant : \n" \
@@ -226,7 +232,7 @@ def show
       "Si la destination n'est pas identifiable, le champ 'content' de ta réponse au format JSON doit contenir uniquement 'ERROR'." \
       "Si la taille du fichier JSON de sortie est trop longue, tu dois retourner que des activités complètes retournes le nombre maximum d'activités que tu es capable de retourner sans tronquer les données et tu ferme le tableau JSON proprement sans mettre '...' à la fin pour dire que tu n'as pas pu tout mettre.\n"
 
-    user_content = 
+    user_content =
     "La destination de mon voyage est #{trip_name} du #{start_date} au #{end_date} et je recherche des activités appartenant aux catégories suivantes : Culturelle, Nature. Tu dois prendre en compte également ce besoin spécifique : Restaurant végétarien et une activité par jour spécifique pour des enfants."
 
     client = OpenAI::Client.new
@@ -238,9 +244,9 @@ def show
       ],
       "temperature": 0.0
     })
-    
+
     data = JSON.parse(response['choices'][0]['message']['content'])
-    
+
     if data != "ERROR"
       return data['activities']
     end
@@ -249,7 +255,7 @@ def show
   end
 # ---------------------------------------------------------------------------------------
   def fetch_activities_country(trip_name, start_date, end_date)
-    system_content = 
+    system_content =
       "Tu es un expert de l'organisation d'activités et de découverte d'une destination de voyage.\n" \
       "L'utilisateur va fournir une destination de voyage, une date de début et une date de fin.\n" \
       "1- tu dois calculer le nombre de jours de voyage.\n" \
@@ -266,7 +272,7 @@ def show
       "- 'description' qui contiendra la description détaillée de l'étape avec ses différentes activités et leurs intérêts touristiques. Chaque activité doit être catégorisée.\n" \
       "Si la destination n'est pas identifiable, le champ 'content' de ta réponse au format JSON doit contenir uniquement 'ERROR'."
 
-    user_content = 
+    user_content =
     "La destination de mon voyage est #{trip_name} du #{start_date} au #{end_date}"
 
     client = OpenAI::Client.new
@@ -278,9 +284,9 @@ def show
       ],
       "temperature": 0.0
     })
-    
+
     data = JSON.parse(response['choices'][0]['message']['content'])
-    
+
     if data != "ERROR"
       return data['activities']
     end
@@ -289,7 +295,7 @@ def show
   end
 # ---------------------------------------------------------------------------------------
   def fetch_activity(name, address, description)
-    system_content = 
+    system_content =
       "Tu es un expert de l'organisation d'activités et de découverte d'une destination de voyage.\n" \
       "L'utilisateur va fournir une activité qui lui a été recommandée avec un nom et une adresse.\n" \
       "1- tu dois analyser l'activité et sa description succinte pour comprendre la nature de l'activité et l'identifier précisément.\n" \
@@ -308,7 +314,7 @@ def show
       "- `wiki`, mettre 'Unknown' si non trouvé.\n" \
       "Si la destination n'est pas identifiable, le champ 'content' de ta réponse au format JSON doit contenir uniquement 'ERROR'."
 
-    user_content = 
+    user_content =
     "L'activité à détailler est : #{name} à l'adresse : #{address} et consistant à #{description}"
 
 
@@ -340,7 +346,7 @@ def show
     results = Geocoder.search(address)
 
     Rails.logger.debug "# GEOCODER results : #{results}"
-    
+
     if results.any?
       location = results.first
       {
@@ -361,12 +367,12 @@ def show
     begin
       # Parse l'URL
       uri = URI.parse(url)
-  
+
       # Effectue une requête HEAD pour vérifier l'accessibilité sans charger tout le contenu
       response = Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == 'https') do |http|
         http.head(uri.path.empty? ? "/" : uri.path)
       end
-  
+
       # Si le code HTTP est 2xx ou 3xx, l'URL est valide
       response.is_a?(Net::HTTPSuccess) || response.is_a?(Net::HTTPRedirection)
     rescue StandardError
@@ -378,10 +384,10 @@ def show
   def clean_json(json_string)
     # Supprimer les caractères d'échappement inutiles
     json_string = json_string.gsub('\\n', '').gsub('\\"', '"')
-  
+
     # Corriger les virgules mal placées
     json_string = json_string.gsub(/,\s*\]/, ']').gsub(/,\s*\}/, '}')
-  
+
     # Parser le JSON pour vérifier s'il est valide
     begin
       parsed_json = JSON.parse(json_string)

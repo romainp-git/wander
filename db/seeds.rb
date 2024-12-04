@@ -73,7 +73,7 @@ users.each_with_index do |user, index|
       first_name: user[:first_name],
       last_name: user[:last_name],
       username: user[:username],
-      address: addresses[index] 
+      address: addresses[index]
     )
     puts "Created user: #{current_user.email}"
 
@@ -107,6 +107,9 @@ london = Destination.create!(
   food: "Fish and Chips, Afternoon Tea, Sunday Roast",
   power: "230V"
 )
+photo = Unsplash::Photo.search("London, United Kingdom")[0]
+file = URI.open(photo['urls']['regular'])
+london.photo.attach(io: file, filename: "London_search_#{rand(1000)}.jpg", content_type: "image/jpeg")
 
 sydney = Destination.create!(
   address: "Mascot NSW 2020, Australie",
@@ -115,7 +118,10 @@ sydney = Destination.create!(
   food: "Fish and Chips, Afternoon Tea, Sunday Roast",
   power: "230V"
 )
-puts "Destination London created!"
+photo = Unsplash::Photo.search("Mascot NSW 2020, Australie")[0]
+file = URI.open(photo['urls']['regular'])
+sydney.photo.attach(io: file, filename: "Australie_search_#{rand(1000)}.jpg", content_type: "image/jpeg")
+puts "Destination created!"
 
 # Seed activities
 puts "Seeding activities..."

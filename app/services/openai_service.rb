@@ -57,11 +57,11 @@ class OpenaiService
 
     if type == "CITY"
       activity_details = get_activity_details(search, activity)
-      
+
       Rails.logger.debug "CREATE_TRIP_ACTIVITY (AFTER GET DETAILS) =>\nNAME : #{activity_details['name']}\nDESC : #{activity_details['description']}\n#{activity_details}"
 
       new_activity = Activity.find_or_create_by(
-        address: activity["address"], 
+        address: activity["address"],
         name: activity_details['name'] || activity['name'],
         title: activity_details['title'] || activity['title'],
         description: activity_details['description'] || activity['description'],
@@ -123,6 +123,11 @@ class OpenaiService
         power: result['power'],
         alpha3code: result['alpha3code']
         )
+        Rails.logger.debug "search.destination"
+        photo = Unsplash::Photo.search(search.destination)[0]
+        Rails.logger.debug photo
+        file = URI.open(photo['urls']['regular'])
+        destination.photo.attach(io: file, filename: "#{search.destination}_search_#{rand(1000)}.jpg", content_type: "image/jpeg")
     end
 
     return destination
@@ -130,7 +135,7 @@ class OpenaiService
   # ---------------------------------------------------------------------------------------
   def create_trip(search, destination)
     # user: User.find_by(username: 'PYM'),
-    
+
     Trip.create!(
       name: search.destination,
       start_date: search.start_date,

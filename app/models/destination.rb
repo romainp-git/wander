@@ -1,6 +1,11 @@
 class Destination < ApplicationRecord
+
+  has_one_attached :photo
+  # A VALIDER ENSEMBLE
+  # La latitude et la longitude sont fournies par openai et à priori on ne modifie pas une destination donc pas besoin de mise à jour par geocoder
   geocoded_by :address
   after_validation :geocode, if: :should_geocode?
+
 
   def city
     return unless latitude && longitude
