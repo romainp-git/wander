@@ -1,27 +1,26 @@
+<li class="flex items-center space-x-4 relative"
+    data-sortable-update-url="<%= trip_activity_path(trip_activity) %>"
+    data-id="<%= trip_activity.id %>">
 
-  <li class="flex items-center space-x-4 relative"
-      data-sortable-update-url="<%= trip_activity_path(trip_activity) %>"
-      data-id="<%= trip_activity.id %>">
-    <!-- Timeline time -->
+  <!-- Timeline time -->
+  <div class="text-gray-400 w-8 text-right shrink-0 text-xs">
+    <div><%= trip_activity.start_date.strftime('%H:%M') %></div>
+    <div><%= trip_activity.end_date.strftime('%H:%M') %></div>
+  </div>
 
-    <div class="text-gray-400 w-8 text-right shrink-0 text-xs">
-      <div><%= trip_activity.start_date.strftime('%H:%M') %></div>
-      <div><%= trip_activity.end_date.strftime('%H:%M') %></div>
+  <!-- Timeline node and line -->
+  <div class="relative flex flex-col items-center">
+    <div class="w-4 h-4 bg-white rounded-full"></div>
+  </div>
+
+  <!-- Timeline card -->
+  <div class="bg-gray-800 text-white rounded-lg shadow-md p-4 w-full flex justify-between items-center">
+    <%= link_to activity_path(trip_activity.activity) do%>
+    <div class="flex-col">
+      <h3 class="font-bold"><%= trip_activity.activity.name %></h3>
+      <p class="text-sm"><%= trip_activity.activity.description.truncate(50) %></p>
     </div>
-
-    <!-- Timeline node and line -->
-    <div class="relative flex flex-col items-center">
-      <div class="w-4 h-4 bg-white rounded-full"></div>
-    </div>
-
-    <!-- Timeline card -->
-    <div class="bg-gray-800 text-white rounded-lg shadow-md p-4 w-full flex justify-between items-center">
-     <%= link_to activity_path(trip_activity.activity) do%>
-      <div class="flex-col">
-        <h3 class="font-bold"><%= trip_activity.activity.name %></h3>
-        <p class="text-sm"><%= trip_activity.activity.description.truncate(50) %></p>
-      </div>
-      <% end%>
-       <p class="icon handle cursor-grab active:cursor-grabbing">drag_indicator</p>
-    </div>
-  </li>
+    <% end%>
+      <p class="icon handle cursor-grab active:cursor-grabbing">drag_indicator</p>
+  </div>
+</li>

@@ -7,7 +7,7 @@ class OpenaiService
   def init_destination_trip
     # Création de la destination et du trip
     destination = create_destination(@search)
-    
+
     # Sidekiq.logger.debug "#-----------------------------------------------------------"
     # Sidekiq.logger.debug "#create_destination : #{destination}"
 
@@ -42,8 +42,8 @@ class OpenaiService
   # ---------------------------------------------------------------------------------------
   def create_trip_activity(type, search, trip, activity)
 
-    if !activity['category'] 
-      mycategory = "cultural" 
+    if !activity['category']
+      mycategory = "cultural"
       else if Constants::CATEGORIES_UK.include?(activity['category'])
         mycategory = activity['category']
         else if Constants::CATEGORIES_FR.include?(activity['category'])
@@ -58,7 +58,7 @@ class OpenaiService
       activity_details = get_activity_details(search, activity)
 
       new_activity = Activity.find_or_create_by(
-        address: activity["address"], 
+        address: activity["address"],
         name: activity['name'],
         title: activity['title'],
         description: activity['description'],
@@ -77,15 +77,15 @@ class OpenaiService
         website_url: "Unknown"
       )
     end
-    
-    GooglePlaceJob.perform_later({ activity: new_activity, destination: search })
-    
+
     trip_activity = TripActivity.create!(
       activity: new_activity,
       trip: trip,
       start_date: DateTime.parse(activity["start_date"]),
       end_date: DateTime.parse(activity["end_date"])
     )
+
+    GooglePlaceJob.perform_later({ activity: new_activity, destination: search, trip_activity: trip_activity})
   end
   # ---------------------------------------------------------------------------------------
   private
@@ -139,7 +139,7 @@ class OpenaiService
   def get_activities_country(search)
     prompt_activities = get_prompt_activities_country(search)
     call_openai(prompt_activities)
-  end  
+  end
   # ---------------------------------------------------------------------------------------
   def get_activities_city(search)
     prompt_activities = get_prompt_activities_city(search)

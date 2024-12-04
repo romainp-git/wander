@@ -7,6 +7,17 @@ class Trip < ApplicationRecord
 
   validates :destination, presence: true
 
-  #geocoded_by :destination
-  #after_validation :geocode, if: :will_save_change_to_destination_id?
+  def total_kilometers(user)
+    if destination.latitude && destination.longitude
+      distance = Geocoder::Calculations.distance_between(
+        [user.latitude, user.longitude],
+        [destination.latitude, destination.longitude]
+      )
+      (distance * 2).round
+    end
+  end
+
+  def total_days
+    this.sum { |trip| (end_date - start_date).to_i rescue 0 }
+  end
 end
