@@ -1,16 +1,20 @@
-<div class="relative h-screen flex flex-col" data-controller="gallery">
+<div class="relative h-screen flex flex-col" data-controller="gallery" data-controller="tabs">
   <!-- Section image avec retour -->
   <div class="relative w-full h-1/2 bg-gray-200">
     <!-- Image principale -->
+
     <div class="relative w-full h-full">
       <% if @activity.photos.first.present? %>
         <%= cl_image_tag @activity.photos.first.key, class: "w-full h-full object-cover", data: { gallery_target: "mainImage" } %>
       <% else %>
         <%= image_tag 'no_picture.jpg', class: "w-full h-full object-cover", alt: "No picture available", data: { gallery_target: "mainImage" } %>
       <% end %>
-
       <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent"></div>
+      <button onclick="add_picture_modal.showModal()" class="btn absolute bottom-14 z-50 right-5" >Add photos</button>
     </div>
+
+    <% console %>
+    <%= render "add_picture_modal" %>
 
     <!-- Bouton de retour -->
     <button
@@ -133,7 +137,7 @@
     </div>
 
     <!-- Navigation tabs -->
-    <div class="mt-6" data-controller="tabs">
+    <div class="mt-6">
       <!-- Navigation des onglets -->
       <div role="tablist" class="tabs tabs-bordered px-6">
         <a class="tab tab-active" data-action="click->tabs#switchTab" data-tabs-target="tabActivity" data-tab-name="description">Description</a>
@@ -143,11 +147,19 @@
       </div>
 
       <!-- Contenu des onglets -->
-      <div class="px-6 mt-6">
+      <div data-controller="edit-form" class="px-6 mt-6">
         <!-- Contenu de l'onglet Description -->
-    <div data-tabs-target="content" data-tab-name="description" >
-      <h3 class="text-lg font-semibold text-gray-800">Description</h3>
 
+    <div data-tabs-target="content" data-tab-name="description" >
+      <div data-edit-target="form">
+        <h3 class="text-lg font-semibold text-gray-800 old-value">Description <p class="icon" data-action="click->edit-form#display">Edit</p></h3>
+        <div class="hidden new-value">
+          <%= simple_form_for(@activity, url: :activity, method: :patch) do |f| %>
+            <%= f.input :description, label: false %>
+            <%= f.submit class:"btn"%>
+          <% end %>
+        </div>
+      </div>
       <div data-controller="read-more" data-read-more-more-text-value="Voir plus" data-read-more-less-text-value="Voir moins">
         <p class="my-content mt-2 text-sm text-gray-600" data-read-more-target="content">
           <%= @activity.description%>
@@ -188,6 +200,6 @@
         Itinéraire
       </button>
 
-      </div>
-      </div>
-      </div>
+    </div>
+  </div>
+</div>
