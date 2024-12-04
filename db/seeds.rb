@@ -63,6 +63,7 @@ users = [
   }
 ]
 
+
 users.each_with_index do |user, index|
   begin
     current_user = User.create!(
