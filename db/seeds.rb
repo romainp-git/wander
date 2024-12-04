@@ -63,7 +63,7 @@ users = [
   }
 ]
 
-  users.each_with_index do |user, index|
+users.each_with_index do |user, index|
   begin
     current_user = User.create!(
       email: user[:email],
@@ -96,8 +96,6 @@ users = [
     puts "Failed to create user #{user[:email]}: #{e.message}"
   end
 end
-
-
 
 # Seed destinations
 puts "Seeding destinations..."

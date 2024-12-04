@@ -1,4 +1,4 @@
-import { Controller } from "@hotwired/stimulus"
+import { Controller } from "@hotwired/stimulus";
 
 // Connects to data-controller="datepicker"
 export default class extends Controller {
@@ -7,17 +7,21 @@ export default class extends Controller {
     //"endDate",
     "calendar",
     "startInput",
-    "endInput"
+    "endInput",
   ];
 
   connect() {
     console.log("flatpicker_controller");
-    this.initializeDatepicker();
 
-    const calendarElements = document.querySelectorAll(".arrowBottom");
-    calendarElements.forEach((element) => {
-      element.classList.remove("arrowBottom");
-    });
+    if (document.querySelector("#calendar")) {
+      this.initializeDatepicker();
+      const calendarElements = document.querySelectorAll(".arrowBottom");
+      calendarElements.forEach((element) => {
+        element.classList.remove("arrowBottom");
+      });
+    } else if (document.querySelector("#new_activity_modal")) {
+      this.activityDatepicker();
+    }
   }
 
   initializeDatepicker() {
@@ -29,12 +33,46 @@ export default class extends Controller {
       locale: {
         firstDayOfWeek: 1,
         weekdays: {
-          shorthand: ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'],
-          longhand: ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'],
+          shorthand: ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"],
+          longhand: [
+            "Dimanche",
+            "Lundi",
+            "Mardi",
+            "Mercredi",
+            "Jeudi",
+            "Vendredi",
+            "Samedi",
+          ],
         },
         months: {
-          shorthand: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sept', 'Oct', 'Nov', 'Déc'],
-          longhand: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'],
+          shorthand: [
+            "Jan",
+            "Fév",
+            "Mar",
+            "Avr",
+            "Mai",
+            "Juin",
+            "Juil",
+            "Août",
+            "Sept",
+            "Oct",
+            "Nov",
+            "Déc",
+          ],
+          longhand: [
+            "Janvier",
+            "Février",
+            "Mars",
+            "Avril",
+            "Mai",
+            "Juin",
+            "Juillet",
+            "Août",
+            "Septembre",
+            "Octobre",
+            "Novembre",
+            "Décembre",
+          ],
         },
       },
       inline: true,
@@ -54,12 +92,20 @@ export default class extends Controller {
       this.startInputTarget.value = start;
       this.endInputTarget.value = end;
 
-      const stepperController = this.application.getControllerForElementAndIdentifier(
-        this.element.closest("[data-controller='stepper']"), "stepper" );
-      if (stepperController && typeof stepperController.validateInputs === "function") {
+      const stepperController =
+        this.application.getControllerForElementAndIdentifier(
+          this.element.closest("[data-controller='stepper']"),
+          "stepper"
+        );
+      if (
+        stepperController &&
+        typeof stepperController.validateInputs === "function"
+      ) {
         stepperController.validateInputs();
       } else {
-        console.error("Stepper controller not found or validateInputs not defined");
+        console.error(
+          "Stepper controller not found or validateInputs not defined"
+        );
       }
     }
   }
@@ -69,5 +115,19 @@ export default class extends Controller {
     const month = String(date.getMonth() + 1).padStart(2, "0");
     const day = String(date.getDate()).padStart(2, "0");
     return `${day}-${month}-${year}`;
+  }
+
+  activityDatepicker() {
+    flatpickr(this.startInputTarget, {
+      appendTo: document.querySelector("dialog"),
+      position: "auto center",
+      altFormat: "D/M/Y",
+      onChange: this.updateEndDate.bind(this),
+    });
+  }
+
+  updateEndDate(selectedDate) {
+    const [start] = selectedDate;
+    this.endInputTarget.value = start;
   }
 }

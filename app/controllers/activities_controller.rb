@@ -17,15 +17,15 @@ class ActivitiesController < ApplicationController
     @activity = Activity.new
   end
 
-  def create
-    @activity = Activity.new(activity_params)
+  # def create
+  #   @activity = Activity.new(activity_params)
 
-    if @activity.save
-      redirect_to trip_path(params[:trip_id]), notice: "Activity created successfully!"
-    else
-      render :new, alert: "Failed to create activity."
-    end
-  end
+  #   if @activity.save
+  #     redirect_to trip_path(params[:trip_id]), notice: "Activity created successfully!"
+  #   else
+  #     render :new, alert: "Failed to create activity."
+  #   end
+  # end
 
   def destroy
   end
