@@ -1,4 +1,5 @@
 class ActivitiesController < ApplicationController
+  require 'httparty'
   def index
     @activities = Activity.all
   end

@@ -42,7 +42,11 @@
 
         <% if !@trips.empty? %>
           <div class="next-trip-container sticky z-10 w-full transition-all duration-200 bg-cover bg-center overflow-hidden pb-5">
-            <%= image_tag 'rome.jpg', class: "absolute inset-0 h-full w-full object-cover" %>
+              <% if @trips[0].destination.photo.present? %>
+                <%= cl_image_tag @trips[0].destination.photo.key, class: "absolute inset-0 h-full w-full object-cover" %>
+              <% else %>
+                <%= image_tag 'rome.jpg', class: "absolute inset-0 h-full w-full object-cover" %>
+              <% end %>
             <div class="absolute inset-0 bg-gradient-to-t from-black/100 via-black/20 to-black/0"></div>
 
             <%= render "countdown", start: @trips[0].start_date.nil? ? "" : @trips[0].start_date %>
