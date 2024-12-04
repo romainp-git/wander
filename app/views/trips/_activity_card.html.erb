@@ -19,7 +19,7 @@
      <%= link_to activity_path(trip_activity.activity) do%>
       <div class="flex-col">
         <h3 class="font-bold"><%= trip_activity.activity.name %></h3>
-        <p class="text-sm"><%= trip_activity.activity.description.truncate(50) %></p>
+        <p class="text-sm"><%= trip_activity.activity.description.truncate(50) if trip_activity.activity.description.present? %></p>
       </div>
       <% end%>
        <p class="icon handle cursor-grab active:cursor-grabbing">drag_indicator</p>

@@ -15,7 +15,7 @@ class User < ApplicationRecord
       if trip.destination.latitude && trip.destination.longitude && latitude && longitude
         distance = Geocoder::Calculations.distance_between(
           [latitude, longitude],
-          [trip.latitude, trip.longitude]
+          [trip.destination.latitude, trip.destination.longitude]
         )
         distance * 2
       else
