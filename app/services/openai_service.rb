@@ -156,10 +156,12 @@ class OpenaiService
     client = OpenAI::Client.new
     parsed_response = client.chat(parameters: {
       "model": 'gpt-3.5-turbo',
+      "response_format": { "type": "json_object" },
       "messages": [
         { "role": 'system', "content": prompt[:system_content] },
         { "role": 'user', "content": prompt[:user_content] }
       ],
+      "max_tokens": 4096,
       "temperature": 0.0
       })
 
