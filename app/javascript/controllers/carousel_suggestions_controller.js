@@ -21,18 +21,24 @@ export default class extends Controller {
 
   setDestination(event) {
     const item = event.currentTarget;
-    const value = item.dataset.value;
-
     if (event.target.closest("a[data-turbo-frame='modal-frame']")) {
       return;
     }
-
     if (item.dataset.clickable === "true") {
       const value = item.dataset.value;
       if (this.input) {
         this.input.value = value;
       }
+
+      const stepperController = this.application.getControllerForElementAndIdentifier(
+        this.element.closest("[data-controller='stepper']"), "stepper" );
+      if (stepperController && typeof stepperController.validateInputs === "function") {
+        stepperController.validateInputs();
+      } else {
+        console.error("Stepper controller not found or validateInputs not defined");
+      }
     }
+
   }
 
   updateActiveItem() {

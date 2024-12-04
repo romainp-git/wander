@@ -53,6 +53,14 @@ export default class extends Controller {
 
       this.startInputTarget.value = start;
       this.endInputTarget.value = end;
+
+      const stepperController = this.application.getControllerForElementAndIdentifier(
+        this.element.closest("[data-controller='stepper']"), "stepper" );
+      if (stepperController && typeof stepperController.validateInputs === "function") {
+        stepperController.validateInputs();
+      } else {
+        console.error("Stepper controller not found or validateInputs not defined");
+      }
     }
   }
 

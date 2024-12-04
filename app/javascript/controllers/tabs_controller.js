@@ -82,6 +82,9 @@ export default class extends Controller {
     this.tabActivityTargets.forEach((tab) => {
       const isActive = tab.dataset.tabName === name;
       tab.classList.toggle("tab-active", isActive);
+      tab.classList.toggle("text-white", isActive);
+      tab.classList.toggle("!border-white", isActive);
+
     });
     this.contentTargets.forEach((content) => {
       const isActive = content.dataset.tabName === name;

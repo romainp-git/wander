@@ -1,0 +1,29 @@
+<div class="relative py-10">
+  <div class="flex justify-around text-white px-3">
+
+    <div class="flex flex-col items-start border-r border-r-white border-opacity-30 flex-1 px-2">
+      <span class="text-sm text-center uppercase text-gray-300">Voyages</span>
+      <span class="text-xl font-bold mt-1"><%=@stats[:total_travels]%></span>
+      <span class="text-xs">effectué(s)</span>
+    </div>
+
+    <div class="flex flex-col items-start border-r border-r-white border-opacity-30 flex-1 px-2">
+      <span class="text-sm text-center uppercase text-gray-300">Ratio</span>
+      <span class="text-xl font-bold mt-1"><%=@stats[:ratio]%><span class="text-xs"> %</span></span>
+      <span class="text-xs">du monde</span>
+    </div>
+
+    <div class="flex flex-col items-start border-r border-r-white border-opacity-30 flex-1 px-2">
+      <span class="text-sm text-center uppercase text-gray-300">Distance</span>
+      <span class="text-xl font-bold mt-1"><%=@total_km%><span class="text-xs"> km</span></span>
+      <span class="text-xs">parcourus</span>
+    </div>
+
+    <div class="flex flex-col items-start flex-1 px-1">
+      <span class="text-sm text-center uppercase text-gray-300">Cumul</span>
+      <span class="text-xl font-bold mt-1"><%=@travels_times%><span class="text-xs"> j</span></span>
+      <span class="text-xs">en voyage</span>
+    </div>
+
+  </div>
+</div>

@@ -6,15 +6,11 @@
       </button>
 
       <div data-stories-target="track" class="carousel-track flex transition-transform duration-1000 ease-in-out w-full h-full">
-        <div data-stories-target="item" class="carousel-item w-full flex-shrink-0">
-          <%= cl_image_tag suggestion.photos[0].key, class: "w-full h-full object-cover" %>
-        </div>
-        <div data-stories-target="item" class="carousel-item w-full flex-shrink-0">
-          <%= cl_image_tag suggestion.photos[1].key, class: "w-full h-full object-cover" %>
-        </div>
-        <div data-stories-target="item" class="carousel-item w-full flex-shrink-0">
-          <%= cl_image_tag suggestion.photos[2].key, class: "w-full h-full object-cover" %>
-        </div>
+        <% suggestion.highlights.each do |highlight| %>
+          <div data-stories-target="item" class="carousel-item w-full flex-shrink-0">
+            <%= cl_image_tag highlight.photo.key, class: "w-full h-full object-cover" %>
+          </div>
+        <% end %>
       </div>
 
       <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex w-full gap-2 px-4">
