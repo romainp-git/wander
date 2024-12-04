@@ -43,9 +43,7 @@
           </span>
         </div>
         <h3 class="font-bold"><%= trip_activity.activity.name %></h3>
-        <% if trip_activity.activity.description.present? %>
-          <p class="text-sm"><%= trip_activity.activity.description.truncate(50) %></p>
-        <% end %>
+        <p class="text-sm"><%= trip_activity.activity.description.truncate(50) if trip_activity.activity.description.present? %></p>
       </div>
     <% end %>
     <p class="icon handle cursor-grab active:cursor-grabbing">drag_indicator</p>
