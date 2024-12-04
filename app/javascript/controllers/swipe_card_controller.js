@@ -51,6 +51,7 @@ export default class extends Controller {
         const response = await fetch(deleteUrl, {
           method: "DELETE",
           headers: {
+            "X-CSRF-Token": document.querySelector("meta[name='csrf-token']").getAttribute("content"),
             "Content-Type": "application/json",
           },
         });
