@@ -1,70 +1,65 @@
-import { Controller } from "@hotwired/stimulus";
+import Controller from "@stimulus-components/sortable";
 
 export default class extends Controller {
-  static targets = ["card", "deleteButton"];
-
   connect() {
-    this.startX = 0;
-    this.currentX = 0;
-    this.threshold = -10; // Distance pour valider le swipe
+    super.connect();
+
+    console.log("Sortable connected for group:", this.element.dataset.sortableGroup);
   }
 
-  // Début du swipe
-  touchstart(event) {
-    this.startX = event.touches[0].clientX;
+  get defaultOptions() {
+    return {
+      group: {
+        name: "shared",
+        pull: true,
+        put: true,
+      },
+      animation: 150,
+      handle: ".handle",
+      onEnd: (event) => this.onEnd(event),
+    };
   }
 
-  // Gestion du déplacement
-  touchmove(event) {
-    this.currentX = event.touches[0].clientX;
-    const deltaX = this.currentX - this.startX;
+  onEnd(event) {
+    const item = event.item;
+    const newIndex = event.newIndex;
+    const oldIndex = event.oldIndex;
+    const fromGroup = event.from.dataset.sortableGroup;
+    const toGroup = event.to.dataset.sortableGroup;
+    const updateUrl = item.dataset.sortableUpdateUrl;
 
-    // Ne gérer que le glissement vers la gauche
-    if (deltaX < 0) {
-      this.cardTarget.style.transform = `translateX(${deltaX}px)`;
+    console.log("Movement detected:", { fromGroup, toGroup, newIndex, oldIndex });
+
+    if (!updateUrl) {
+      console.error("No update URL found for item:", item);
+      return;
     }
-  }
 
-  touchend() {
-    const deltaX = this.currentX - this.startX;
-    if (deltaX < this.threshold) {
-      this.showDeleteButton();
-    } else {
-      this.resetCard();
-    }
-  }
+    const data = {
+      trip_activity: {
+        new_group: toGroup,
+        position: newIndex,
+      },
+    };
 
-  showDeleteButton() {
-    this.cardTarget.style.transform = `translateX(-35%)`;
-    this.deleteButtonTarget.classList.add("flex");
-  }
+    console.log("Sending data:", data);
 
-  resetCard() {
-    this.cardTarget.style.transform = `translateX(0)`;
-    this.deleteButtonTarget.classList.remove("flex");
-  }
 
-  async delete() {
-    if (confirm("Voulez-vous vraiment supprimer cet élément ?")) {
-      const deleteUrl = this.element.dataset.sortableUpdateUrl; // Récupérer l'URL DELETE
-      try {
-        const response = await fetch(deleteUrl, {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-
+    fetch(updateUrl, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]').content,
+      },
+      body: JSON.stringify(data),
+    })
+      .then((response) => {
         if (response.ok) {
-          this.element.remove(); // Supprimer l'élément du DOM
+          console.log("Activity reordered successfully!");
         } else {
-          console.error("Erreur lors de la suppression :", response.statusText);
-          alert("Une erreur est survenue. Veuillez réessayer.");
+          console.error("Failed to reorder activity", response);
         }
-      } catch (error) {
-        console.error("Erreur réseau :", error);
-        alert("Impossible de supprimer l'élément. Vérifiez votre connexion.");
-      }
-    }
+      })
+      .catch((error) => console.error("Error:", error));
   }
 }
