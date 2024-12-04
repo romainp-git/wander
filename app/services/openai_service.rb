@@ -7,6 +7,10 @@ class OpenaiService
   # ---------------------------------------------------------------------------------------
   def init_destination_trip
     destination = create_destination(@search)
+
+    # Sidekiq.logger.debug "#-----------------------------------------------------------"
+    # Sidekiq.logger.debug "#create_destination : #{destination}"
+
     trip = create_trip(@search, destination)
     @search.update(trip_id: trip.id)
 
@@ -37,8 +41,8 @@ class OpenaiService
   # ---------------------------------------------------------------------------------------
   def create_trip_activity(type, search, trip, activity)
 
-    if !activity['category'] 
-      mycategory = "cultural" 
+    if !activity['category']
+      mycategory = "cultural"
       else if Constants::CATEGORIES_UK.include?(activity['category'])
         mycategory = activity['category']
         else if Constants::CATEGORIES_FR.include?(activity['category'])
@@ -76,8 +80,6 @@ class OpenaiService
         website_url: "Unknown"
       )
     end
-    
-    GooglePlaceJob.perform_later({ activity: new_activity, destination: search })
 
     trip_activity = TripActivity.create!(
       activity: new_activity,
@@ -85,6 +87,8 @@ class OpenaiService
       start_date: DateTime.parse(activity["start_date"]),
       end_date: DateTime.parse(activity["end_date"])
     )
+
+    GooglePlaceJob.perform_later({ activity: new_activity, destination: search, trip_activity: trip_activity})
   end
   # ---------------------------------------------------------------------------------------
   private
@@ -139,7 +143,7 @@ class OpenaiService
   def get_activities_country(search)
     prompt_activities = get_prompt_activities_country(search)
     call_openai(prompt_activities)
-  end  
+  end
   # ---------------------------------------------------------------------------------------
   def get_activities_city(search)
     prompt_activities = get_prompt_activities_city(search)

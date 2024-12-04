@@ -11,13 +11,14 @@
       </div>
     </div>
     <div class="mt-4">
-      <h1 class="text-3xl font-bold font-playfair">Lille</h1>
-      <p class="text-sm flex items-center space-x-2">
+      <h1 class="text-3xl font-bold font-playfair leading-4"><%= current_user&.city || "" %></h1>
+      <p class="text-sm mt-0"><%= current_user&.country || "" %></p>
+      <p class="text-sm flex items-center space-x-2 mt-2">
         <% if current_user%>
           <% if current_user.currently_traveling? %>
-            <span class="w-2 h-2 rounded-full bg-red-500"></span><span>Voyage actuellement</span>
+            <span class="w-2 h-2 rounded-full bg-green-500"></span><span>Voyage actuellement</span>
           <% else %>
-            <span class="w-2 h-2 rounded-full bg-green-600"><span>Pas en voyage</span>
+            <span class="w-2 h-2 rounded-full bg-red-600"></span><span>Pas en voyage</span>
           <% end %>
         </p>
         <% end %>
@@ -25,16 +26,16 @@
   </div>
 
   <!-- Statistiques -->
-  <div class="grid grid-cols-3 gap-4 bg-gradient-to-r from-orange-500 to-orange-700 text-center p-6">
-    <div>
+  <div class="flex gap-4 bg-gradient-to-r from-orange-500 to-orange-700 text-center p-6">
+    <div class="flex-1">
       <p class="text-2xl font-bold"><%= current_user&.total_kilometers || "0" %></p>
       <p class="text-xs uppercase tracking-wide">kms</p>
     </div>
-    <div>
-      <p class="text-2xl font-bold">9</p>
+    <div class="flex-1">
+      <p class="text-2xl font-bold"><%= current_user&.total_days || "0" %></p>
       <p class="text-xs uppercase tracking-wide">jours</p>
     </div>
-    <div>
+    <div class="flex-1">
       <p class="text-2xl font-bold"><%= current_user&.total_countries || "0" %></p>
       <p class="text-xs uppercase tracking-wide">pays</p>
     </div>

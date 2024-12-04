@@ -4,6 +4,7 @@ class GooglePlaceService
 
   def initialize(params = {})
     @activity = params[:activity]
+    @trip_activity = params[:trip_activity]
     @destination = params[:destination]
   end
 
@@ -54,6 +55,16 @@ class GooglePlaceService
 
     @activity.save if @activity.changed?
 
+    ActionCable.server.broadcast(
+      "trip_activities_#{@trip_activity.id}",
+      {
+        trip_activity_id: @trip_activity.id,
+        html: ApplicationController.render(
+          partial: "trip_activities/trip_activity",
+          locals: { trip_activity: @trip_activity }
+        )
+      }
+    )
   end
 
   def fetch_photo(photo_id)
@@ -80,6 +91,7 @@ class GooglePlaceService
   def attach_photo(photo_url)
     begin
       file = URI.open(photo_url)
+
       @activity.photos.attach(
         io: file,
         filename: "#{@activity.name}_#{rand(1000)}.jpg",

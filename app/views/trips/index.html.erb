@@ -45,7 +45,7 @@
             <%= image_tag 'rome.jpg', class: "absolute inset-0 h-full w-full object-cover" %>
             <div class="absolute inset-0 bg-gradient-to-t from-black/100 via-black/20 to-black/0"></div>
 
-            <%= render "countdown", start: @trips[0].start_date.nil? ? "" : @trips[0].start_date %>
+            <%= render "countdown", start: @trips[0]&.start_date || "" %>
 
             <div class="relative bottom-0 left-0 right-0 p-4 text-white">
               <h1 class="text-3xl font-bold font-playfair"><%= @trips[0].name.capitalize() %></h1>
@@ -59,7 +59,7 @@
                   <span class="text-xs text-gray-300">Jours</span>
                 </div>
                 <div class="flex flex-col items-center">
-                  <span class="text-sm font-semibold">58 095</span>
+                  <span class="text-sm font-semibold"><%= @trips[0]&.total_kilometers(current_user) || 0 %></span>
                   <span class="text-xs text-gray-300">Kilomètres</span>
                 </div>
                 <div class="flex flex-col items-center">

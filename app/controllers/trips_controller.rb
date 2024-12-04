@@ -2,22 +2,8 @@ class TripsController < ApplicationController
   def index
     redirect_to new_user_session_path and return unless current_user
 
-    @user = current_user
     @trips = Trip.where(user: current_user).order(end_date: :desc)
-    @time_not_traveled = time_not_traveled(@trips, @user)
 
-    ## STATS
-    @destinations = trips.empty? ? [] : trips
-    @travels = journeys.empty? ? [] : journeys
-    @stats = {
-      total_countries_visited: @destinations.count,
-      ratio: ((@destinations.count / 249.0) * 100).round(2),
-      total_travels: Trip.where(user: current_user).where('end_date < ? ', DateTime.now).count
-    }
-    @total_km = total_km(@trips)
-    @travels_times = travels_times(@trips)
-
-    ## MAP
     @markers = @trips.filter_map do |trip|
       if trip.destination.latitude && trip.destination.longitude
         {
@@ -50,36 +36,6 @@ class TripsController < ApplicationController
   end
 
   def edit; end
-
-  def total_km(trips)
-    total = 0
-    options = { units: :km }
-    trips.joins(:destination).where.not(destinations: { latitude: nil, longitude: nil }).each do |trip|
-      total += Geocoder::Calculations.distance_between(
-        [current_user.latitude, current_user.longitude],
-        [trip.destination.latitude, trip.destination.longitude],
-        options
-      )
-    end
-    total.round(2)
-  end
-
-  def travels_times(trips)
-    total = 0
-    trips.each do |trip|
-      total += (trip.end_date - trip.start_date).to_i
-    end
-    total
-  end
-
-  def time_not_traveled(trips, _user)
-    past_trips = trips.select { |trip| trip.respond_to?(:end_date) && trip.end_date <= Date.today }
-    last_trip = past_trips.max_by(&:end_date)
-
-    return nil unless last_trip && last_trip.end_date < DateTime.now
-
-    last_trip.end_date
-  end
 
   private
 
