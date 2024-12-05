@@ -41,38 +41,13 @@
         </div> -->
 
         <% if !@trips.empty? %>
-          <div class="next-trip-container sticky z-10 w-full transition-all duration-200 bg-cover bg-center overflow-hidden pb-5">
-              <% if @trips[0].destination.photo.present? %>
-                <%= cl_image_tag @trips[0].destination.photo.key, class: "absolute inset-0 h-full w-full object-cover" %>
-              <% else %>
-                <%= image_tag 'rome.jpg', class: "absolute inset-0 h-full w-full object-cover" %>
-              <% end %>
-            <div class="absolute inset-0 bg-gradient-to-t from-black/100 via-black/20 to-black/0"></div>
-
-            <%= render "countdown", start: @trips[0]&.start_date || "" %>
-
-            <div class="relative bottom-0 left-0 right-0 p-4 text-white">
-              <h1 class="text-3xl font-bold font-playfair"><%= @trips[0].name.capitalize() %></h1>
-              <div class="flex justify-between mt-2">
-                <div class="flex flex-col items-center">
-                  <span class="text-sm font-semibold"><%= I18n.l(@trips[0].start_date, format: "%Y")  if !@trips[0].start_date.nil? %></span>
-                  <span class="text-xs text-gray-300"><%= I18n.l(@trips[0].start_date, format: "%d %b")  if !@trips[0].start_date.nil? %></span>
-                </div>
-                <div class="flex flex-col items-center">
-                  <span class="text-sm font-semibold"><%= (@trips[0].end_date - @trips[0].start_date).to_i %></span>
-                  <span class="text-xs text-gray-300">Jours</span>
-                </div>
-                <div class="flex flex-col items-center">
-                  <span class="text-sm font-semibold"><%= @trips[0]&.total_kilometers(current_user) || 0 %></span>
-                  <span class="text-xs text-gray-300">Kilomètres</span>
-                </div>
-                <div class="flex flex-col items-center">
-                  <span class="text-sm font-semibold"><%= @trips[0].activities.count %></span>
-                  <span class="text-xs text-gray-300">Activités</span>
-                </div>
-              </div>
-            </div>
-          </div>
+          <% if @curr_trip.present? %>
+            <%= render "curr_trip", trip: @curr_trip %>
+          <% elsif @next_trip.present? %>
+            <%= render "next_trip", trip: @next_trip %>
+          <% else %>
+            <%= render "last_trip", trip: @last_trip %>
+          <% end %>
         <% end %>
 
         <script>

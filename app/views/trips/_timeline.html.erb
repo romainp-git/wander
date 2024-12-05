@@ -8,7 +8,7 @@
 
 <script>
   const stackCards = document.querySelectorAll(".stack-cards__item");
-  const baseTop = 230;
+  const baseTop = stickyElm.offsetHeight - 20;
   const increment = 20;
 
   stackCards.forEach((card, index) => {
