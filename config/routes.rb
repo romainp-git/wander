@@ -2,6 +2,7 @@ require 'sidekiq/web'
 
 
 Rails.application.routes.draw do
+  get 'profiles/update'
   root "pages#home"
   mount Sidekiq::Web => '/sidekiq'
   devise_for :users
@@ -16,7 +17,12 @@ Rails.application.routes.draw do
   resources :searches, only: [:new, :create, :show]
 
   resources :trip_activities, only: [:update, :index, :destroy]
-
   get "/test", to: "pages#test"
   get "up" => "rails/health#show", as: :rails_health_check
+  
+  resources :profiles, only: [:show, :update] do
+    member do
+      get 'edit', to: 'profiles#edit'
+    end
+  end
 end
