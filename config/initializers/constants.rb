@@ -1,14 +1,14 @@
 module Constants
   CATEGORIES_FR = [
-    "Culturel",
-    "Nature",
-    "Aventure",
-    "Loisirs",
-    "Détente", 
-    "Gastronomie",
-    "Shopping",
-    "Vie Nocturne",
-    "Sportif"
+    "culturel",
+    "nature",
+    "aventure",
+    "loisirs",
+    "détente", 
+    "gastronomie",
+    "shopping",
+    "vie Nocturne",
+    "sportif"
   ].freeze
 
   CATEGORIES_UK = [
