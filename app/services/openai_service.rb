@@ -9,9 +9,6 @@ class OpenaiService
   def init_destination_trip
     destination = create_destination(@search)
 
-    # Sidekiq.logger.debug "#-----------------------------------------------------------"
-    # Sidekiq.logger.debug "#create_destination : #{destination}"
-
     trip = create_trip(@search, destination)
     @search.update(trip_id: trip.id)
 
@@ -147,8 +144,6 @@ class OpenaiService
   end
   # ---------------------------------------------------------------------------------------
   def create_trip(search, destination)
-    # user: User.find_by(username: 'PYM'),
-
     Trip.create!(
       name: search.destination,
       start_date: search.start_date,
@@ -268,9 +263,9 @@ class OpenaiService
     user_content =
     "La destination de mon voyage est #{search.destination} du #{search.start_date} matin au #{Date.parse(search.end_date.to_s)+1}.\n"
     if search.categories.length > 0
-      user_content = user_content + "Les catagories d'activités souhaitées sont celles-ci : #{search.categories}.\n"
+      user_content = user_content + "Les catégories d'activités souhaitées sont celles-ci : #{search.categories}.\n"
     else
-      user_content = user_content + "#{Constants::CATEGORIES_UK}\n"
+      user_content = user_content + "Les catégories d'activités souhaitées sont celles-ci : #{Constants::CATEGORIES_UK}\n"
     end
     if search.nb_children > 0
       user_content = user_content + "Tu dois prévoir une activité spécifique pour les enfants par jour.\n"
