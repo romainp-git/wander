@@ -14,12 +14,13 @@ Rails.application.routes.draw do
   resources :destinations, only: %i[index new create show]
 
   resources :suggestions, only: %i[show]
+  resources :map_views, only: %i[show]
   resources :searches, only: [:new, :create, :show]
 
-  resources :trip_activities, only: [:update, :index, :destroy]
+  resources :trip_activities, only: [:update, :index, :destroy, :show]
   get "/test", to: "pages#test"
   get "up" => "rails/health#show", as: :rails_health_check
-  
+
   resources :profiles, only: [:show, :update] do
     member do
       get 'edit', to: 'profiles#edit'

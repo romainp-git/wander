@@ -1,0 +1,21 @@
+<!-- Vue actuelle avec la carte et le carrousel -->
+<div class="map fixed inset-0 z-[25] h-screen w-screen bg-black overflow-hidden rounded-t-2xl translate-y-full transition-transform duration-500"
+  data-toggle-target="mapView">
+  <button class="absolute p-4 right-0 z-[25]" data-action="click->toggle#toggleView">
+    <p class="icon icon-200 drop-shadow-xl text-4xl text-black">close</p>
+  </button>
+
+  <div id="map" class="w-screen h-screen"
+    data-controller="map"
+    data-map-api-key-value='<%= ENV["MAPBOX_API_KEY"] %>'
+    data-map-markers-value='<%= raw @markers.to_json %>'>
+  </div>
+
+  <div class="absolute bottom-16 left-0 right-0 z-10 overflow-x-auto" data-controller="carrousel">
+    <div class="carousel carousel-center rounded-box space-x-4 p-4" data-carrousel-target="container">
+      <% @activities.each_with_index do |activity, index| %>
+        <%= render "carrousel_item", activity: activity, index: index %>
+      <% end %>
+    </div>
+  </div>
+</div>

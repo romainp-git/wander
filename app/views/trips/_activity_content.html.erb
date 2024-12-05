@@ -1,23 +1,26 @@
-<% if trip_activity.activity.photos.attached? %>
-  <%= link_to activity_path(trip_activity.activity), data: { turbo_frame: "_top" } do %>
-    <div class="flex-col">
-      <div class="flex items-center mb-2 justify-between">
-        <div class="flex items-center">
-          <%= image_tag "small_#{trip_activity.activity.category}.png", class: "w-6 h-6 mr-2", alt: "No picture available" %>
-          <p class="text-xs"><%= translate_category(trip_activity.activity.category) %></p>
+<% if trip_activity.status == "googled" %>
+  <div class="flex items-center gap-4 w-full justify-between">
+    <%= link_to activity_path(trip_activity.activity), data: { turbo_frame: "_top" }, class:"flex-1" do %>
+      <div class="flex flex-col">
+        <div class="flex items-center mb-2 justify-between">
+          <div class="flex items-center">
+            <%= image_tag "small_#{trip_activity.activity.category}.png", class: "w-6 h-6 mr-2", alt: "No picture available" %>
+            <p class="text-xs"><%= translate_category(trip_activity.activity.category) %></p>
+          </div>
+          <span class="badge">
+            <%= duration_in_seconds = trip_activity.end_date - trip_activity.start_date
+                hours = (duration_in_seconds / 3600).to_i
+                minutes = ((duration_in_seconds % 3600) / 60).to_i
+                "#{hours}h#{format('%02d', minutes)}"%>
+          </span>
         </div>
-        <span class="badge">
-          <%= duration_in_seconds = trip_activity.end_date - trip_activity.start_date
-              hours = (duration_in_seconds / 3600).to_i
-              minutes = ((duration_in_seconds % 3600) / 60).to_i
-              "#{hours}h#{format('%02d', minutes)}"%>
-        </span>
+        <h3 class="font-bold"><%= trip_activity.activity.name %></h3>
+        <p class="text-sm"><%= trip_activity.activity.description.truncate(50) if trip_activity.activity.description.present? %></p>
       </div>
-      <h3 class="font-bold"><%= trip_activity.activity.name %></h3>
-      <p class="text-sm"><%= trip_activity.activity.description.truncate(50) if trip_activity.activity.description.present? %></p>
-    </div>
-  <% end %>
-<p class="icon handle cursor-grab active:cursor-grabbing">drag_indicator</p>
+    <% end %>
+
+    <p class="icon handle cursor-grab active:cursor-grabbing">drag_indicator</p>
+  </div>
 
 <% else %>
   <div class="flex items-center gap-4 w-full">

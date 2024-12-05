@@ -6,6 +6,10 @@ class TripActivitiesController < ApplicationController
     @trip_activities = TripActivity.all
   end
 
+  def show
+    @trip_activity = TripActivity.find(params[:id])
+  end
+
   def update
     update_position_and_group if trip_activity_params[:start_date] || trip_activity_params[:position]
     if @trip_activity.save
