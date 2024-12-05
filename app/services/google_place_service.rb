@@ -63,7 +63,7 @@ class GooglePlaceService
 
     @trip_activity.status = "googled"
     @trip_activity.save
-    
+
     ActionCable.server.broadcast(
       "trip_activities_#{@trip_activity.id}",
       {
