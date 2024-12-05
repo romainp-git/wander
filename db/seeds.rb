@@ -215,7 +215,7 @@ suggestions_data = [
     description: "La Ville Lumière, célèbre pour ses musées, sa gastronomie et sa culture.",
     highlights: [
       {
-        name: "Tour Eiffel",
+        title: "Tour Eiffel",
         photo: "https://images.unsplash.com/photo-1541663625919-69012d49aa6a?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTZ8fHRvdXIlMjBlZmZlaWx8ZW58MHx8MHx8fDA%3D",
         description: "L'icône de Paris, la Tour Eiffel attire des millions de visiteurs chaque année.",
         key_number: "Une dame de fer aux 7 300 tonnes d'acier"

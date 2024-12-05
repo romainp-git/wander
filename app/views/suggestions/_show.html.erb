@@ -1,27 +1,52 @@
 <turbo-frame action="replace" id="modal-frame">
   <div data-controller="stories">
-    <div class="fixed inset-0 z-20 rounded-t-lg shadow-lg transition-transform duration-500 transform translate-y-full" data-controller="modal">
+    <div class="fixed inset-0 z-20 bg-black transition-transform duration-500 transform translate-y-full" data-controller="modal">
       <button class="absolute p-4 right-0 z-50" data-action="click->modal#close">
-        <p class="icon icon-200 drop-shadow-xl text-4xl text-black">close</p>
+        <p class="icon icon-200 drop-shadow-xl text-4xl text-white">arrow_downward</p>
       </button>
 
-      <div data-stories-target="track" class="carousel-track flex transition-transform duration-1000 ease-in-out w-full h-full">
+      <div data-stories-target="track" class="absolute inset-0 carousel-track flex transition-transform duration-1000 ease-in-out w-full h-full">
         <% suggestion.highlights.each do |highlight| %>
           <div data-stories-target="item" class="carousel-item w-full flex-shrink-0">
-            <%= cl_image_tag highlight.photo.key, class: "w-full h-full object-cover" %>
+            <%= cl_image_tag highlight.photo.key, class: "absolute w-full h-full opacity-60 object-cover" %>
+
+            <div class="text-left px-10 relative mt-40">
+              <h2 class="text-white drop-shadow-md-lg text-4xl font-bold leading-8 w-3/4">
+                <%= highlight.title %>
+              </h2>
+              <p class="text-white mt-4 text-sm w-3/5">
+                <%= highlight.description %>
+              </p>
+
+              <div class="mt-4 text-white flex items-start gap-2">
+                <p class="icon icon-filled text-orange-600">format_quote</p>
+                <p class="text-white text-2xl font-bold font-playfair italic leading-7">
+                  <%= highlight.key_number %>
+                </p>
+              </div>
+
+            </div>
           </div>
         <% end %>
       </div>
 
-      <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex w-full gap-2 px-4">
-        <div class="flex-1 bg-gray-300 h-1">
-          <div data-stories-target="progressBar" class="h-full bg-gray-800"></div>
-        </div>
-        <div class="flex-1 bg-gray-300 h-1">
-          <div data-stories-target="progressBar" class="h-full bg-gray-800"></div>
-        </div>
-        <div class="flex-1 bg-gray-300 h-1">
-          <div data-stories-target="progressBar" class="h-full bg-gray-800"></div>
+      <!-- Progress Indicator -->
+      <div class="absolute text-white w-full p-4 bottom-safe-offset-10">
+        <p class="text-5xl font-bold font-playfair leading-6"><%= suggestion.city %></p>
+        <p class="text-sm font-light mb-2"><%= suggestion.country %></p>
+      </div>
+
+      <div class="flex justify-center space-x-2">
+        <div class="absolute left-1/2 transform -translate-x-1/2 flex w-full gap-2 px-4 bottom-safe-offset-10">
+          <div class="flex-1 bg-white bg-opacity-50 h-1">
+            <div data-stories-target="progressBar" class="h-full bg-orange-600"></div>
+          </div>
+          <div class="flex-1 bg-white bg-opacity-50 h-1">
+            <div data-stories-target="progressBar" class="h-full bg-orange-600"></div>
+          </div>
+          <div class="flex-1 bg-white bg-opacity-50 h-1">
+            <div data-stories-target="progressBar" class="h-full bg-orange-600"></div>
+          </div>
         </div>
       </div>
     </div>

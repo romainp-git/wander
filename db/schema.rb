@@ -10,6 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+
 ActiveRecord::Schema[7.1].define(version: 2024_12_05_090247) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -57,8 +58,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_05_090247) do
     t.string "direction"
     t.integer "count"
     t.text "opening", default: [], array: true
-    t.string "subtitle"
     t.string "title"
+    t.string "subtitle"
   end
 
   create_table "destinations", force: :cascade do |t|
@@ -78,7 +79,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_05_090247) do
   create_table "highlights", force: :cascade do |t|
     t.string "title"
     t.string "description"
-    t.float "key_number"
+    t.string "key_number"
     t.bigint "suggestion_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -168,8 +169,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_05_090247) do
   add_foreign_key "searches", "trips"
   add_foreign_key "trip_activities", "activities"
   add_foreign_key "trip_activities", "trips"
-  add_foreign_key "trip_partners", "trips"
-  add_foreign_key "trip_partners", "users"
   add_foreign_key "trips", "destinations"
   add_foreign_key "trips", "users"
 end
