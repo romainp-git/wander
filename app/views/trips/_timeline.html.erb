@@ -15,44 +15,4 @@
     const dynamicTop = baseTop + index * increment;
     card.style.top = `calc(env(safe-area-inset-top) + ${dynamicTop}px)`;
   });
-
-  /*
-  const getBaseTop = () => {
-    const safeInsetTop = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('env(safe-area-inset-top)')) || 0;
-    return safeInsetTop + 180;
-  };
-
-  let baseTop = getBaseTop();
-
-  stackCards.forEach((card, index) => {
-    console.log(baseTop)
-    const dynamicTop = baseTop + index * increment;
-    card.style.top = `${dynamicTop}px`;
-  });
-
-  const clamp = (x, min, max) => Math.max(min, Math.min(x, max));
-  const stackContainer = document.querySelector(".stack-cards");
-  const cards = Array.from(stackCards);
-
-  window.addEventListener("resize", () => {
-    baseTop = getBaseTop();
-    stackCards.forEach((card, index) => {
-      const dynamicTop = baseTop + index * increment;
-      card.style.top = `${dynamicTop}px`;
-    });
-  });
-
-  window.addEventListener("scroll", () => {
-    const containerRect = stackContainer.getBoundingClientRect();
-    cards.forEach((card, i) => {
-      const cardRect = card.getBoundingClientRect();
-      const offset = cardRect.top - (baseTop + increment * i);
-
-      let scale = 1;
-      if (offset <= 100 && offset >= 0) {
-        scale = 0.9 + (offset / 100) * 0.1;
-      }
-      card.style.transform = `scale(${scale})`;
-    });
-  }); */
 </script>

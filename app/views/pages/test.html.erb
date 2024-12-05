@@ -1,45 +1,121 @@
-<div  class="fixed inset-0 items-center justify-center z-50 h-screen w-screen">
-  <%= image_tag 'rome.jpg', class: "absolute inset-0 h-full w-full object-cover" %>
-  <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent"></div>
 
-  <div class="flex flex-col justify-center items-center z-10 h-screen w-screen">
-    <div class="relative text-white px-20">
-      <div class="flex items-center mb-4 space-x-2">
-        <span class="text-xs font-medium uppercase tracking-wide bg-orange-500 text-white px-3 py-1 rounded-full">
-          Votre destination
-        </span>
-      </div>
 
-      <h1 class="text-5xl font-bold font-playfair"><%= @trip.name %></h1>
+  <!-- Demo styles -->
+  <style>
+    html,
+    body {
+      position: relative;
+      height: 100%;
+    }
 
-      <div class="flex items-center mt-2 space-x-2 text-sm text-gray-300">
-        <span class="icon">explore</span>
-        <span><%= @trip.destination.address %></span>
-      </div>
+    body {
+      background: #eee;
+      font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+      font-size: 14px;
+      color: #000;
+      margin: 0;
+      padding: 0;
+    }
 
-      <!-- Exploration stats -->
-      <div class="flex flex-col mt-6 text-gray-200 leading-relaxed gap-3">
-        <div class="text-sm">
-          <span class="flex items-center gap-3"><span class="icon icon-20">paid</span><strong>Devise</strong></span>
-          <div class="ml-8 text-xs"><%= @trip.destination.currency %></div>
-        </div>
-        <div class="text-sm">
-          <span class="flex items-center gap-3"><span class="icon icon-20">badge</span><strong>Documents nécessaires</strong></span>
-          <div class="ml-8 text-xs"><%= @trip.destination.papers %></div>
-        </div>
-        <div class="text-sm">
-          <span class="flex items-center gap-3"><span class="icon icon-20">lunch_dining</span><strong>Spécialités culinaires</strong></span>
-          <div class="ml-8 text-xs"><%= @trip.destination.food %></div>
-        </div>
-        <div class="text-sm">
-          <span class="flex items-center gap-3"><span class="icon icon-20">power</span><strong>Type de prise électrique</strong></span>
-          <div class="ml-8 text-xs"><%= @trip.destination.power %></div>
-        </div>
-      </div>
+    body {
+      background: #fff;
+      font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+      font-size: 14px;
+      color: #000;
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      position: relative;
+      height: 100%;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .swiper {
+      width: 240px;
+      height: 320px;
+    }
+
+    .swiper-slide {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 18px;
+      font-size: 22px;
+      font-weight: bold;
+      color: #fff;
+    }
+
+    .swiper-slide:nth-child(1n) {
+      background-color: rgb(206, 17, 17);
+    }
+
+    .swiper-slide:nth-child(2n) {
+      background-color: rgb(0, 140, 255);
+    }
+
+    .swiper-slide:nth-child(3n) {
+      background-color: rgb(10, 184, 111);
+    }
+
+    .swiper-slide:nth-child(4n) {
+      background-color: rgb(211, 122, 7);
+    }
+
+    .swiper-slide:nth-child(5n) {
+      background-color: rgb(118, 163, 12);
+    }
+
+    .swiper-slide:nth-child(6n) {
+      background-color: rgb(180, 10, 47);
+    }
+
+    .swiper-slide:nth-child(7n) {
+      background-color: rgb(35, 99, 19);
+    }
+
+    .swiper-slide:nth-child(8n) {
+      background-color: rgb(0, 68, 255);
+    }
+
+    .swiper-slide:nth-child(9n) {
+      background-color: rgb(218, 12, 218);
+    }
+
+    .swiper-slide:nth-child(10n) {
+      background-color: rgb(54, 94, 77);
+    }
+  </style>
+  <!-- Swiper -->
+
+  <div class="swiper mySwiper">
+    <div class="swiper-wrapper">
+      <div class="swiper-slide">Slide 1</div>
+      <div class="swiper-slide">Slide 2</div>
+      <div class="swiper-slide">Slide 3</div>
+      <div class="swiper-slide">Slide 4</div>
+      <div class="swiper-slide">Slide 5</div>
+      <div class="swiper-slide">Slide 6</div>
+      <div class="swiper-slide">Slide 7</div>
+      <div class="swiper-slide">Slide 8</div>
+      <div class="swiper-slide">Slide 9</div>
     </div>
-
-    <span class="loading loading-ring loading-lg text-white animate-spin mt-5"></span>
   </div>
 
-  <div data-controller="loading" data-loading-search-id="<%= @search.id %>"></div>
-</div>
+  <!-- Swiper JS -->
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+  <!-- Initialize Swiper -->
+  <script>
+    var swiper = new Swiper(".mySwiper", {
+      effect: "cards",
+      grabCursor: true,
+    });
+  </script>
