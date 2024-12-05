@@ -4,6 +4,8 @@ class GooglePlaceJob < ApplicationJob
   def perform(params = {})
     activity = params[:activity]
     destination = params[:destination].destination
-    GooglePlaceService.new({ activity: activity, destination: destination }).search_place
+    trip_activity = params[:trip_activity]
+
+    GooglePlaceService.new({ activity: activity, destination: destination, trip_activity: trip_activity }).search_place
   end
 end

@@ -2,6 +2,10 @@ class TripActivitiesController < ApplicationController
   skip_before_action :verify_authenticity_token, only: [:update, :destroy]
   before_action :set_trip_activity, only: [:update, :destroy]
 
+  def index
+    @trip_activities = TripActivity.all
+  end
+
   def update
     update_position_and_group if trip_activity_params[:start_date] || trip_activity_params[:position]
     if @trip_activity.save
