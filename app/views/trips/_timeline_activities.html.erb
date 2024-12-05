@@ -13,7 +13,7 @@
         <div class="absolute top-16 bottom-16 left-[24px] w-px bg-white"></div>
         <% if activities.any? %>
           <% activities.each_with_index do |trip_activity, activity_index| %>
-            <%= render partial: 'activity_card', locals: { trip_activity: trip_activity, index: activity_index } %>
+           <%= render partial: 'activity_card', locals: { trip_activity: trip_activity, index: activity_index } %>
           <% end %>
         <% end %>
       </ul>
