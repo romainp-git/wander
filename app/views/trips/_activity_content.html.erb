@@ -1,0 +1,39 @@
+<% if trip_activity.activity.photos.attached? %>
+  <%= link_to activity_path(trip_activity.activity), data: { turbo_frame: "_top" } do %>
+    <div class="flex-col">
+      <div class="flex items-center mb-2 justify-between">
+        <div class="flex items-center">
+          <%= image_tag "small_#{trip_activity.activity.category}.png", class: "w-6 h-6 mr-2", alt: "No picture available" %>
+          <p class="text-xs"><%= translate_category(trip_activity.activity.category) %></p>
+        </div>
+        <span class="badge">
+          <%= duration_in_seconds = trip_activity.end_date - trip_activity.start_date
+              hours = (duration_in_seconds / 3600).to_i
+              minutes = ((duration_in_seconds % 3600) / 60).to_i
+              "#{hours}h#{format('%02d', minutes)}"%>
+        </span>
+      </div>
+      <h3 class="font-bold"><%= trip_activity.activity.name %></h3>
+      <p class="text-sm"><%= trip_activity.activity.description.truncate(50) if trip_activity.activity.description.present? %></p>
+    </div>
+  <% end %>
+<p class="icon handle cursor-grab active:cursor-grabbing">drag_indicator</p>
+
+<% else %>
+  <div class="flex items-center gap-4 w-full">
+    <div class="flex flex-col gap-2 w-full">
+      <div class="flex gap-2 items-center w-full">
+        <div class="skeleton h-6 w-6 shrink-0 rounded-full"></div>
+        <div class="flex-1">
+          <div class="skeleton h-4 w-20"></div>
+        </div>
+        <div class="skeleton h-4 w-16 shrink-0"></div>
+      </div>
+      <div class="skeleton h-4 w-36"></div>
+      <div class="skeleton h-3 w-full"></div>
+      <div class="skeleton h-3 w-32"></div>
+    </div>
+  </div>
+
+  <div class="hidden" id="trip_activity_<%= trip_activity.id %>" data-controller="trip-activity" data-trip-activity-id-value="<%= trip_activity.id %>"></div>
+<% end %>
