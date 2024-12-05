@@ -1,10 +1,10 @@
 <div class="relative h-screen">
-  <div class="container-login max-w-md mx-auto p-6">
+  <div class="container-edit max-w-md mx-auto p-6">
     <h3 class="text-xl font-bold text-left text-white mb-6 mt-safe-offset-20">Modifier le mot de passe</h3>
     <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
       <%= f.error_notification %>
       <div class="form-inputs">
-        <%= f.input :email, required: true, autofocus: true, input_html: {class: "bg-gray-800 text-white placeholder:italic placeholder:text-slate-400 block w-full border border-white rounded-md py-3 shadow-sm focus:outline-none focus:border-orange-500 focus:ring-orange-600 focus:ring-1 sm:text-sm"} %>
+        <%= f.input :email, label: false, required: true, autofocus: true, input_html: {class: "bg-gray-800 text-white placeholder:italic placeholder:text-slate-400 block w-full border border-white rounded-md py-3 shadow-sm focus:outline-none focus:border-orange-500 focus:ring-orange-600 focus:ring-1 sm:text-sm"} %>
         <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
           <p>Currently waiting confirmation for: <%= resource.unconfirmed_email %></p>
         <% end %>
@@ -12,17 +12,17 @@
                 label: false,
                 placeholder: "Mot de passe actuel",
                 required: true,
-                input_html: { class: "bg-gray-800 text-white placeholder:italic placeholder:text-slate-400 block w-full border border-white rounded-md py-3 shadow-sm focus:outline-none focus:border-orange-500 focus:ring-orange-600 focus:ring-1 sm:text-sm", autocomplete: "mot de passe actuel" } %>
+                input_html: { class: "my-4 bg-gray-800 text-white placeholder:italic placeholder:text-slate-400 block w-full border border-white rounded-md py-3 shadow-sm focus:outline-none focus:border-orange-500 focus:ring-orange-600 focus:ring-1 sm:text-sm", autocomplete: "mot de passe actuel" } %>
         <%= f.input :password,
                 label: false,
                 placeholder: "Nouveau mot de passe",
                 required: true,
-                input_html: { class: "bg-gray-800 text-white placeholder:italic placeholder:text-slate-400 block w-full border border-white rounded-md py-3 shadow-sm focus:outline-none focus:border-orange-500 focus:ring-orange-600 focus:ring-1 sm:text-sm", autocomplete: "nouveau mot de passe" } %>
+                input_html: { class: "my-4 bg-gray-800 text-white placeholder:italic placeholder:text-slate-400 block w-full border border-white rounded-md py-3 shadow-sm focus:outline-none focus:border-orange-500 focus:ring-orange-600 focus:ring-1 sm:text-sm", autocomplete: "nouveau mot de passe" } %>
         <%= f.input :password_confirmation,
                 label: false,
                 placeholder: "Nouveau mot de passe",
                 required: true,
-                input_html: { class: "bg-gray-800 text-white placeholder:italic placeholder:text-slate-400 block w-full border border-white rounded-md py-3 shadow-sm focus:outline-none focus:border-orange-500 focus:ring-orange-600 focus:ring-1 sm:text-sm", autocomplete: "nouveau mot de passe" } %>
+                input_html: { class: "my-4 bg-gray-800 text-white placeholder:italic placeholder:text-slate-400 block w-full border border-white rounded-md py-3 shadow-sm focus:outline-none focus:border-orange-500 focus:ring-orange-600 focus:ring-1 sm:text-sm", autocomplete: "nouveau mot de passe" } %>
       </div>
       <div class="form-actions">
         <%= f.button :submit, "Mettre à jour", class:"w-full bg-orange-500 text-white py-3 px-6 rounded-lg text-lg font-bold active:bg-orange-§00" %>
