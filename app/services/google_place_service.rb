@@ -9,7 +9,9 @@ class GooglePlaceService
   end
 
   def search_place
-    query = "#{@activity.name}, #{@destination}"
+    query = "#{@activity.name}, #{@destination.address}"
+    Rails.logger.warn "SEARCH_PLACE =>\nACTIVITY_NAME #{@activity.name}\nDEST_ADD #{@destination.address}"
+
     response = HTTParty.post(
       "https://places.googleapis.com/v1/places:searchText?fields=*",
       headers: {
@@ -21,6 +23,10 @@ class GooglePlaceService
     )
 
     response_data = response.parsed_response
+
+    Rails.logger.warn "SEARCH_PLACE =>\nRESP_DATA #{response_data}"
+
+
     place = response_data["places"]&.first
 
     geocode = place["location"]
@@ -55,12 +61,15 @@ class GooglePlaceService
 
     @activity.save if @activity.changed?
 
+    @trip_activity.status = "googled"
+    @trip_activity.save
+    
     ActionCable.server.broadcast(
       "trip_activities_#{@trip_activity.id}",
       {
         trip_activity_id: @trip_activity.id,
         html: ApplicationController.render(
-          partial: "trip_activities/trip_activity",
+          partial: "trips/activity_content",
           locals: { trip_activity: @trip_activity }
         )
       }
