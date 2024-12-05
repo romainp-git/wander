@@ -1,4 +1,5 @@
 class OpenaiService
+  require 'open-uri'
   # ---------------------------------------------------------------------------------------
   def initialize(search, user)
     @search = search
@@ -39,7 +40,9 @@ class OpenaiService
     return activities
   end
   # ---------------------------------------------------------------------------------------
-  def create_trip_activity(type, search, trip, activity)
+  def save_trip_activity(trip, activity)
+
+    Rails.logger.debug "SAVE_TRIP_ACTIVITY (BEFORE GET DETAILS) =>\nACTIVITY NAME : #{activity['name']}\nACTIVITY DESC : #{activity['description']}\n#{activity}"
 
     if !activity['category']
       mycategory = "cultural"
@@ -53,42 +56,25 @@ class OpenaiService
       end
     end
 
-    Rails.logger.debug "CREATE_TRIP_ACTIVITY (BEFORE GET DETAILS) =>\nTYPE : #{type}\nACTIVITY NAME : #{activity['name']}\nACTIVITY DESC : #{activity['description']}\n#{activity}"
-
-    if type == "CITY"
-      activity_details = get_activity_details(search, activity)
-
-      Rails.logger.debug "CREATE_TRIP_ACTIVITY (AFTER GET DETAILS) =>\nNAME : #{activity_details['name']}\nDESC : #{activity_details['description']}\n#{activity_details}"
-
-      new_activity = Activity.find_or_create_by(
-        address: activity["address"],
-        name: activity_details['name'] || activity['name'],
-        title: activity_details['title'] || activity['title'],
-        description: activity_details['description'] || activity['description'],
-        category: mycategory,
-        wiki: url_alive?(activity_details['wiki']) ? activity_details['wiki'] : "Unknown",
-        website_url: "Unknown"
+    new_activity = Activity.find_or_create_by(
+      address: activity["address"],
+      name: activity['name'],
+      title: activity['title'],
+      description: activity['description'],
+      category: mycategory,
+      wiki: "Unknown",
+      website_url: "Unknown"
       )
-    else # CAS COUNTRY
-      new_activity = Activity.find_or_create_by(
-        address: activity["address"],
-        name: activity['name'],
-        title: activity['title'],
-        description: activity['description'],
-        category: "cultural",
-        wiki: "Unknown",
-        website_url: "Unknown"
-      )
-    end
-
-    trip_activity = TripActivity.create!(
-      activity: new_activity,
-      trip: trip,
-      start_date: DateTime.parse(activity["start_date"]),
-      end_date: DateTime.parse(activity["end_date"])
+      
+      trip_activity = TripActivity.create!(
+        activity: new_activity,
+        trip: trip,
+        start_date: DateTime.parse(activity["start_date"]),
+        end_date: DateTime.parse(activity["end_date"]),
+        status: "created"
     )
 
-    GooglePlaceJob.perform_later({ activity: new_activity, destination: search, trip_activity: trip_activity})
+    GooglePlaceJob.perform_later({ activity: new_activity, destination: trip.destination, trip_activity: trip_activity})
   end
   # ---------------------------------------------------------------------------------------
   def create_trip_one_more_activity(search, activity_date, activity_categories)
@@ -151,11 +137,10 @@ class OpenaiService
         power: result['power'],
         alpha3code: result['alpha3code']
         )
-        Rails.logger.debug "search.destination"
-        photo = Unsplash::Photo.search(search.destination)[0]
-        Rails.logger.debug photo
-        file = URI.open(photo['urls']['regular'])
-        destination.photo.attach(io: file, filename: "#{search.destination}_search_#{rand(1000)}.jpg", content_type: "image/jpeg")
+      
+      photo = Unsplash::Photo.search(search.destination)[0]
+      file = OpenURI.open_uri(photo['urls']['regular']) # Updated method
+      destination.photo.attach(io: file, filename: "#{search.destination}_search_#{rand(1000)}.jpg", content_type: "image/jpeg")
     end
 
     return destination

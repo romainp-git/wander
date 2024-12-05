@@ -6,10 +6,11 @@ class GetActivityDetailsJob < ApplicationJob
     Rails.logger.warn "Nouvelle tentative job #{job.class} suite erreur #{error.message}"
   end
 
-  def perform(type, search, trip, activity, user)
+  def perform(search, trip, activity, user)
 
     if search
-      OpenaiService.new(search, user).create_trip_activity(type, search, trip, activity)
+      destination = search.destination
+      GooglePlaceJob.perform_later({ activity: activity, destination: destination, trip_activity: trip})
     else
       Rails.logger.error "InitDestinationTripJob : search_id #{search_id} non trouvé"
     end
