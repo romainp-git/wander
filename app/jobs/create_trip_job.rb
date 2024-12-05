@@ -13,11 +13,8 @@ class CreateTripJob < ApplicationJob
       OpenaiService.new(search, user).init_destination_trip
 
       Rails.logger.debug "Broadcasting to loading_#{search_id} with URL: #{Rails.application.routes.url_helpers.trip_path(search.trip_id)}"
+# redirection ModifPYM
 
-      ActionCable.server.broadcast(
-        "loading_#{search_id}",
-        { redirect_url: Rails.application.routes.url_helpers.trip_path(search.trip_id) }
-      )
     else
       Rails.logger.error "InitDestinationTripJob : search_id #{search_id} non trouvé"
     end
@@ -38,7 +35,18 @@ class CreateTripJob < ApplicationJob
     Rails.logger.debug "AFTER PERFORM activities = #{activities["activities"]}"
 
     activities["activities"].each do |activity|
-      GetActivityDetailsJob.perform_later(type, search, trip, activity, user)
+      OpenaiService.new(search, user).save_trip_activity(trip, activity)
     end
+
+    ActionCable.server.broadcast(
+      "loading_#{search.id}",
+      { redirect_url: Rails.application.routes.url_helpers.trip_path(trip.id) }
+    )
+
+    # if type == "CITY"
+    #   activities["activities"].each do |activity|
+    #     GetActivityDetailsJob.perform_later(search, trip, activity, user)
+    #   end
+    # end
   end
 end
