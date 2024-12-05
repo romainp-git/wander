@@ -40,14 +40,8 @@
           <button class="border border-white text-white py-2 px-6 rounded-md text-sm active:border-orange-600 h-12 flex flex-grow items-center justify-center" onclick="stats_modal.showModal()">Mes statistiques</button>
         </div> -->
 
-        <% if !@trips.empty? %>
-          <% if @curr_trip.present? %>
-            <%= render "curr_trip", trip: @curr_trip %>
-          <% elsif @next_trip.present? %>
-            <%= render "next_trip", trip: @next_trip %>
-          <% else %>
-            <%= render "last_trip", trip: @last_trip %>
-          <% end %>
+        <% if @trips.present? %>
+          <%= render "trip_hero", curr_trip: @curr_trip, next_trip: @next_trip, last_trip: @last_trip %>
         <% end %>
 
         <script>
