@@ -13,57 +13,51 @@
       class="w-full h-64"></div>
   </div>
 
-  <div id="my-trips"
-    data-controller="fullscreen"
-    class="swiper-container">
-    <div class="swiper-wrapper">
-      <div class="swiper-slide relative">
+  <div id="my-trips" class="relative">
 
-        <div class="absolute -top-12 left-8">
-          <% if current_user&.photo %>
-            <%= cl_image_tag current_user.photo.key, alt: "Avatar", class: "w-24 h-24 border-2 rounded-full shadow-lg" %>
-          <% end %>
-        </div>
+    <div class="absolute -top-12 left-8">
+      <% if current_user&.photo %>
+        <%= cl_image_tag current_user.photo.key, alt: "Avatar", class: "w-24 h-24 border-2 rounded-full shadow-lg" %>
+      <% end %>
+    </div>
 
-        <div class="text-left mt-3 ml-36">
-          <h1 class="text-md text-white font-bold leading-5"><%= "#{current_user.first_name} #{current_user.last_name}"%></h1>
-          <div class="flex items-center gap-2 text-sm">
-            <p class="font-material text-white">person</p>
-            <p class="text-gray-300"><%= current_user.username %></p>
-          </div>
-        </div>
-
-        <%= render "statistics" %>
-
-        <!-- <div class="text-center my-5 flex gap-3 justify-center px-2">
-          <%= link_to 'Ajouter un voyage', new_trip_path, class: "bg-orange-600 text-white py-2 px-6 rounded-md text-sm active:bg-orange-700 h-12 flex flex-grow items-center justify-center", data: { turbo_frame: "_top" } %>
-          <button class="border border-white text-white py-2 px-6 rounded-md text-sm active:border-orange-600 h-12 flex flex-grow items-center justify-center" onclick="stats_modal.showModal()">Mes statistiques</button>
-        </div> -->
-
-        <% if @trips.present? %>
-          <%= render "trip_hero", curr_trip: @curr_trip, next_trip: @next_trip, last_trip: @last_trip %>
-        <% end %>
-
-        <script>
-          const stickyElm = document.querySelector('.next-trip-container')
-          const observer = new IntersectionObserver(
-            (entries) => {
-              entries.forEach((entry) => {
-                if (entry.isIntersecting) {
-                  stickyElm.classList.remove("sticked");
-                } else {
-                  stickyElm.classList.add("sticked");
-                }
-              });
-            },
-            { threshold: [1] }
-          );
-          observer.observe(stickyElm);
-        </script>
-
-        <%= render "timeline"%>
-
+    <div class="text-left mt-3 ml-36">
+      <h1 class="text-md text-white font-bold leading-5"><%= "#{current_user.first_name} #{current_user.last_name}"%></h1>
+      <div class="flex items-center gap-2 text-sm">
+        <p class="font-material text-white">person</p>
+        <p class="text-gray-300"><%= current_user.username %></p>
       </div>
     </div>
+
+    <%= render "statistics" %>
+
+    <!-- <div class="text-center my-5 flex gap-3 justify-center px-2">
+      <%= link_to 'Ajouter un voyage', new_trip_path, class: "bg-orange-600 text-white py-2 px-6 rounded-md text-sm active:bg-orange-700 h-12 flex flex-grow items-center justify-center", data: { turbo_frame: "_top" } %>
+      <button class="border border-white text-white py-2 px-6 rounded-md text-sm active:border-orange-600 h-12 flex flex-grow items-center justify-center" onclick="stats_modal.showModal()">Mes statistiques</button>
+    </div> -->
+
+    <% if @trips.present? %>
+      <%= render "trip_hero", curr_trip: @curr_trip, next_trip: @next_trip, last_trip: @last_trip %>
+    <% end %>
+
+    <script>
+      const stickyElm = document.querySelector('.next-trip-container')
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              stickyElm.classList.remove("sticked");
+            } else {
+              stickyElm.classList.add("sticked");
+            }
+          });
+        },
+        { threshold: [1] }
+      );
+      observer.observe(stickyElm);
+    </script>
+
+    <%= render "timeline"%>
+
   </div>
 </turbo-frame>
