@@ -1,28 +1,26 @@
-
-<h2>Change your password</h2>
-
-<%= simple_form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put }) do |f| %>
-  <%= f.error_notification %>
-
-  <%= f.input :reset_password_token, as: :hidden %>
-  <%= f.full_error :reset_password_token %>
-
-  <div class="form-inputs">
-    <%= f.input :password,
+<div class="relative h-screen"></div>
+<div class="container-login max-w-md mx-auto p-6">
+  <h3 class="text-xl font-bold text-left text-white mb-6 mt-safe-offset-20">Change your password</h3>
+  <%= simple_form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put }) do |f| %>
+    <%= f.error_notification %>
+    <%= f.input :reset_password_token, as: :hidden %>
+    <%= f.full_error :reset_password_token %>
+    <div class="form-inputs">
+      <%= f.input :password,
                 label: "New password",
                 required: true,
                 autofocus: true,
                 hint: ("#{@minimum_password_length} characters minimum" if @minimum_password_length),
                 input_html: { autocomplete: "new-password" } %>
-    <%= f.input :password_confirmation,
+      <%= f.input :password_confirmation,
                 label: "Confirm your new password",
                 required: true,
                 input_html: { autocomplete: "new-password" } %>
-  </div>
-
-  <div class="form-actions">
-    <%= f.button :submit, "Change my password" %>
-  </div>
-<% end %>
-
+    </div>
+    <div class="form-actions">
+      <%= f.button :submit, "Change my password", class:"w-full bg-orange-500 text-white py-3 px-6 rounded-lg text-lg font-bold active:bg-orange-§00" %>
+    </div>
+  <% end %>
+</div>
+</div>
 <%= render "devise/shared/links" %>

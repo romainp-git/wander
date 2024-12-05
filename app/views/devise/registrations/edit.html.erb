@@ -1,35 +1,37 @@
-<h2>Edit <%= resource_name.to_s.humanize %></h2>
-
-<%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
-  <%= f.error_notification %>
-
-  <div class="form-inputs">
-    <%= f.input :email, required: true, autofocus: true %>
-
-    <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
-      <p>Currently waiting confirmation for: <%= resource.unconfirmed_email %></p>
-    <% end %>
-
-    <%= f.input :password,
-                hint: "leave it blank if you don't want to change it",
-                required: false,
-                input_html: { autocomplete: "new-password" } %>
-    <%= f.input :password_confirmation,
-                required: false,
-                input_html: { autocomplete: "new-password" } %>
-    <%= f.input :current_password,
-                hint: "we need your current password to confirm your changes",
+<div class="relative h-screen">
+  <div class="container-login max-w-md mx-auto p-6">
+    <h3 class="text-xl font-bold text-left text-white mb-6 mt-safe-offset-20">Modifier le mot de passe</h3>
+    <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
+      <%= f.error_notification %>
+      <div class="form-inputs">
+        <%= f.input :email, required: true, autofocus: true, input_html: {class: "bg-gray-800 text-white placeholder:italic placeholder:text-slate-400 block w-full border border-white rounded-md py-3 shadow-sm focus:outline-none focus:border-orange-500 focus:ring-orange-600 focus:ring-1 sm:text-sm"} %>
+        <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
+          <p>Currently waiting confirmation for: <%= resource.unconfirmed_email %></p>
+        <% end %>
+        <%= f.input :current_password,
+                label: false,
+                placeholder: "Mot de passe actuel",
                 required: true,
-                input_html: { autocomplete: "current-password" } %>
+                input_html: { class: "bg-gray-800 text-white placeholder:italic placeholder:text-slate-400 block w-full border border-white rounded-md py-3 shadow-sm focus:outline-none focus:border-orange-500 focus:ring-orange-600 focus:ring-1 sm:text-sm", autocomplete: "mot de passe actuel" } %>
+        <%= f.input :password,
+                label: false,
+                placeholder: "Nouveau mot de passe",
+                required: true,
+                input_html: { class: "bg-gray-800 text-white placeholder:italic placeholder:text-slate-400 block w-full border border-white rounded-md py-3 shadow-sm focus:outline-none focus:border-orange-500 focus:ring-orange-600 focus:ring-1 sm:text-sm", autocomplete: "nouveau mot de passe" } %>
+        <%= f.input :password_confirmation,
+                label: false,
+                placeholder: "Nouveau mot de passe",
+                required: true,
+                input_html: { class: "bg-gray-800 text-white placeholder:italic placeholder:text-slate-400 block w-full border border-white rounded-md py-3 shadow-sm focus:outline-none focus:border-orange-500 focus:ring-orange-600 focus:ring-1 sm:text-sm", autocomplete: "nouveau mot de passe" } %>
+      </div>
+      <div class="form-actions">
+        <%= f.button :submit, "Mettre à jour", class:"w-full bg-orange-500 text-white py-3 px-6 rounded-lg text-lg font-bold active:bg-orange-§00" %>
+      </div>
+    <% end %>
+    <hr class="my-3">
+    <div class="mt-4 text-center">
+    <div> <%= button_to "Supprimer mon compte", registration_path(resource_name), class:"text-white underline py-2", data: { confirm: "Etes-vous sûr?", turbo_confirm: "Etes-vous sûr?" }, method: :delete %></div>
+    <%= link_to "Retour", :back, class:"text-white underline", data: { turbo_frame: "_top" } %>
+    </div>
   </div>
-
-  <div class="form-actions">
-    <%= f.button :submit, "Update" %>
-  </div>
-<% end %>
-
-<h3>Cancel my account</h3>
-
-<div>Unhappy? <%= button_to "Cancel my account", registration_path(resource_name), data: { confirm: "Are you sure?", turbo_confirm: "Are you sure?" }, method: :delete %></div>
-
-<%= link_to "Back", :back %>
+</div>
