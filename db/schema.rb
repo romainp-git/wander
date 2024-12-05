@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_12_03_212551) do
+ActiveRecord::Schema[7.1].define(version: 2024_12_05_111508) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -57,8 +57,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_03_212551) do
     t.string "direction"
     t.integer "count"
     t.text "opening", default: [], array: true
-    t.string "subtitle"
     t.string "title"
+    t.string "subtitle"
   end
 
   create_table "destinations", force: :cascade do |t|
@@ -78,7 +78,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_03_212551) do
   create_table "highlights", force: :cascade do |t|
     t.string "title"
     t.string "description"
-    t.float "key_number"
+    t.string "key_number"
     t.bigint "suggestion_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -130,15 +130,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_03_212551) do
     t.index ["trip_id"], name: "index_trip_activities_on_trip_id"
   end
 
-  create_table "trip_partners", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.bigint "trip_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["trip_id"], name: "index_trip_partners_on_trip_id"
-    t.index ["user_id"], name: "index_trip_partners_on_user_id"
-  end
-
   create_table "trips", force: :cascade do |t|
     t.string "name"
     t.date "start_date"
@@ -176,8 +167,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_03_212551) do
   add_foreign_key "searches", "trips"
   add_foreign_key "trip_activities", "activities"
   add_foreign_key "trip_activities", "trips"
-  add_foreign_key "trip_partners", "trips"
-  add_foreign_key "trip_partners", "users"
   add_foreign_key "trips", "destinations"
   add_foreign_key "trips", "users"
 end
