@@ -4,13 +4,16 @@ export default class extends Controller {
   static targets = ["card", "deleteButton"];
 
   connect() {
+    console.log("swipe controller connected");
     this.startX = 0;
     this.currentX = 0;
-    this.threshold = -10;
+    this.threshold = -50;
   }
 
   touchstart(event) {
     this.startX = event.touches[0].clientX;
+
+    this.deleteButtonTarget.classList.remove("hidden");
   }
 
   touchmove(event) {
@@ -19,11 +22,17 @@ export default class extends Controller {
 
     if (deltaX < 0) {
       this.cardTarget.style.transform = `translateX(${deltaX}px)`;
+      const progress = Math.min(Math.abs(deltaX) / 100, 1);
+
+      this.deleteButtonTarget.style.opacity = progress.toString();
+
+      this.deleteButtonTarget.style.filter = progress === 1 ? "none" : `blur(${(1 - progress) * 5}px)`;
     }
   }
 
   touchend() {
     const deltaX = this.currentX - this.startX;
+
     if (deltaX < this.threshold) {
       this.showDeleteButton();
     } else {
@@ -32,23 +41,29 @@ export default class extends Controller {
   }
 
   showDeleteButton() {
-    this.cardTarget.style.transform = `translateX(-35%)`;
+    this.cardTarget.style.transform = `translateX(-30%)`;
+    this.deleteButtonTarget.style.opacity = "1";
+    this.deleteButtonTarget.style.filter = "none";
     this.deleteButtonTarget.classList.add("flex");
   }
 
   resetCard() {
     this.cardTarget.style.transform = `translateX(0)`;
-    this.deleteButtonTarget.classList.remove("flex");
+    this.deleteButtonTarget.style.opacity = "0";
+    this.deleteButtonTarget.style.filter = "blur(5px)";
+    setTimeout(() => {
+      this.deleteButtonTarget.classList.add("hidden");
+    }, 300);
   }
 
   async delete() {
-    if (confirm("Voulez-vous vraiment supprimer cet élément ?")) {
+    if (confirm("Voulez-vous vraiment supprimer cette activité ?")) {
       const deleteUrl = this.element.dataset.sortableUpdateUrl;
+
       try {
         const response = await fetch(deleteUrl, {
           method: "DELETE",
           headers: {
-            "X-CSRF-Token": document.querySelector("meta[name='csrf-token']").getAttribute("content"),
             "Content-Type": "application/json",
           },
         });
@@ -59,7 +74,7 @@ export default class extends Controller {
           alert("Une erreur est survenue. Veuillez réessayer.");
         }
       } catch (error) {
-        alert("Impossible de supprimer l'élément. Vérifiez votre connexion.");
+        alert("Impossible de supprimer l'activité. Vérifiez votre connexion.");
       }
     }
   }

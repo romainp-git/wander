@@ -9,16 +9,17 @@
   </div>
 
   <div
-    class="absolute right-0 top-0 bottom-0 z-0 flex text-center bg-red-500 w-1/4 rounded-lg items-center justify-center"
-    data-swipe-card-target="deleteButton"
-  >
-    <button class="text-white font-bold py-12 px-4 shrink-0" data-action="click->swipe-card#delete">
-      <div class=" icon">delete</div>
-    </button>
-  </div>
+  class="absolute right-0 top-0 bottom-0 z-0 flex text-center bg-red-500 w-1/4 rounded-lg items-center justify-center hidden"
+  data-swipe-card-target="deleteButton"
+  style="opacity: 0; filter: blur(5px); transition: opacity 0.3s, filter 0.3s;"
+>
+  <button class="text-white font-bold py-12 px-4 shrink-0" data-action="click->swipe-card#delete">
+    <div class="icon">delete</div>
+  </button>
+</div>
 
   <!-- Timeline card -->
-  <turbo-frame id="<%= dom_id(trip_activity) %>" class="bg-gray-800 text-white rounded-lg shadow-md p-4 w-full flex justify-between items-center transition-transform duration-300 relative z-1" data-swipe-card-target="card" data-action="touchstart->swipe-card#touchstart touchmove->swipe-card#touchmovetouchend->swipe-card#touchend">
+  <turbo-frame id="<%= dom_id(trip_activity) %>" class="bg-gray-800 text-white rounded-lg shadow-md p-4 w-full flex justify-between items-center transition-transform duration-300 relative z-1" data-swipe-card-target="card" data-action="touchstart->swipe-card#touchstart touchmove->swipe-card#touchmove touchend->swipe-card#touchend">
     <%= render partial: "activity_content", locals: { trip_activity: trip_activity, index: index } %>
   </turbo-frame>
 </li>
