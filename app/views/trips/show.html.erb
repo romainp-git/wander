@@ -1,4 +1,5 @@
-<div class="h-screen" data-controller="toggle">
+<div class="h-screen" data-controller="toggle" >
+<div data-controller="datepicker">
   <!-- Bouton Toggle -->
 
   <button class="fixed bottom-4 right-4 z-30 bg-orange-500 text-white p-3 rounded-full shadow-lg icon"
@@ -6,8 +7,37 @@
           data-view="map">
     map
   </button>
-  <button onclick="new_activity_modal.showModal()" class="fixed bottom-20 right-4 z-30 bg-orange-500 text-white p-3 rounded-full shadow-lg icon" > Add</button>
-  <%= render "activities/new_activity_modal"%>
+  <div class="fixed bottom-20 right-4 z-40" data-controller="main-button">
+
+  <!-- Option Buttons -->
+  <div
+    class="hidden flex flex-col-reverse items-center space-y-4 transition-all duration-300 opacity-0 translate-y-4 "
+    data-main-button-target="options"
+  >
+    <button
+      onclick="new_activity_modal.showModal()"
+      class="bg-white text-orange-500 p-3 rounded-full my-4 shadow-lg icon"
+    >
+      edit
+    </button>
+    <button
+      onclick="new_ai_suggestion_modal.showModal()"
+      class="bg-white text-orange-500 p-3 rounded-full my-4 shadow-lg icon"
+    >
+      book_4_spark
+    </button>
+  </div>
+
+  <!-- Main Button -->
+  <button
+    data-action="click->main-button#toggleOptions"
+    data-main-button-target="mainButton"
+    class="bg-orange-500 text-white p-3 rounded-full shadow-lg icon"
+  >
+    Add
+  </button>
+</div>
+
 
   <!-- Vue actuelle avec la carte et le carrousel -->
   <div class="map fixed inset-0 z-[25] h-screen w-screen bg-black overflow-hidden rounded-t-2xl translate-y-full transition-transform duration-500"
@@ -77,4 +107,7 @@
       <%= render 'timeline_activities', day_activities: @day_activities %>
     </div>
   </div>
+  <%= render "activities/new_activity_modal"%>
+<%= render "activities/new_ai_suggestion_modal"%>
+</div>
 </div>

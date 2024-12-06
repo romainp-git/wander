@@ -1,29 +1,103 @@
 <dialog id="new_activity_modal" class="modal">
-  <div class="modal-box">
-    <h3>Créer une activitée</h3>
+  <div class="modal-box bg-gray-900 text-white rounded-lg shadow-lg">
+    <h3 class="text-2xl font-bold text-gray-100 mb-6">Que souhaitez vous faire ?</h3>
     <%= simple_form_for([@trip, @trip_activity], url: trip_trip_activities_path(@trip), method: :post) do |f| %>
-    <div class="form-inputs space-y-4">
-      <!-- Champs pour Activity -->
-      <%= f.fields_for :activity do |activity_fields| %>
-        <%= activity_fields.input :name, label: "Activity Name" %>
-        <%= activity_fields.input :address, label: "Address" %>
-        <%= activity_fields.input :photos, as: :file, label: "Sélectionnez vos photos", input_html: { multiple: true } %>
-      <% end %>
-    </div>
+      <div class="form-inputs space-y-6">
+        <!-- Champs pour Activity -->
+        <%= f.fields_for :activity do |activity_fields| %>
+        <%= activity_fields.hidden_field :category, value: "hobbies" %>
+          <%= activity_fields.input :name,
+            label: "Nom + localisation",
+            label_html: { class: "block text-sm font-medium text-white mb-2" },
+            input_html: { class: "w-full bg-gray-800 text-white border border-gray-700 rounded-md py-2 px-3 focus:ring-2 focus:ring-orange-500 focus:outline-none" } %>
 
-    <div class="form-dates space-y-4" data-controller="datepicker">
-      <!-- Champs pour TripActivity -->
-      <%= f.input :start_date, as: :string, label: "Date", input_html: { data: { datepicker_target: "startInput" } } %>
-      <%= f.input :end_date, as: :hidden, input_html: { data: { target: "datepicker.endInput" } } %>
-    </div>
+          <%# <%= activity_fields.input :address,
+            label: "Adresse",
+            label_html: { class: "block text-sm font-medium text-white mb-2" },
+            input_html: { class: "w-full bg-gray-800 text-white border border-gray-700 rounded-md py-2 px-3 focus:ring-2 focus:ring-orange-500 focus:outline-none" } %>
 
-    <div class="form-actions mt-11 flex justify-center">
-      <%= f.button :submit, "Add Activity", class: "bg-blue-500 text-white text-sm font-medium py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" %>
-    </div>
-  <% end %>
+          <div class="form-group space-y-4" data-controller="file-upload">
+            <label for="activity_photos" class="block text-sm font-medium text-white mb-2">Sélectionnez vos photos</label>
+            <div class="relative group" data-file-upload-target="uploadContainer">
+              <input type="file"
+                    name="activity[photos]"
+                    id="activity_photos"
+                    multiple
+                    accept="image/*"
+                    class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                    data-file-upload-target="input"
+                    data-action="change->file-upload#inputChange">
+              <div class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-600 rounded-lg bg-gray-800 text-gray-300 group-hover:border-orange-500 group-hover:text-orange-400 transition">
+                <span class="flex flex-col items-center">
+                  <span class="icon text-2xl">upload</span>
+                  <span class="text-sm" id="file-upload-placeholder">
+                    Cliquez ou glissez vos fichiers ici
+                  </span>
+                </span>
+              </div>
+            </div>
+            <!-- Conteneur des vignettes -->
+            <div class="grid grid-cols-3 gap-4 mt-4 hidden" data-file-upload-target="previewContainer"></div>
+          </div>
 
+        <% end %>
+      </div>
+
+      <div class="form-dates space-y-6 mt-6">
+        <!-- Durée -->
+        <h4 class="text-md font-semibold text-white mb-2">Durée de votre activité (en heures)</h4>
+        <div class="bg-white bg-opacity-10 p-4 text-white border border-gray-700 rounded-md" data-controller="counter">
+          <div class="flex flex-col gap-4">
+            <!-- Adults -->
+            <div class="flex justify-between items-center">
+              <div class="flex items-center gap-2">
+                <span class="icon text-white icon-200">timer</span>
+                <p class="text-white text-sm">Durée</p>
+                <small class="text-gray-300 text-sm">en heure(s)</small>
+              </div>
+              <div class="flex items-center justify-between gap-4 w-28">
+                <button type="button" data-action="click->counter#decrement" data-counter-target="decrement" data-type="adults" class="w-8 h-8 bg-white text-black rounded-full font-material">remove</button>
+                <span class="text-white" data-counter-target="value" data-type="adults">1</span>
+                <button type="button" data-action="click->counter#increment" data-counter-target="increment" data-type="adults" class="w-8 h-8 bg-white text-black rounded-full font-material">add</button>
+              </div>
+             <%= f.hidden_field :duration, value: 1, id: "trip_adults", data: { type: "adults", "counter-target": "input" } %>
+            </div>
+          </div>
+        </div>
+        <!-- Jours dynamiques -->
+        <div data-controller="tabs" data-tabs-default-color-value="orange-500" class="pt-4">
+          <h4 class="text-md font-semibold text-white mb-4">Choisissez le jour à modifier</h4>
+          <div class="flex items-center overflow-x-auto space-x-4 scrollbar-hide" data-tabs-target="daysContainer">
+            <% @calendar_dates.each_with_index do |date, index| %>
+              <div
+                class="flex flex-col items-center cursor-pointer px-4 py-3 rounded-lg
+                       <%= index == 0 ? 'bg-orange-500 text-white' : 'bg-gray-800 text-white' %> hover:bg-orange-500 hover:text-white transition"
+                data-action="click->tabs#updateDate"
+                data-tabs-day="<%= index %>"
+                data-tabs-target="day"
+                data-date="<%= date.strftime('%Y-%m-%d') %>">
+                <span class="text-sm font-medium"><%= I18n.l(date, format: '%a')[0].upcase %></span>
+                <span class="text-xs font-bold"><%= date.strftime('%d') %></span>
+              </div>
+            <% end %>
+            <%# <%= tag.input :start_date, type: :hidden, typrname: "trip_activity[start_date]", data: { tabs_target: "hiddenDate" } %>
+            <%= f.hidden_field :start_date, typrname: "trip_activity[start_date]", data: { tabs_target: "hiddenDate" } %>
+          </div>
+        </div>
+
+
+      </div>
+
+      <div class="form-actions mt-8 flex justify-center">
+        <%= f.button :submit,
+          "Ajouter une activité",
+          class: "w-full bg-orange-500 hover:bg-orange-600 text-white py-3 px-6 rounded-lg text-lg font-bold focus:outline-none focus:ring-4 focus:ring-orange-400" %>
+      </div>
+    <% end %>
   </div>
-  <form method="dialog" class="modal-backdrop">
+
+  <!-- Backdrop -->
+   <form method="dialog" class="modal-backdrop">
     <button>close</button>
   </form>
 </dialog>

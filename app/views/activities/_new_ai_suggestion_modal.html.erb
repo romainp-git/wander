@@ -1,0 +1,71 @@
+<dialog id="new_ai_suggestion_modal" class="modal">
+  <div class="modal-box bg-gray-900 rounded-lg shadow-lg">
+    <!-- Titre et description -->
+    <h3 class="text-2xl font-bold text-gray-100">Laissez l'IA enrichir votre voyage</h3>
+    <p class="text-sm text-gray-200 mt-2">Indiquez vos préférences et laissez-nous proposer des activités uniques à intégrer à votre journée.</p>
+
+    <%= simple_form_for([@trip], url: trip_trip_activities_path(@trip), method: :post) do %>
+      <!-- Section Catégories -->
+      <div class="form-inputs mt-6">
+        <h4 class="text-md font-semibold text-gray-200 mb-2">Sélectionnez un ou plusieurs activités</h4>
+        <div class="flex flex-wrap gap-2">
+          <% ["Culturel", "Nature", "Aventure", "Loisirs", "Détente", "Gastronomie", "Shopping", "Vie Nocturne", "Sportif"].each do |category| %>
+            <label class="inline-flex items-center cursor-pointer">
+              <%= tag.input type: :checkbox, name: "trip_activity[categories][]", value: category, class: "hidden peer" %>
+              <div class="flex items-center bg-gray-100 rounded-full px-3 py-2 shadow-sm peer-checked:bg-orange-500 peer-checked:text-white">
+                <span class="material-icons text-lg mr-2">
+                  <%= case category
+                      when "Culturel" then "museum"
+                      when "Nature" then "park"
+                      when "Aventure" then "hiking"
+                      when "Loisirs" then "sports_soccer"
+                      when "Détente" then "spa"
+                      when "Gastronomie" then "restaurant"
+                      when "Shopping" then "shopping_bag"
+                      when "Vie Nocturne" then "nightlife"
+                      when "Sportif" then "fitness_center"
+                      end %>
+                </span>
+                <span class="text-sm mr-1 font-medium"><%= category %></span>
+              </div>
+            </label>
+          <% end %>
+        </div>
+      </div>
+
+      <!-- Section Sélection de jour -->
+      <div data-controller="tabs" data-tabs-default-color-value="orange-500" class="">
+        <div class="flex-col items-center justify-between py-7">
+        <h4 class="text-md font-semibold text-gray-200 mb-2">Choisissez le jour à modifier</h4>
+          <div class="flex items-center overflow-x-scroll space-x-2" data-tabs-target="daysContainer" style="scrollbar-width: none;">
+            <% @calendar_dates.each_with_index do |date, index| %>
+              <div class=" flex flex-col items-center cursor-pointer text-white px-4 py-3 <%= 'text-black bg-orange-500 rounded-lg' if index == 0 %>"
+                  data-action="click->tabs#updateDate"
+                  data-tabs-day="<%= index %>"
+                  data-tabs-target="day"
+                  data-date="<%= date.strftime('%Y-%m-%d') %>">
+                <span class="text-sm"><%= I18n.l(date, format: '%a')[0].upcase %></span>
+                <span class="text-xs font-bold"><%= date.strftime('%d') %></span>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      <!-- Champ pour la date -->
+      <div class="form-dates space-y-4 mt-3" >
+        <div class="mb-4">
+          <%= tag.input type: :hidden, typrname: "trip_activity[start_date]", data: { tabs_target: "hiddenDate" } %>
+        </div>
+      </div>
+    </div>
+
+      <!-- Bouton d'envoi -->
+      <div class="form-actions mt-6 flex justify-center">
+        <%= tag.button "Ajouter une activité", type: :submit, class: "w-full bg-orange-500 text-white py-3 px-6 rounded-lg text-lg font-bold active:bg-orange-600" %>
+      </div>
+    <% end %>
+  </div>
+    <!-- Bouton Fermer -->
+    <form method="dialog" class="modal-backdrop">
+    <button>close</button>
+  </form>
+</dialog>

@@ -1,12 +1,14 @@
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
-  static targets = ["day", "timeline", "timelineDay", "tab", "tabActivity", "content", "tabsContainer", "daysContainer"];
+  static targets = ["day", "timeline", "timelineDay", "tab", "tabActivity", "content", "tabsContainer", "daysContainer", "hiddenDate"];
+  static values = { defaultColor: { type: String, default: "white" }};
 
   connect() {
     console.log("Tabs controller connected");
-    this.activateDay(0);
+    this.activateDay(0, this.defaultColorValue);
     this.isScrolling = false;
+    this.hiddenDateTarget.value = this.dayTargets[0].dataset.date
 
     window.addEventListener("scroll", this.onScroll.bind(this));
   }
@@ -15,19 +17,19 @@ export default class extends Controller {
     window.removeEventListener("scroll", this.onScroll.bind(this));
   }
 
-  changeTab(event) {
+  changeTab(event, color) {
     const targetIndex = parseInt(event.currentTarget.dataset.tabsDay, 10);
 
     if (!this.isScrolling) {
       this.isScrolling = true;
-      this.activateDay(targetIndex);
+      this.activateDay(targetIndex, color);
       this.scrollToTimelineDay(targetIndex, () => {
         this.isScrolling = false;
       });
     }
   }
 
-  activateDay(index) {
+  activateDay(index, color = this.defaultColorValue) {
     this.tabTargets.forEach((tab, i) => {
       tab.classList.toggle("tab-active", i === index);
       tab.classList.toggle("text-white", i === index);
@@ -38,7 +40,7 @@ export default class extends Controller {
 
     this.dayTargets.forEach((dayTab, i) => {
       dayTab.classList.toggle("text-black", i === index);
-      dayTab.classList.toggle("bg-white", i === index);
+      dayTab.classList.toggle(`bg-${color}`, i === index);
       dayTab.classList.toggle("rounded-lg", i === index);
       dayTab.classList.toggle("px-2", i === index);
       dayTab.classList.toggle("py-1", i === index);
@@ -131,5 +133,29 @@ export default class extends Controller {
 
     this.activateDay(activeIndex);
     this.scrollToTab(activeIndex);
+  }
+  updateDate(event) {
+    this.changeTab(event, "orange-500")
+    const selectedDayIndex = parseInt(event.currentTarget.dataset.tabsDay, 10);
+
+    // Vérifiez que l'index sélectionné est valide
+    const days = this.element.querySelectorAll("[data-tabs-day]");
+
+    const selectedDayElement = days[selectedDayIndex];
+    const dateAttribute = selectedDayElement.dataset.date;
+
+    if (!dateAttribute) {
+      console.error("Attribut data-date manquant pour le jour sélectionné.");
+      return;
+    }
+
+    if (!this.hasHiddenDateTarget) {
+      console.error("Le champ hiddenDate n'a pas été trouvé.");
+      return;
+    }
+
+    // Mettez à jour la valeur du champ caché
+    this.hiddenDateTarget.value = dateAttribute;
+    console.log("Date mise à jour :", dateAttribute);
   }
 }
