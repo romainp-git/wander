@@ -5,14 +5,3 @@
     <% end %>
   </ul>
 <% end %>
-
-<script>
-  const stackCards = document.querySelectorAll(".stack-cards__item");
-  const baseTop = stickyElm.offsetHeight - 20;
-  const increment = 20;
-
-  stackCards.forEach((card, index) => {
-    const dynamicTop = baseTop + index * increment;
-    card.style.top = `calc(env(safe-area-inset-top) + ${dynamicTop}px)`;
-  });
-</script>

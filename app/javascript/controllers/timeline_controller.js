@@ -4,11 +4,20 @@ export default class extends Controller {
   static targets = ["container"]
 
   connect() {
+    this.resizeObserver = new ResizeObserver(() => {
+      this.adjustHeight();
+    });
+
+    this.resizeObserver.observe(this.containerTarget);
+
     this.adjustHeight();
     window.addEventListener("resize", this.adjustHeight.bind(this));
   }
 
   disconnect() {
+    if (this.resizeObserver) {
+      this.resizeObserver.disconnect();
+    }
     window.removeEventListener("resize", this.adjustHeight.bind(this));
   }
 
