@@ -7,6 +7,7 @@
         <%= f.fields_for :activity do |activity_fields| %>
         <%= activity_fields.hidden_field :category, value: "hobbies" %>
           <%= activity_fields.input :name,
+
             label: :Lieu,
             placeholder:" ",
             required: false,
