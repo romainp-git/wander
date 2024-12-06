@@ -7,7 +7,7 @@ class GetMoreActivitiesJob < ApplicationJob
   end
 
   def perform(user, trip, activity_date, activity_categories)
-    search = trip.search
+    search = Search.find_by(trip_id: trip.id)
     nb_more_activities = 3
 
     if search
@@ -16,6 +16,7 @@ class GetMoreActivitiesJob < ApplicationJob
       Rails.logger.error "InitDestinationTripJob : search_id #{search_id} non trouvé"
     end
   end
+  
   after_perform do |job|
     trip = Trip.find_by(id: job.arguments.second)
     trip_activities = trip.trip_activities.where(selected: "pending")
