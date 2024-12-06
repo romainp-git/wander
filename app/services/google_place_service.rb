@@ -10,7 +10,7 @@ class GooglePlaceService
 
   def search_place
     query = "#{@activity.name}, #{@destination.address}"
-    Rails.logger.warn "SEARCH_PLACE =>\nACTIVITY_NAME #{@activity.name}\nDEST_ADD #{@destination.address}"
+    Rails.logger.debug "GOOGLE_PLACE_SVC SEARCH_PLACE =>\nACTIVITY_NAME #{@activity.name}\nDEST_ADD #{@destination.address}"
 
     response = HTTParty.post(
       "https://places.googleapis.com/v1/places:searchText?fields=*",
@@ -24,7 +24,7 @@ class GooglePlaceService
 
     response_data = response.parsed_response
 
-    Rails.logger.warn "SEARCH_PLACE =>\nRESP_DATA #{response_data}"
+    Rails.logger.debug "GOOGLE_PLACE_SVC SEARCH_PLACE => RESP_DATA :\n#{response_data[0...2000]}"
 
 
     place = response_data["places"]&.first
@@ -91,7 +91,9 @@ class GooglePlaceService
     )
 
     unless response.success?
+      Rails.logger.error "GOOGLE_PLACE_SVC RESP_SUCCESS? =>\nRESPONSE_CODE #{response.code}\nRESPONSE_MSG #{response.message}\nRESPONSE_BODY #{response.body}"
       raise "Erreur API : #{response.code} - #{response.message} - #{response.body}"
+
     end
     response_data = response.parsed_response
     response_data["photoUri"]
@@ -107,8 +109,10 @@ class GooglePlaceService
         content_type: 'image/jpeg'
       )
     rescue OpenURI::HTTPError => e
+      Rails.logger.error "GOOGLE_PLACE_SVC ATTACH_PHOTO =>\nErreur lors de l'ouverture de l'URL\nERR_MSG #{e.message}"
       puts "Erreur lors de l'ouverture de l'URL : #{e.message}"
     rescue StandardError => e
+      Rails.logger.error "GOOGLE_PLACE_SVC ATTACH_PHOTO =>\nErreur générale\nERR_MSG #{e.message}"
       puts "Erreur générale : #{e.message}"
     end
   end
