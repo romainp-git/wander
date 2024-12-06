@@ -3,4 +3,3 @@ import "@hotwired/turbo-rails"
 import "controllers"
 import "mapbox-gl"
 import "flatpickr"
-

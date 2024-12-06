@@ -29,6 +29,6 @@ class Destination < ApplicationRecord
 
   def geocode
     super
-    Rails.logger.info("Géocodage pour #{address}: latitude=#{latitude}, longitude=#{longitude}")
+    Rails.logger.debug("Géocodage pour #{address}: latitude=#{latitude}, longitude=#{longitude}")
   end
 end
