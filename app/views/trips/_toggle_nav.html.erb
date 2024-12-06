@@ -1,34 +1,37 @@
-<div class="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-20 flex space-x-0  bg-gray-800 rounded-full w-20 h-8 overflow-hidden  ">
+<!-- Toggle Hand / AI -->
+    <div
+      class="relative z-20 flex space-x-0 bg-gray-800 rounded-full w-20 h-8 overflow-hidden"
+      data-controller="toggle"
+    >
+      <!-- Slider Background -->
+      <div
+        class="absolute inset-0 w-1/2 bg-white rounded-full transition-transform duration-300 ease-in-out"
+        data-toggle-target="handSlider"
+      ></div>
 
-  <!-- Slider Background -->
-  <div
-    class="absolute inset-0 w-1/2 bg-white rounded-full transition-transform duration-300 ease-in-out"
-    data-toggle-target="slider"
-  ></div>
+      <!-- Hand Button -->
+      <button
+        data-action="click->toggle#toggleHandAI"
+        data-view="hand"
+        data-toggle-target="handToggle"
+        class="flex items-center justify-center w-1/2 text-center text-gray-800 relative z-10 focus:outline-none"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mx-auto" fill="currentColor" viewBox="0 0 24 24">
+          <path
+            d="M12 2C8.134 2 5 5.134 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.866-3.134-7-7-7zm0 9.5c-1.381 0-2.5-1.119-2.5-2.5s1.119-2.5 2.5-2.5 2.5 1.119 2.5 2.5-1.119 2.5-2.5 2.5z"
+          />
+        </svg>
+      </button>
 
-  <!-- Map Button -->
-  <button
-    data-action="click->toggle#toggle"
-    data-view="map"
-    data-toggle-target="mapToggle"
-    class="flex items-center justify-center w-1/2 text-center text-gray-800 relative z-10 focus:outline-none"
-  >
-    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mx-auto" fill="currentColor" viewBox="0 0 24 24">
-      <path
-        d="M12 2C8.134 2 5 5.134 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.866-3.134-7-7-7zm0 9.5c-1.381 0-2.5-1.119-2.5-2.5s1.119-2.5 2.5-2.5 2.5 1.119 2.5 2.5-1.119 2.5-2.5 2.5z"
-      />
-    </svg>
-  </button>
-
-  <!-- Agenda Button -->
-  <button
-    data-action="click->toggle#toggle"
-    data-view="agenda"
-    data-toggle-target="agendaToggle"
-    class="flex items-center justify-center w-1/2 text-center text-gray-800 relative z-10 focus:outline-none"
-  >
-    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mx-auto" fill="currentColor" viewBox="0 0 24 24">
-      <path d="M3 3h18v2H3V3zm0 7h18v2H3v-2zm0 7h18v2H3v-2z" />
-    </svg>
-  </button>
-</div>
+      <!-- AI Button -->
+      <button
+        data-action="click->toggle#toggleHandAI"
+        data-view="ai"
+        data-toggle-target="aiToggle"
+        class="flex items-center justify-center w-1/2 text-center text-gray-800 relative z-10 focus:outline-none"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mx-auto" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M3 3h18v2H3V3zm0 7h18v2H3v-2zm0 7h18v2H3v-2z" />
+        </svg>
+      </button>
+    </div>

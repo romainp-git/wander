@@ -22,12 +22,15 @@ class TripActivitiesController < ApplicationController
   def create
     @trip = Trip.find(params[:trip_id])
     @activity = Activity.create(trip_activity_params[:activity]) # On suppose que l'utilisateur a sélectionné une activité existante ou en a créé une.
+    start_date = params[:trip_activity][:start_date].to_date
+    duration_in_hours = params[:trip_activity][:duration].to_i
     @trip_activity = @trip.trip_activities.new(
       activity: @activity,
       start_date: params[:trip_activity][:start_date],
-      end_date: params[:trip_activity][:end_date]
+      end_date: start_date + duration_in_hours.hours
     )
     if @trip_activity.save
+      GooglePlaceJob.perform_later({ activity: @activity, destination: @trip.destination, trip_activity: @trip_activity})
       redirect_to trip_path(@trip), notice: 'Activity added to your trip successfully!'
     else
       redirect_to trip_path(@trip), alert: 'Failed to add activity to your trip.'
@@ -51,7 +54,7 @@ class TripActivitiesController < ApplicationController
   end
 
   def trip_activity_params
-    params.require(:trip_activity).permit(:start_date, :end_date, :position, :new_group, activity: {})
+    params.require(:trip_activity).permit(:start_date, :end_date, :position, :new_group, :duration, activity: {})
   end
 
   def update_position_and_group

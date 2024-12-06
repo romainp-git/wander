@@ -8,10 +8,12 @@ export default class extends Controller {
     "calendar",
     "startInput",
     "endInput",
+    "duration",
   ];
 
   connect() {
     console.log("flatpicker_controller");
+    console.log(document.querySelectorAll("dialog"))
 
     if (document.querySelector("#calendar")) {
       this.initializeDatepicker();
@@ -19,7 +21,7 @@ export default class extends Controller {
       calendarElements.forEach((element) => {
         element.classList.remove("arrowBottom");
       });
-    } else if (document.querySelector("#new_activity_modal")) {
+    } else {
       this.activityDatepicker();
     }
   }
@@ -118,16 +120,12 @@ export default class extends Controller {
   }
 
   activityDatepicker() {
-    flatpickr(this.startInputTarget, {
-      appendTo: document.querySelector("dialog"),
-      position: "auto center",
-      altFormat: "D/M/Y",
-      onChange: this.updateEndDate.bind(this),
+    this.startInputTargets.forEach((input, index) => {
+      flatpickr(input, {
+        appendTo: document.querySelectorAll("dialog")[index],
+        position: "auto center",
+        altFormat: "D/M/Y",
+      });
     });
-  }
-
-  updateEndDate(selectedDate) {
-    const [start] = selectedDate;
-    this.endInputTarget.value = start;
   }
 }
