@@ -1,4 +1,10 @@
 <div  class="fixed inset-0 items-center justify-center z-50 h-screen w-screen bg-black">
+  <%= link_to trips_path do %>
+    <button class="fixed z-10 p-safe-or-4" >
+      <p class="icon icon-200 drop-shadow-xl text-4xl text-white p-5"></p>
+    </button>
+  <% end %>
+
    <% if trip.destination.photo.present? %>
       <%= cl_image_tag trip.destination.photo.key, class: "absolute inset-0 h-full w-full object-cover" %>
     <% else %>

@@ -1,5 +1,11 @@
 <%= turbo_frame_tag "modal-frame" do %>
   <div  class="fixed inset-0 flex flex-col items-center justify-center z-50 h-screen w-screen">
+    <%= link_to trips_path do %>
+      <button class="fixed z-10 p-safe-or-4" >
+        <p class="icon icon-200 drop-shadow-xl text-4xl text-white p-5"></p>
+      </button>
+    <% end %>
+
     <p class="px-4 text-center text-white mt-4">Votre destination :</p>
     <p class="text-white text-4xl font-bold font-playfair"><%= trip.destination %></p>
     <p class="px-4 text-center text-white mt-4">Création de vos nouvelles suggestions en cours</p>
