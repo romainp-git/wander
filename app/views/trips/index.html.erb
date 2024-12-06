@@ -36,28 +36,13 @@
       <button class="border border-white text-white py-2 px-6 rounded-md text-sm active:border-orange-600 h-12 flex flex-grow items-center justify-center" onclick="stats_modal.showModal()">Mes statistiques</button>
     </div> -->
 
+    <div data-controller="sticked-element">
     <% if @trips.present? %>
       <%= render "trip_hero", curr_trip: @curr_trip, next_trip: @next_trip, last_trip: @last_trip %>
     <% end %>
 
-    <script>
-      const stickyElm = document.querySelector('.next-trip-container')
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              stickyElm.classList.remove("sticked");
-            } else {
-              stickyElm.classList.add("sticked");
-            }
-          });
-        },
-        { threshold: [1] }
-      );
-      observer.observe(stickyElm);
-    </script>
-
     <%= render "timeline"%>
+    </div>
 
   </div>
 </turbo-frame>

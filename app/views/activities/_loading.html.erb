@@ -7,9 +7,9 @@
     <% end %>
 
     <p class="px-4 text-center text-white mt-4">Votre destination :</p>
-    <p class="text-white text-4xl font-bold font-playfair"><%= search.destination %></p>
-    <p class="px-4 text-center text-white mt-4">Création de votre programme en cours</p>
+    <p class="text-white text-4xl font-bold font-playfair"><%= trip.destination %></p>
+    <p class="px-4 text-center text-white mt-4">Création de vos nouvelles suggestions en cours</p>
     <span class="loading loading-ring loading-lg text-white mt-4"></span>
-    <div data-controller="loading" data-loading-search-id="<%= search.id %>"></div>
+    <div data-controller="loading" data-loading-search-id="<%= trip.id %>"></div>
   </div>
 <% end %>

@@ -19,7 +19,6 @@ class PagesController < ApplicationController
   end
 
   def test
-    @trip = Trip.last
-    @search = Search.last
+    @trip_activities = TripActivity.limit(3)
   end
 end

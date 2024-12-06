@@ -6,7 +6,7 @@
   <% trip = last_trip %>
 <% end %>
 
-<div class="next-trip-container sticky z-10 w-full transition-all duration-200 bg-cover bg-center overflow-hidden pb-5">
+<div class="next-trip-container sticky z-10 w-full transition-all duration-200 bg-cover bg-center overflow-hidden pb-5" data-sticked-element-target="container">
   <% if trip.destination.photo.present? %>
     <%= cl_image_tag trip.destination.photo.key, class: "absolute inset-0 h-full w-full object-cover" %>
   <% else %>

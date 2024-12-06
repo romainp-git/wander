@@ -1,0 +1,40 @@
+<div  class="fixed inset-0 items-center justify-center z-50 h-screen w-screen bg-black">
+
+  <div class="swiper-container flex justify-center items-center h-screen w-screen">
+    <div class="swiper mySwiper w-72 h-96">
+      <div class="swiper-wrapper">
+        <% @trip_activities.each do |trip_activity|%>
+        <div class="swiper-slide rounded-2xl font-bold text-white bg-black" data-index="0">
+          <div class="flex items-center justify-center h-full w-full">
+            <%= cl_image_tag trip_activity.activity.photos[0].key, class:"absolute inset-0 w-full h-full object-cover opacity-80" %>
+            <div class="z-10 drop-shadow-sm text-3xl"><%= trip_activity.activity.name %></div>
+          </div>
+        </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+
+
+  <div data-controller="loading" data-loading-search-id="<%= trip.id %>"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+<script>
+  const swiper = new Swiper(".mySwiper", {
+    effect: "cards",
+    grabCursor: true,
+  });
+
+  const slides = document.querySelectorAll(".swiper-slide");
+
+  slides.forEach((slide) => {
+    slide.addEventListener("click", (event) => {
+      const index = event.currentTarget.dataset.index;
+      const content = event.currentTarget.textContent;
+      console.log(`Clicked slide index: ${index}, content: ${content}`);
+    });
+  });
+</script>
