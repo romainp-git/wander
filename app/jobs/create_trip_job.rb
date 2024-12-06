@@ -24,26 +24,26 @@ class CreateTripJob < ApplicationJob
 
     if search.nil?
       Rails.logger.error "CREATE_TRIP_JOB AFTER PERFORM => Search introuvable avec ID #{job.arguments.first}"
-      redirect_to "/404.html" and return
+      return
     end
 
     if user.nil?
       Rails.logger.error "CREATE_TRIP_JOB AFTER PERFORM => User introuvable avec ID #{job.arguments.second}"
-      redirect_to "/404.html" and return
+      return
     end
 
     trip = Trip.find_by(id: search.trip_id)
 
     if trip.nil?
       Rails.logger.error "CREATE_TRIP_JOB AFTER PERFORM => Trip introuvable avec ID #{search.trip_id}"
-      redirect_to "/404.html" and return
+      return
     end
 
     activities = OpenaiService.new(search, user).init_activities_trip(search, trip.destination, trip)
 
     if activities.nil? || !activities["activities"]
       Rails.logger.error "CREATE_TRIP_JOB AFTER PERFORM => Activités introuvables ou invalides"
-      redirect_to "/404.html" and return
+      return
     end
 
     Rails.logger.debug "CREATE_TRIP_JOB AFTER PERFORM => TRIP_ID = #{trip.id}, TRIP_NAME = #{trip.name}, TRIP_TYPE = #{trip.destination.destination_type}"
