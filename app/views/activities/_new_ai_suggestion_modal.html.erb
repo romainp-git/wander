@@ -12,8 +12,8 @@
           <% ["Culturel", "Nature", "Aventure", "Loisirs", "Détente", "Gastronomie", "Shopping", "Vie Nocturne", "Sportif"].each do |category| %>
             <label class="inline-flex items-center cursor-pointer">
               <%= tag.input type: :checkbox, name: "trip_activity[categories][]", value: category, class: "hidden peer" %>
-              <div class="flex items-center bg-gray-100 rounded-full px-3 py-2 shadow-sm peer-checked:bg-orange-500 peer-checked:text-white">
-                <span class="material-icons text-lg mr-2">
+              <div class="flex items-center bg-gray-100 rounded-full px-2 py-1 shadow-sm peer-checked:bg-orange-500 peer-checked:text-white">
+                <span class="icon text-xs mr-2">
                   <%= case category
                       when "Culturel" then "museum"
                       when "Nature" then "park"
@@ -26,7 +26,7 @@
                       when "Sportif" then "fitness_center"
                       end %>
                 </span>
-                <span class="text-sm mr-1 font-medium"><%= category %></span>
+                <span class="text-xs mr-1 font-medium"><%= category %></span>
               </div>
             </label>
           <% end %>
