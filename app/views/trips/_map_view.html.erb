@@ -12,7 +12,7 @@
   </div>
 
   <div class="absolute bottom-16 left-0 right-0 z-10 overflow-x-auto" data-controller="carrousel">
-    <div class="carousel carousel-center rounded-box space-x-4 p-4" data-carrousel-target="container">
+    <div class="carousel carousel-center rounded-box space-x-4 p-4  pb-safe-offset-4" data-carrousel-target="container">
       <% @activities.each_with_index do |activity, index| %>
         <%= render "carrousel_item", activity: activity, index: index %>
       <% end %>
