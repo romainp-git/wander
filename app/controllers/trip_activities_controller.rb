@@ -71,4 +71,13 @@ class TripActivitiesController < ApplicationController
     @trip_activity.insert_at(trip_activity_params[:position].to_i + 1) if trip_activity_params[:position].present?
   end
 
+  def create_more_activities
+    trip = params[:trip]
+    date = params[:activity_date].join(",")
+    categories = params[:activity_categories].to_s
+    
+    render turbo_stream: turbo_stream.replace( "modal-frame", partial: "activities/loading", locals: { trip: trip } )
+
+    GetMoreActivitiesJob.perform_now(current_user, trip, date, categories)
+  end
 end

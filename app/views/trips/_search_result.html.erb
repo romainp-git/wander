@@ -1,4 +1,10 @@
 <div  class="fixed inset-0 items-center justify-center z-50 h-screen w-screen bg-black">
+  <%= link_to trips_path do %>
+    <button class="fixed z-10 p-safe-or-4" >
+      <p class="icon icon-200 drop-shadow-xl text-4xl text-white p-5"></p>
+    </button>
+  <% end %>
+
    <% if trip.destination.photo.present? %>
       <%= cl_image_tag trip.destination.photo.key, class: "absolute inset-0 h-full w-full object-cover" %>
     <% else %>
@@ -21,21 +27,20 @@
         <span><%= trip.destination.country %></span>
       </div>
 
-      <!-- Exploration stats -->
       <div class="flex flex-col mt-12 text-gray-200 leading-relaxed gap-3" data-controller="waiting-animation">
-        <div class="text-sm animation-item transition-all duration-1000  opacity-0 translate-y-40">
+        <div class="text-sm animation-item transition-all duration-1000 ease-linear opacity-0 translate-y-40">
           <span class="flex items-center gap-3"><span class="icon icon-20">paid</span><strong>Devise</strong></span>
           <div class="ml-8 text-sm"><%= trip.destination.currency %></div>
         </div>
-        <div class="text-sm animation-item transition-all duration-1000  opacity-0 translate-y-40">
+        <div class="text-sm animation-item transition-all duration-1000 ease-linear opacity-0 translate-y-40">
           <span class="flex items-center gap-3"><span class="icon icon-20">badge</span><strong>Documents nécessaires</strong></span>
           <div class="ml-8 text-sm"><%= trip.destination.papers %></div>
         </div>
-        <div class="text-sm animation-item transition-all duration-1000  opacity-0 translate-y-40">
+        <div class="text-sm animation-item transition-all duration-1000 ease-linear opacity-0 translate-y-40">
           <span class="flex items-center gap-3"><span class="icon icon-20">lunch_dining</span><strong>Spécialités culinaires</strong></span>
           <div class="ml-8 text-sm"><%= trip.destination.food %></div>
         </div>
-        <div class="text-sm animation-item transition-all duration-1000  opacity-0 translate-y-40">
+        <div class="text-sm animation-item transition-all duration-1000 ease-linear opacity-0 translate-y-40">
           <span class="flex items-center gap-3"><span class="icon icon-20">power</span><strong>Type de prise électrique</strong></span>
           <div class="ml-8 text-sm"><%= trip.destination.power %></div>
         </div>
