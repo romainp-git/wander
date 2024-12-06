@@ -3,7 +3,6 @@
   data-sortable-update-url="<%= trip_activity_path(trip_activity) %>"
   data-id="<%= trip_activity.id %>"
 >
-
   <div class="relative flex flex-col items-center">
     <div class="w-4 h-4 bg-white rounded-full"></div>
   </div>
@@ -13,13 +12,22 @@
   data-swipe-card-target="deleteButton"
   style="opacity: 0; filter: blur(5px); transition: opacity 0.3s, filter 0.3s;"
 >
+
   <button class="text-white font-bold py-12 px-4 shrink-0" data-action="click->swipe-card#delete">
     <div class="icon">delete</div>
   </button>
 </div>
 
   <!-- Timeline card -->
-  <turbo-frame id="<%= dom_id(trip_activity) %>" class="bg-gray-800 text-white rounded-lg shadow-md p-4 w-full flex justify-between items-center transition-transform duration-300 relative z-1" data-swipe-card-target="card" data-action="touchstart->swipe-card#touchstart touchmove->swipe-card#touchmove touchend->swipe-card#touchend">
-    <%= render partial: "activity_content", locals: { trip_activity: trip_activity, index: index } %>
+  <turbo-frame id="<%= dom_id(trip_activity) %>"
+    class="bg-gray-800 text-white rounded-lg shadow-md p-4 w-full flex justify-between items-center transition-transform duration-300 relative z-1"
+    data-swipe-card-target="card"
+    data-action="touchstart->swipe-card#touchstart touchmove->swipe-card#touchmove touchend->swipe-card#touchend"
+    data-turbo-frame-reloader-target="turboReload"
+    src="<%= trip_activity_path(trip_activity) %>"
+    >
+
+      <%= render partial: "activity_content", locals: { trip_activity: trip_activity, index: index } %>
+
   </turbo-frame>
 </li>

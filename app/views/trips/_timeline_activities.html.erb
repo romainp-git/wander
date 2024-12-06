@@ -1,21 +1,26 @@
-<div class="relative " data-tabs-target="timeline">
+<div class="relative " data-tabs-target="timeline" data-controller="timeline">
   <% day_activities.each_with_index do |(date, activities), index| %>
     <div data-tabs-day="<%= index %>" data-tabs-target="timelineDay">
       <div class="w-full bg-slate-900 backdrop-blur bg-opacity-50 z-10 sticky top-safe-offset-44">
         <p class="text-center p-4 font-bold text-lg"><%= I18n.l(date, format: "%A %d %b %Y") %></p>
       </div>
-      <ul class="relative flex flex-col gap-2 p-4"
+      <ul class="relative flex flex-col gap-2 p-4 day-container"
           data-controller="sortable"
+          data-timeline-target="container"
           data-sortable-group="<%= date %>"
           data-sortable-animation-value="150"
           data-sortable-resource-name-value="trip_activity"
           data-sortable-handle-value=".handle">
-        <div class="absolute top-16 bottom-16 left-[24px] w-px bg-white"></div>
+
+        <!-- Vertical timeline -->
+        <div class="absolute left-[24px] w-px bg-white" data-dynamic-height></div>
+
         <% if activities.any? %>
           <% activities.each_with_index do |trip_activity, activity_index| %>
-           <%= render partial: 'activity_card', locals: { trip_activity: trip_activity, index: activity_index } %>
+          <%= render partial: 'activity_card', locals: { trip_activity: trip_activity, index: activity_index } %>
           <% end %>
         <% end %>
+
       </ul>
     </div>
   <% end %>

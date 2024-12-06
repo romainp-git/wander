@@ -4,4 +4,8 @@
   </div>
 </div>
 
-<turbo-frame id="main-turbo" src="<%= @path %>" target="_top"></turbo-frame>
+<turbo-frame id="main-turbo" src="<%= @path %>" action="replace" target="_top">
+  <div  class="fixed inset-0 flex flex-col items-center justify-center z-0 h-screen w-screen radial-gradient-dark-orange">
+    <span class="loading loading-ring loading-lg text-white mt-4"></span>
+  </div>
+</turbo-frame>

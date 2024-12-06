@@ -1,5 +1,5 @@
 
-<%= link_to activity_path(activity) do%>
+<%= link_to activity_path(activity), data: { turbo_frame: "_top" } do%>
   <div
   class="carousel-item snap-start bg-gray-800 shadow-lg rounded-lg p-4 cursor-pointer hover:shadow-xl transition-shadow w-72 h-52 overflow-hidden"
   data-carrousel-target="item"
