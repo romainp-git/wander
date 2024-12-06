@@ -1,5 +1,5 @@
 class TripActivitiesController < ApplicationController
-  skip_before_action :verify_authenticity_token, only: [:update, :destroy]
+  skip_before_action :verify_authenticity_token, only: [:update, :destroy, :add_from_ai]
   before_action :set_trip_activity, only: [:update, :destroy]
 
   def index
@@ -17,6 +17,11 @@ class TripActivitiesController < ApplicationController
     else
       render json: { success: false, errors: @trip_activity.errors.full_messages }, status: :unprocessable_entity
     end
+  end
+
+  def add_from_ai
+    params = trip_activity_params
+    raise
   end
 
   def create

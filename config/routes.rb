@@ -7,6 +7,7 @@ Rails.application.routes.draw do
   mount Sidekiq::Web => '/sidekiq'
   devise_for :users
 
+  post 'add_from_ai', to: "trip_activities#add_from_ai"
   resources :trips, only: %i[show index new edit] do
     resources :trip_activities, only: %i[create index show new edit]
   end
