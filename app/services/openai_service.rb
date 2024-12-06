@@ -50,7 +50,7 @@ class OpenaiService
     end
   end
   # ---------------------------------------------------------------------------------------
-  def save_trip_activity(trip, activity, selected_status)
+  def save_trip_activity(trip, activity)
 
     Rails.logger.debug "SAVE_TRIP_ACTIVITY (BEFORE GET DETAILS) =>\nACTIVITY NAME : #{activity['name']}\nACTIVITY DESC : #{activity['description']}\n#{activity}"
 
@@ -82,7 +82,7 @@ class OpenaiService
         start_date: DateTime.parse(activity["start_date"]),
         end_date: DateTime.parse(activity["end_date"]),
         status: "created",
-        selected: selected_status
+        selected: "enabled"
     )
 
     GooglePlaceJob.perform_later({ activity: new_activity, destination: trip.destination, trip_activity: trip_activity})
@@ -95,7 +95,7 @@ class OpenaiService
     retries = 0
   
     while activities == {"content" => "ERROR"} && retries < max_retries
-      activity_details = get_more_activities(search, activity_date.to_s, activity_categories.to_s, nb_more_activities)
+      activity_details = get_more_activities(search, activity_date, activity_categories, nb_more_activities)
       retries += 1
       Rails.logger.debug "INIT_MORE_ACTIVITIES_TRIP => RETRY ##{retries}/#{max_retries}\nACTIVITIES : #{activities}"
     end
@@ -134,7 +134,9 @@ class OpenaiService
       selected: "pending"
       )
 
-      GooglePlaceJob.perform_now({ activity: new_activity, destination: search })
+    Rails.logger.debug "SAVE_TRIP_MORE_ACTIVITIES =>\nNEW_ACTIVITES : #{new_activity}"
+
+    GooglePlaceJob.perform_now({ activity: new_activity, destination: search })
   end
   # ---------------------------------------------------------------------------------------
   private
@@ -384,11 +386,11 @@ class OpenaiService
     user_content =
     "Je souhaite #{nb_more_activities} nouvelles activités pour compléter mon voyage dont la destination est #{search.destination}, qui seront pour la journée du #{activity_date.to_s}.\n" \
     "Les activités que tu m'as déjà proposées sont :\n"
-    search.trip.trip_activities.each do |trip_activity|
+    Trip.find(search.trip_id).trip_activities.each do |trip_activity|
       user_content += "- #{trip_activity.activity.name} (#{trip_activity.activity.address})\n"
     end
 
-    if search.activity_categories.length > 0
+    if activity_categories.length > 0
       user_content += "Les catagories d'activités souhaitées sont celles-ci : #{activity_categories.to_s}.\n"
     else
       user_content += "Les catagories d'activités souhaitées sont celles-ci : #{Constants::CATEGORIES_UK}.\n"
