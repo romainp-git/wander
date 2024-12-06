@@ -14,7 +14,7 @@
         <%= image_tag 'no_picture.jpg', class: "w-full h-full object-cover", alt: "No picture available", data: { gallery_target: "mainImage" } %>
       <% end %>
         <button onclick="add_picture_modal.showModal()" class="btn absolute bottom-14 z-50 right-5" >Add photos</button>
-      <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+      <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
     </div>
     <%= render "add_picture_modal" %>
     <!-- Miniatures -->
@@ -22,7 +22,7 @@
     <% if @activity.photos.first.present? %>
       <% @activity.photos.each_with_index do |photo, index| %>
         <div
-          class="w-30 h-full bg-gray-800 rounded-lg flex items-center justify-center cursor-pointer shrink-0 carousel-item"
+          class="w-1/2 h-full bg-gray-800 rounded-lg flex items-center justify-center cursor-pointer shrink-0 carousel-item"
           data-action="click->gallery#showImage"
           data-gallery-index="<%= index %>"
           data-gallery-target="thumbnail"
@@ -65,7 +65,7 @@
 
     <!-- Bouton de fermeture -->
     <button
-      class="absolute top-4 right-4 text-white text-2xl font-bold"
+      class="absolute top-safe-or-4 right-4 text-white text-2xl font-bold"
       data-action="click->gallery#closeModal"
     >
       &times;
