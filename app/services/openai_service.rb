@@ -26,15 +26,27 @@ class OpenaiService
   end
   # ---------------------------------------------------------------------------------------
   def init_activities_trip(search, destination, trip)
-    if destination.destination_type == "COUNTRY"
-      activities = get_activities_country(search)
-    else
-      activities = get_activities_city(search)
+    activities = {"content" => "ERROR"} # Valeur initiale
+    max_retries = 3
+    retries = 0
+  
+    while activities == {"content" => "ERROR"} && retries < max_retries
+      if destination.destination_type == "COUNTRY"
+        activities = get_activities_country(search)
+      else
+        activities = get_activities_city(search)
+      end
+      retries += 1
+      Rails.logger.debug "INIT_ACTIVITIES_TRIP => RETRY ##{retries}/#{max_retries}\nACTIVITIES : #{activities}"
     end
 
-    Rails.logger.debug "INIT_ACTIVITIES_TRIP MEM =>\nTRIP : #{trip}\nACTIVITIES : #{activities}"
-
-    return activities
+    if activities == {"content" => "ERROR"}
+      Rails.logger.error "INIT_ACTIVITIES_TRIP => Failed to fetch activities after #{max_retries} attempts."
+      return nil
+    else
+      Rails.logger.debug "INIT_ACTIVITIES_TRIP =>\nTRIP : #{trip}\nACTIVITIES : #{activities}"
+      return activities
+    end
   end
   # ---------------------------------------------------------------------------------------
   def save_trip_activity(trip, activity)
@@ -74,13 +86,13 @@ class OpenaiService
     GooglePlaceJob.perform_later({ activity: new_activity, destination: trip.destination, trip_activity: trip_activity})
   end
   # ---------------------------------------------------------------------------------------
-  def create_trip_one_more_activity(search, activity_date, activity_categories)
+  def create_trip_more_activities(search, activity_date, activity_categories, nb_more_activities)
 
-    Rails.logger.debug "CREATE_TRIP_ONE_MORE_ACTIVITY (BEFORE GET DETAILS) =>\nDATE : #{activity_date}\nCATEGORIES : #{activity_categories}\n"
+    Rails.logger.debug "CREATE_TRIP_MORE_ACTIVITIES (BEFORE GET DETAILS) =>\nDATE : #{activity_date.to_s}\nCATEGORIES : #{activity_categories.to_s}\n"
 
-    activity_details = get_acget_one_more_activity_detailstivity_details(search, activity_date, activity_categories)
+    activity_details = get_acget_one_more_activity_detailstivity_details(search, activity_date.to_s, activity_categories.to_s)
     
-    Rails.logger.debug "CREATE_TRIP_ONE_MORE_ACTIVITY (AFTER GET DETAILS) =>\nNAME : #{activity_details['name']}\nDESC : #{activity_details['description']}\n#{activity_details}"
+    Rails.logger.debug "CREATE_TRIP_MORE_ACTIVITIES (AFTER GET DETAILS) =>\nNAME : #{activity_details['name']}\nDESC : #{activity_details['description']}\n#{activity_details}"
 
     new_activity = Activity.find_or_create_by(
       address: activity_details["address"], 
@@ -88,18 +100,20 @@ class OpenaiService
       title: activity_details['title'],
       description: activity_details['description'],
       category: activity_details['category'] || "cultural",
-      wiki: url_alive?(activity_details['wiki']) ? activity_details['wiki'] : "Unknown",
+      wiki: "Unknown",
       website_url: "Unknown"
     )
     
-    GooglePlaceJob.perform_later({ activity: new_activity, destination: search })
-
     trip_activity = TripActivity.create!(
       activity: new_activity,
       trip: search.trip,
       start_date: DateTime.parse(activity_details["start_date"]),
-      end_date: DateTime.parse(activity_details["end_date"])
-    )
+      end_date: DateTime.parse(activity_details["end_date"]),
+      status: "created",
+      selected: "pending"
+      )
+
+      GooglePlaceJob.perform_later({ activity: new_activity, destination: search })
   end
   # ---------------------------------------------------------------------------------------
   private
@@ -169,15 +183,14 @@ class OpenaiService
     call_openai(prompt_activity)
   end
   # ---------------------------------------------------------------------------------------
-  def get_one_more_activity_details(search, activity_date)
-    prompt_activity = get_prompt_one_more_activity_city(search, activity_date)
+  def get_more_activities(search, activity_date, activity_categories, nb_more_activities)
+    prompt_activity = get_prompt_more_activities_city(search, activity_date, activity_categories, nb_more_activities)
     call_openai(prompt_activity)
   end
   # ---------------------------------------------------------------------------------------
-
   def call_openai(prompt)
     client = OpenAI::Client.new
-    parsed_response = client.chat(parameters: {
+    response = client.chat(parameters: {
       "model": 'gpt-3.5-turbo',
       "response_format": { "type": "json_object" },
       "messages": [
@@ -188,21 +201,20 @@ class OpenaiService
       "temperature": 0.0
       })
 
-    if parsed_response['choices'] && parsed_response['choices'][0] && parsed_response['choices'][0]['message'] && parsed_response['choices'][0]['message']['content'] && parsed_response['choices'][0]['message']['content'] != "ERROR"
-      data = JSON.parse(parsed_response['choices'][0]['message']['content'])
-      Rails.logger.debug "#-----------------------------------------------------------"
-      Rails.logger.debug "OPENAI =>\nSIZE : #{data.to_s.length}\nDATA : #{data}\n"
-      Rails.logger.debug "#-----------------------------------------------------------"
-      return data
+    Rails.logger.debug "CALL_OPENAI =>\nSIZE : #{response.to_s.length}\nRESPONSE : #{response}\n"
+
+    if response['choices'] && response['choices'][0] && response['choices'][0]['message'] && response['choices'][0]['message']['content'] && response['choices'][0]['message']['content'] != "ERROR"
+      parsed_data = JSON.parse(response['choices'][0]['message']['content'])
+      return parsed_data
     else
-      Rails.logger.error "Invalid response format: #{parsed_response}"
+      Rails.logger.error "CALL_OPENAI => Invalid response format:\n#{response}"
       return { 'content' => 'ERROR' }
     end
   rescue RestClient::ExceptionWithResponse => e
-    Rails.logger.error "API call failed: #{e.response}"
+    Rails.logger.error "CALL_OPENAI => API call failed:\n#{e.response}"
     return { 'content' => 'ERROR' }
   rescue JSON::ParserError => e
-    Rails.logger.error "JSON parsing failed: #{e.message}"
+    Rails.logger.error "CALL_OPENAI => JSON parsing failed:\n#{e.message}"
     return { 'content' => 'ERROR' }
   end
   # ---------------------------------------------------------------------------------------
@@ -259,6 +271,7 @@ class OpenaiService
     "- 'address' qui contiendra le nom de la ville de départ de l'activité.\n" \
     "- 'description' qui contiendra la description de l'activité.\n" \
     "Si la destination n'est pas identifiable, le champ 'content' de ta réponse au format JSON doit contenir uniquement 'ERROR'.\n" \
+    "Si la réponse excède les limites du modèle, retourne le maximum d'activités possibles sans tronquer les données, en fermant proprement le tableau JSON."
     # "Si la taille du fichier JSON de sortie est trop longue, tu dois retourner que des activités complètes retournes le nombre maximum d'activités que tu es capable de retourner sans tronquer les données et tu ferme le tableau JSON proprement sans mettre '...' à la fin pour dire que tu n'as pas pu tout mettre.\n"
 
 
@@ -276,7 +289,7 @@ class OpenaiService
       user_content = user_content + "Tu dois t'assurer que les activités soient compatibles avec la présence d'un bébé et l'utilisation d'une poussette.\n"
     end
     if search.inspiration.to_s.length > 0
-      user_content = user_content + "Tu dois prendre en compte également cette demande compléementaire : #{search.inspiration.to_s}.\n"
+      user_content = user_content + "Tu dois prendre en compte également cette demande complémentaire : #{search.inspiration.to_s}.\n"
     end
 
     return { "system_content": system_content, "user_content": user_content }
@@ -296,7 +309,8 @@ class OpenaiService
       "- 'name' qui contiendra le nom court de l'étape (lieu principal).\n" \
       "- 'address' qui contiendra l'adresse de départ de l'étape.\n" \
       "- 'description' qui contiendra la description détaillée de l'étape avec ses différentes activités et leurs intérêts touristiques. Chaque activité doit être catégorisée.\n" \
-      "Si la destination n'est pas identifiable, le champ 'content' de ta réponse au format JSON doit contenir uniquement 'ERROR'."
+      "Si la réponse excède les limites du modèle, retourne le maximum d'activités possibles sans tronquer les données, en fermant proprement le tableau JSON." \
+      "Si la destination n'est pas identifiable, retourne : {\"content\": \"ERROR\"}."
 
     user_content =
     "La destination de mon voyage est #{search.destination} du #{search.start_date} matin au #{Date.parse(search.end_date.to_s)+1}."
@@ -324,12 +338,12 @@ class OpenaiService
     return { "system_content": system_content, "user_content": user_content }
   end
   # ---------------------------------------------------------------------------------------
-  def get_prompt_one_more_activity_city(search, activity_date, activity_categories)
+  def get_prompt_more_activities_city(search, activity_date, activity_categories, nb_more_activities)
     system_content =
     "Tu es un expert de l'organisation d'activités et de découverte d'une destination de voyage.\n" \
-    "Tu as déjà aidé l'utilisateur à construire des activités pour son voyage mais il en voudrait une autre pour une journée précise.\n" \
-    "Il va te fournir la liste des activités déjà retenues, il faut donc que tu lui trouve une nouvelle activité non présente dans cette liste.\n" \
-    "Il va te fournir la liste des catégories d'activités parmis lesquelles tu dois proposer cette nouvelle activité.\n" \
+    "Tu as déjà aidé l'utilisateur à construire des activités pour son voyage mais il voudrait d'autres propositions pour une journée précise.\n" \
+    "Il va te fournir la liste des activités déjà retenues, il faut donc que tu lui trouves de nouvelles activités absente dans cette liste.\n" \
+    "Il va te fournir la liste des catégories d'activités parmis lesquelles tu dois proposer ces nouvelles activités.\n" \
     "Il va te fournir une destination de voyage et une date pour contraindre ta recherche.\n" \
     "Tu dois rechercher des occupations comme par exemples :\n" \
     "- des activités prenant un certain temps comme la visite d'un musée, une ballade dans un parc, une randonnée, un vol en montgolfière, ...\n" \
@@ -340,25 +354,29 @@ class OpenaiService
     "- 'start_date' qui contiendra le datetime de début de l'activité.\n" \
     "- 'end_date' qui contiendra le datetime de fin de l'activité.\n" \
     "- 'address' qui contiendra le nom de la ville de départ de l'activité.\n" \
-    "- 'description' qui contiendra une description détaillée de l'activité (description dans le JSON) en 3 paragraphes non numérotés expliquant successivement en quoi elle consiste, son intérêt intrinsèque et enfin pourquoi il ne faut pas la rater selon les experts.\n.\n" \
-    "- 'wiki' qui contiendra url wikipédia de cette activité si elle existe.\n" \
-    "- 'category' qui contiendra la catégorie de l'activité retenue parmis la liste fournies par l'utilisateur\n" \
+    "- 'description' qui contiendra une description détaillée de l'activité en 3 paragraphes non numérotés expliquant successivement en quoi elle consiste, son intérêt intrinsèque et enfin pourquoi il ne faut pas la rater selon les experts.\n" \
+    "- 'category' qui contiendra exactement la même valeur que celle présente dans la liste fournie et retenue pour cette activité.\n" \
     "Si la destination n'est pas identifiable, le champ 'content' de ta réponse au format JSON doit contenir uniquement 'ERROR'.\n" \
-    "Si la taille du fichier JSON de sortie est trop longue, tu dois retourner que des activités complètes retournes le nombre maximum d'activités que tu es capable de retourner sans tronquer les données et tu ferme le tableau JSON proprement sans mettre '...' à la fin pour dire que tu n'as pas pu tout mettre.\n"
+    # "Si la taille du fichier JSON de sortie est trop longue, tu dois retourner que des activités complètes retournes le nombre maximum d'activités que tu es capable de retourner sans tronquer les données et tu ferme le tableau JSON proprement sans mettre '...' à la fin pour dire que tu n'as pas pu tout mettre.\n"
 
 
     user_content =
-    "L'activité souhaitée pour compléter mon voyage dont la destination est #{search.destination}, sera pour  la journée du #{activity_date} matin au #{activity_date}.\n"
+    "Je souhaite #{nb_more_activities} nouvelles activités pour compléter mon voyage dont la destination est #{search.destination}, qui seront pour la journée du #{activity_date.to_s}.\n" \
+    "Les activités que tu m'as déjà proposées sont :\n"
+    search.trip.trip_activities.each do |trip_activity|
+      user_content += "- #{trip_activity.activity.name} (#{trip_activity.activity.address})\n"
+    end
+
     if search.activity_categories.length > 0
-      user_content = user_content + "Les catagories d'activités souhaitées sont celles-ci : #{activity_categories}.\n"
+      user_content += "Les catagories d'activités souhaitées sont celles-ci : #{activity_categories.to_s}.\n"
     else
-      user_content = user_content + "#{Constants::CATEGORIES_UK}.\n"
+      user_content += "Les catagories d'activités souhaitées sont celles-ci : #{Constants::CATEGORIES_UK}.\n"
     end
     if search.nb_children > 0
-      user_content = user_content + "Tu dois prévoir une activité compatible avec les enfants.\n"
+      user_content += "Tu dois prévoir une activité compatible avec les enfants.\n"
     end
     if search.nb_infants > 0
-      user_content = user_content + "Tu dois t'assurer que les activités soient compatibles avec la présence d'un bébé et l'utilisation d'une poussette.\n"
+      user_content += "Tu dois t'assurer que les activités soient compatibles avec la présence d'un bébé et l'utilisation d'une poussette.\n"
     end
 
     return { "system_content": system_content, "user_content": user_content }

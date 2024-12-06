@@ -34,8 +34,7 @@ def show
     end
 
   # Début du traitement de la demande
-    Rails.logger.debug "#============================================================="
-    Rails.logger.debug "#create_DEMANDE\nName : #{name} du #{params[:start_date]} au #{params[:end_date]}"
+    Rails.logger.debug "DESTCTRL_CREATE => NAME : #{name} STARTDT #{params[:start_date]} ENDDT #{params[:end_date]}"
 
 
   # Recherche et création de la destination
@@ -46,8 +45,7 @@ def show
       render :new, status: :unprocessable_entity
       return
     else
-      Rails.logger.debug "#-----------------------------------------------------------"
-      Rails.logger.debug "#create_DESTINATION\n#{destination_ai}"
+      Rails.logger.debug "DESTCTRL_CREATE => DESTINATION_AI :\n#{destination_ai}"
     end
 
     if type == "Ville"
@@ -66,9 +64,8 @@ def show
       render :new, status: :unprocessable_entity
       return
     else
-      Rails.logger.debug "#-----------------------------------------------------------"
-      Rails.logger.debug "#create_ACTIVITIES COUNT : #{activities_ai.count}"
-      Rails.logger.debug "#create_ACTIVITIES\n#{activities_ai}"
+      Rails.logger.debug "DESTCTRL_CREATE => COUNT : #{activities_ai.count}"
+      Rails.logger.debug "DESTCTRL_CREATE => ACTIVITIES_AI\n#{activities_ai}"
     end
 
     # Ecriture en base des données
@@ -96,13 +93,10 @@ def show
       latitude: destination_data['latitude'].to_f,
       longitude: destination_data['longitude'].to_f
     )
-    Rails.logger.debug "search.destination"
     photo = Unsplash::Photo.search(destination_data['city'])[0]
-    Rails.logger.debug photo
     file = URI.open(photo['urls']['regular'])
     destination.photo.attach(io: file, filename: "#{destination_data['city']}_search_#{rand(1000)}.jpg", content_type: "image/jpeg")
 
-    Rails.logger.debug "#-----------------------------------------------------------"
     Rails.logger.debug "#create_destination_trip_activities_DESTINATION\n#{destination} - #{type}"
 
     trip = Trip.create!(
@@ -112,14 +106,11 @@ def show
       user_id: user.id,
       destination_id: destination.id
     )
-    Rails.logger.debug "#-----------------------------------------------------------"
     Rails.logger.debug "#create_destination_trip_activities_TRIP\n#{trip}"
 
-    Rails.logger.debug "#-----------------------------------------------------------"
     Rails.logger.debug "#create_destination_trip_activities_ACTIVITIES COUNT\n#{activities_data.count}"
     activities_data.each_with_index do |activity_data, index|
 
-      Rails.logger.debug "#-------------"
       Rails.logger.debug "#create_destination_trip_activities_ACTIVITIES Number : #{index + 1}"
       Rails.logger.debug "#trip_name : #{trip_name} - activity_name : #{activity_data['name']} - address : #{activity_data['address']}"
       Rails.logger.debug "#description : #{activity_data['description']}"
@@ -340,7 +331,6 @@ def show
   def search_geocoder(address)
     location = []
     # address = "Padre Burgos Ave, Ermita, Manila, 1000 Metro Manila"
-    Rails.logger.debug "#-----------------------------------------------------------"
     Rails.logger.debug "# GEOCODER address : #{address}"
 
     results = Geocoder.search(address)
