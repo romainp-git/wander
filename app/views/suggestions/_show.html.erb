@@ -1,7 +1,7 @@
 <turbo-frame action="replace" id="modal-frame">
   <div data-controller="stories">
     <div class="fixed inset-0 z-20 bg-black transition-transform duration-500 transform translate-y-full" data-controller="modal">
-      <button class="absolute p-4 right-0 z-50" data-action="click->modal#close">
+      <button class="absolute p-safe-or-4 right-0 z-50" data-action="click->modal#close">
         <p class="icon icon-200 drop-shadow-xl text-4xl text-white">arrow_downward</p>
       </button>
 

@@ -1,5 +1,5 @@
 <turbo-frame action="replace" id="modal-frame">
-<div class="map fixed inset-0 z-[25] h-screen w-screen bg-black overflow-hidden rounded-t-2xl transition-transform duration-500 transform translate-y-full mt-safe-offset-16"
+<div class="map fixed inset-0 z-[40] h-screen w-screen bg-black overflow-hidden rounded-t-2xl transition-transform duration-500 transform translate-y-full mt-safe-offset-16"
   data-controller="modal"
   data-toggle-target="mapView">
   <div id="map" class="w-screen h-screen z-0"
@@ -8,7 +8,7 @@
     data-map-markers-value='<%= raw @markers.to_json %>'>
   </div>
 
-  <div class="absolute bottom-16 left-0 right-0 z-10 overflow-x-auto" data-controller="carrousel">
+  <div class="absolute bottom-safe-offset-16 left-0 right-0 z-10 overflow-x-auto" data-controller="carrousel">
     <div class="carousel carousel-center rounded-box space-x-4 p-4" data-carrousel-target="container">
       <% @activities.each_with_index do |activity, index| %>
         <%= render "trips/carrousel_item", activity: activity, index: index %>
