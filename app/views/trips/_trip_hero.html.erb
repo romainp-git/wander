@@ -23,7 +23,7 @@
     <% elsif next_trip.present? %>
       <%= render "countdown", start: trip&.start_date || "" %>
     <% else %>
-      <%= render "countup", start: trip&.start_date || "" %>
+      <%= render "countup", start: trip&.end_date || "" %>
     <% end %>
 
     <h1 class="text-3xl font-bold font-playfair"><%= trip.name.capitalize() %></h1>

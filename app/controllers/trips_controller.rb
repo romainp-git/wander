@@ -4,7 +4,7 @@ class TripsController < ApplicationController
 
     @trips = Trip.where(user: current_user).order(end_date: :desc)
     @last_trip = @trips.where('end_date < ?', Date.today).order(end_date: :desc).first
-    @next_trip = @trips.where('start_date >= ?', Date.today).order(start_date: :asc).first
+    @next_trip = @trips.reorder(start_date: :asc).where('start_date >= ?', Date.today).first
     @curr_trip = @trips.find { |trip| trip.start_date <= Date.today && trip.end_date >= Date.today }
 
     @markers = @trips.filter_map do |trip|

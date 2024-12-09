@@ -34,6 +34,13 @@ puts 'Seeding users...'
 
 users = [
   {
+    email: 'rom@gmail.com',
+    password: 'password',
+    first_name: 'Romain',
+    last_name: 'PORTIER',
+    username: 'ROM'
+  },
+  {
     email: 'pym@gmail.com',
     password: 'password',
     first_name: 'Pierre-Yves',
@@ -46,13 +53,6 @@ users = [
     first_name: 'Samuel',
     last_name: 'WILLEM',
     username: 'SAM'
-  },
-  {
-    email: 'rom@gmail.com',
-    password: 'password',
-    first_name: 'Romain',
-    last_name: 'PORTIER',
-    username: 'ROM'
   },
   {
     email: 'abe@gmail.com',
