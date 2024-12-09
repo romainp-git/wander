@@ -8,7 +8,7 @@ export default class extends Controller {
     console.log("Tabs controller connected");
     this.activateDay(0, this.defaultColorValue);
     this.isScrolling = false;
-    this.hiddenDateTarget.value = this.dayTargets[0].dataset.date
+    //this.hiddenDateTarget.value = this.dayTargets[0].dataset.date
 
     window.addEventListener("scroll", this.onScroll.bind(this));
   }
@@ -41,7 +41,6 @@ export default class extends Controller {
     this.dayTargets.forEach((dayTab, i) => {
       dayTab.classList.toggle("text-black", i === index);
       dayTab.classList.toggle(`bg-${color}`, i === index);
-      dayTab.classList.toggle("rounded-lg", i === index);
       dayTab.classList.toggle("px-2", i === index);
       dayTab.classList.toggle("py-1", i === index);
       dayTab.classList.toggle("text-gray-400", i !== index);
@@ -136,11 +135,9 @@ export default class extends Controller {
   }
   updateDate(event) {
     this.changeTab(event, "orange-500")
+
     const selectedDayIndex = parseInt(event.currentTarget.dataset.tabsDay, 10);
-
-    // Vérifiez que l'index sélectionné est valide
     const days = this.element.querySelectorAll("[data-tabs-day]");
-
     const selectedDayElement = days[selectedDayIndex];
     const dateAttribute = selectedDayElement.dataset.date;
 
@@ -154,7 +151,6 @@ export default class extends Controller {
       return;
     }
 
-    // Mettez à jour la valeur du champ caché
     this.hiddenDateTarget.value = dateAttribute;
     console.log("Date mise à jour :", dateAttribute);
   }

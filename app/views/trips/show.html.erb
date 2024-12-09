@@ -38,13 +38,13 @@
   </button>
   </div>
 
-
-  <%= render "activities/new_activity_modal"%>
-  <%= render "activities/new_ai_suggestion_modal"%>
-
   <!-- Vue agenda -->
   <div data-toggle-target="agendaView">
     <div class="w-full text-white" data-controller="tabs">
+
+      <%= render "activities/new_activity_modal"%>
+      <%= render "activities/new_ai_suggestion_modal"%>
+
       <%= link_to trips_path do %>
         <button class="fixed z-20 p-safe-or-4" >
           <p class="icon icon-200 drop-shadow-xl text-4xl text-white">arrow_back</p>
@@ -61,7 +61,7 @@
         <div class="flex-col items-center justify-between py-3 bg-gray-900">
           <div class="flex items-center overflow-x-scroll space-x-2" data-tabs-target="daysContainer" style="scrollbar-width: none;">
             <% @calendar_dates.each_with_index do |date, index| %>
-              <div class="first:ml-4 last:mr-4 flex flex-col items-center cursor-pointer text-gray-400 px-4 py-3 <%= 'text-black bg-white rounded-lg' if index == 0 %>"
+              <div class="first:ml-4 last:mr-4 flex flex-col items-center cursor-pointer text-gray-400 px-4 py-3 rounded-lg <%= 'text-black bg-white rounded-lg' if index == 0 %>"
                   data-action="click->tabs#changeTab"
                   data-tabs-day="<%= index %>"
                   data-tabs-target="day">
